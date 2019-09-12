@@ -1,0 +1,14 @@
+# Don't add any of the Vivado Projects to Github
+*viv_proj*
+# Don't add box bitstream folders
+*bitstream_*
+
+# Ignore files with these extensions
+*.jou
+*.log
+*.str
+*.zip
+*.bil
+
+# Ignore file used to generate misc. ILA connections
+xdc/extra.xdc
