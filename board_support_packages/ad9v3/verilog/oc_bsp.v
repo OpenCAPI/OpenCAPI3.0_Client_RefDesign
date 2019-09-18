@@ -18,6 +18,8 @@
 // *! The background Specification upon which this is based is managed by and available from
 // *! the OpenCAPI Consortium.  More information can be found at https://opencapi.org. 
 // *!***************************************************************************
+`define FLASH
+
 module oc_bsp (
 //-------------
 //-- FPGA I/O

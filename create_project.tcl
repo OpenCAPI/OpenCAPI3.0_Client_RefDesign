@@ -265,7 +265,7 @@ if {$afu eq "mcp"} {
 }
 
 set verilog_board_support [list \
- "[file normalize "$origin_dir/board_support_packages/$card/verilog/oc_fpga_top.v"]"\
+ "[file normalize "$origin_dir/board_support_packages/$card/verilog/hdk_top/oc_fpga_top.v"]"\
  "[file normalize "$origin_dir/board_support_packages/$card/verilog/oc_bsp.v"]"\
  "[file normalize "$origin_dir/board_support_packages/$card/verilog/cfg_tieoffs.v"]"\
  "[file normalize "$origin_dir/board_support_packages/$card/verilog/vpd_stub.v"]"\
