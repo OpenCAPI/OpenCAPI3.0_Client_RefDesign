@@ -20,7 +20,7 @@ export SNAP_ROOT    = $(abspath .)/../../
 snap_config_sh      = ../../.snap_config.sh
 -include $(snap_config_sh)
 
-export CARDS += ad9v3
+export CARDS += ad9v3 ad9h3 ad9h7
 
 SIM_SRC=$(OC_BIP_ROOT)/sim/src
 
@@ -31,6 +31,8 @@ help:
 	@echo "Main targets for the OpenCAPI IP catalog make process:";
 	@echo "======================================================";
 	@echo "* ad9v3          Creates ip for AlphaData 9V3 card";
+	@echo "* ad9h3          Creates ip for AlphaData 9H3 card";
+	@echo "* ad9h7          Creates ip for AlphaData 9H7 card";
 	@echo "* unit_sim       Creates ip for unit level simulation";
 	@echo "* clean          Removes all files generated in make process";
 	@echo "* help           Prints this message";

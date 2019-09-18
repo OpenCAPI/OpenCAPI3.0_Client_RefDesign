@@ -67,7 +67,7 @@ set_property sim.ip.auto_export_scripts false [current_project] >> $log_file
 
 set_property version $oc_bsp_version [ipx::current_core] >> $log_file
 set_property vendor_display_name IBM [ipx::current_core] >> $log_file
-set_property supported_families {zynquplus Production virtexuplus Production kintexuplus Production} [ipx::current_core] >> $log_file
+set_property supported_families {zynquplus Production virtexuplus Production kintexuplus Production virtexuplushbm Production} [ipx::current_core] >> $log_file
 set_property core_revision 1 [ipx::current_core] >> $log_file
 ipx::create_xgui_files [ipx::current_core] >> $log_file
 ipx::update_checksums [ipx::current_core] >> $log_file
