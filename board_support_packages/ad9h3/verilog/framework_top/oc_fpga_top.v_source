@@ -49,24 +49,9 @@ module oc_fpga_top (
    ,input                 mgtrefclk1_x0y1_p  // -- XLX PHY transcieve clocks 156.25 MHz
    ,input                 mgtrefclk1_x0y1_n  // -- XLX PHY transcieve clocks 156.25 MHz
 
-#ifdef CONFIG_ENABLE_DDR4
-    // DDR4 SDRAM Interface
-   ,input                 c0_ddr4_sys_clk_p
-   ,input                 c0_ddr4_sys_clk_n
-   ,output [16:0]         c0_ddr4_adr
-   ,output [1:0]          c0_ddr4_ba
-   ,output [0:0]          c0_ddr4_cke
-   ,output [0:0]          c0_ddr4_cs_n
-   ,inout  [8:0]          c0_ddr4_dm_dbi_n
-   ,inout  [71:0]         c0_ddr4_dq
-   ,inout  [8:0]          c0_ddr4_dqs_c
-   ,inout  [8:0]          c0_ddr4_dqs_t
-   ,output [0:0]          c0_ddr4_odt
-   ,output [1:0]          c0_ddr4_bg
-   ,output                c0_ddr4_reset_n
-   ,output                c0_ddr4_act_n
-   ,output [0:0]          c0_ddr4_ck_c
-   ,output [0:0]          c0_ddr4_ck_t
+#ifdef CONFIG_ENABLE_HBM
+    // HBM Interface
+    // Place holder
 #endif
 
 `ifdef FLASH
@@ -1004,26 +989,11 @@ oc_function oc_func(
   , .afu_tlx_rdata_bdi                      ( afu_fen_rdata_bdi                  )
 
     // ------------------------------------------------------------- 
-    // DDR4 Interface
+    // HBM Interface
     // -------------------------------------------------------------
-#ifdef CONFIG_ENABLE_DDR4
-    // DDR4 SDRAM Interface
-  , .c0_sys_clk_p                           ( c0_ddr4_sys_clk_p                  )
-  , .c0_sys_clk_n                           ( c0_ddr4_sys_clk_n                  )
-  , .c0_ddr4_adr                            ( c0_ddr4_adr                        )
-  , .c0_ddr4_ba                             ( c0_ddr4_ba                         )
-  , .c0_ddr4_cke                            ( c0_ddr4_cke                        )
-  , .c0_ddr4_cs_n                           ( c0_ddr4_cs_n                       )
-  , .c0_ddr4_dm_dbi_n                       ( c0_ddr4_dm_dbi_n                   )
-  , .c0_ddr4_dq                             ( c0_ddr4_dq                         )
-  , .c0_ddr4_dqs_c                          ( c0_ddr4_dqs_c                      )
-  , .c0_ddr4_dqs_t                          ( c0_ddr4_dqs_t                      )
-  , .c0_ddr4_odt                            ( c0_ddr4_odt                        )
-  , .c0_ddr4_bg                             ( c0_ddr4_bg                         )
-  , .c0_ddr4_reset_n                        ( c0_ddr4_reset_n                    )
-  , .c0_ddr4_act_n                          ( c0_ddr4_act_n                      )
-  , .c0_ddr4_ck_c                           ( c0_ddr4_ck_c                       )
-  , .c0_ddr4_ck_t                           ( c0_ddr4_ck_t                       )
+#ifdef CONFIG_ENABLE_HBM
+    // HBM Interface
+    // place holder
 #endif
     
            
