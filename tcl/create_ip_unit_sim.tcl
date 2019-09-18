@@ -23,7 +23,7 @@ set fpga_ip_dir      $::env(CARD_DIR)/ip
 ## Create a new Vivado IP Project
 set log_file $::env(OC_BSP_LOGS)/create_required_ip.log
 puts "\[CREATE REQUIRED IP FOR UNIT SIM..\] start [clock format [clock seconds] -format {%T %a %b %d %Y}]"
-create_project managed_ip_project $ip_dir/managed_ip_project -force -part $fpga_part -ip >> $log_file
+create_project card_ip_project $ip_dir/card_ip_project -force -part $fpga_part -ip >> $log_file
 
 # Project IP Settings
 # General

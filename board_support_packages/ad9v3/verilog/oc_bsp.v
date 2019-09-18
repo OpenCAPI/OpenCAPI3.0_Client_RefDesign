@@ -569,6 +569,7 @@ DLx_phy_vio_0 DLx_phy_vio_0_inst (
   // -- VPD
   // -- ********************************************************************************************************************************
 
+`ifdef VPD
   vpd_stub  vpd
     (
       // -- Miscellaneous Ports
@@ -587,6 +588,7 @@ DLx_phy_vio_0 DLx_phy_vio_0_inst (
       .vpd_err_unimplemented_addr                  ( vpd_err_unimplemented_addr )              // -- output
 
     );
+`endif
 
 `ifdef FLASH
   flash_sub_system FLASH
