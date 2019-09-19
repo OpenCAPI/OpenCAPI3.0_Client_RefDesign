@@ -34,6 +34,8 @@ set proj_name        oc_board_support_package
 set cfg_src          $::env(CFG_DIR)
 set card_dir         $::env(CARD_DIR)
 set card_src         $::env(CARD_SRC)
+set use_flash        "true"
+set transceiver_type "bypass"
 
 source $common_tcl/create_ip.tcl
 
@@ -46,6 +48,13 @@ create_project $proj_name $proj_dir -part $fpga_part -force >> $log_file
 puts "	                Adding design sources to oc_bsp project"
 source $common_tcl/add_src.tcl
 
+if { $use_flash ne "" } {
+    puts "    Flashing logic is enabled"
+} else {
+    puts "    Flashing logic is disabled"
+}
+
+puts "    buffer...........[string toupper $transceiver_type]"
 set_property top $top_level [current_fileset]
 
 # Add card specific IP
@@ -55,9 +64,33 @@ if [file exists $common_tcl/add_card_ip.tcl] {
 }
 
 # Add constraint files
+set xdc_files [list \
+                       "[file normalize "$oc_bsp_xdc/main_pinout.xdc"]" \
+                       "[file normalize "$oc_bsp_xdc/main_timing.xdc"]" \
+                       "[file normalize "$oc_bsp_xdc/extra.xdc"]" \
+                   ]
+
+if {$transceiver_type eq "bypass" } {
+    set xdc_files [list {*}$xdc_files \
+                         "[file normalize "$oc_bsp_xdc/main_placement_bypass.xdc"]" \
+                         "[file normalize "$oc_bsp_xdc/gty_properties.xdc"]" \
+                   ]
+} else {
+    set xdc_files [list {*}$xdc_files \
+                         "[file normalize "$oc_bsp_xdc/main_placement_elastic.xdc"]" \
+                   ]
+}
+
+if {$use_flash ne ""} {
+    set xdc_files [list {*}$xdc_files \
+                         "[file normalize "$oc_bsp_xdc/qspi_pinout.xdc"]" \
+                         "[file normalize "$oc_bsp_xdc/qspi_timing.xdc"]" \
+                   ]
+}
+
 puts "	                Adding constraints to oc_bsp project"
-foreach xdc_file [glob -nocomplain -dir $oc_bsp_xdc *] {
-  add_files -fileset constrs_1 -norecurse $xdc_file >> $log_file
+foreach xdc_files [glob -nocomplain -dir $oc_bsp_xdc *] {
+  add_files -fileset constrs_1 -norecurse $xdc_files >> $log_file
 }
 
 ### Package project as IP

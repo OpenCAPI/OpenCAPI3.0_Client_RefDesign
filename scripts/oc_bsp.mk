@@ -19,7 +19,7 @@
 include $(OC_BIP_ROOT)/scripts/oc_bsp_env.mk
 
 
-.PHONY: help create_ip unzip_dlxtlx_encrypted unit_sim clean
+.PHONY: help create_ip unit_sim clean
 
 
 help:

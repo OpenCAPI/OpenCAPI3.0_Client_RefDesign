@@ -23,6 +23,7 @@
 #add_files -scan_for_includes $dlxtlx_dir >> $log_file
 
 
+#create_fileset -srcset sources_0
 
 ############################################################################
 #                                                                          #
@@ -50,6 +51,9 @@ add_files -scan_for_includes $card_src/cfg_reg_to_axi4lite.v >> $log_file
 add_files -scan_for_includes $card_src/flash_sub_system.v >> $log_file
 add_files -scan_for_includes $card_src/oc_bsp.v >> $log_file
 add_files -scan_for_includes $card_src/vpd_stub.v >> $log_file
-add_files -scan_for_includes $card_src/xilinx/encrypted_buffer_bypass >> $log_file
-#add_files -scan_for_includes $card_src/xilinx/encrypted_elastic_buffer >> $log_file
+if {$transceiver_type eq "bypass"} {
+    add_files -scan_for_includes $card_src/xilinx/encrypted_buffer_bypass >> $log_file
+} else {
+   add_files -scan_for_includes $card_src/xilinx/encrypted_elastic_buffer >> $log_file
+}
 
