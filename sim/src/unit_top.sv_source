@@ -509,17 +509,27 @@ assign                             tlx_afu_vif.afu_tlx_rdata_bdi_top = dut0.oc_f
 tl_dl_if tl_dl_vif(
     .clock                 (tlx_clock)
 );
-assign                             tl_dl_vif.tl_dl_flit_vld = dut0.bsp.inst.tlx_dlx_flit_valid;
-assign                             tl_dl_vif.tl_dl_flit_data = dut0.bsp.inst.tlx_dlx_flit;
+//assign                             tl_dl_vif.tl_dl_flit_vld = dut0.bsp.inst.tlx_dlx_flit_valid;
+//assign                             tl_dl_vif.tl_dl_flit_data = dut0.bsp.inst.tlx_dlx_flit;
+//
+//assign                             dut0.bsp.inst.dlx_tlx_flit_valid = tl_dl_vif.dl_tl_flit_vld;
+//assign                             dut0.bsp.inst.dlx_tlx_flit_crc_err = tl_dl_vif.dl_tl_flit_error;
+//assign                             dut0.bsp.inst.dlx_tlx_flit = tl_dl_vif.dl_tl_flit_data;
+//assign                             dut0.bsp.inst.dlx_tlx_flit_credit = tl_dl_vif.dl_tl_flit_credit;
+//assign                             dut0.bsp.inst.dlx_tlx_link_up = tl_dl_vif.dl_tl_link_up;
+//assign                             dut0.bsp.inst.dlx_config_info = 32'b0;
+//assign                             dut0.bsp.inst.dlx_tlx_init_flit_depth = tl_dl_vif.dl_tl_init_flit_depth;
 
-assign                             dut0.bsp.inst.dlx_tlx_flit_valid = tl_dl_vif.dl_tl_flit_vld;
-assign                             dut0.bsp.inst.dlx_tlx_flit_crc_err = tl_dl_vif.dl_tl_flit_error;
-assign                             dut0.bsp.inst.dlx_tlx_flit = tl_dl_vif.dl_tl_flit_data;
-assign                             dut0.bsp.inst.dlx_tlx_flit_credit = tl_dl_vif.dl_tl_flit_credit;
-assign                             dut0.bsp.inst.dlx_tlx_link_up = tl_dl_vif.dl_tl_link_up;
-assign                             dut0.bsp.inst.dlx_config_info = 32'b0;
-assign                             dut0.bsp.inst.dlx_tlx_init_flit_depth = tl_dl_vif.dl_tl_init_flit_depth;
+assign                             tl_dl_vif.tl_dl_flit_vld = dut0.bsp.tlx_dlx_flit_valid;
+assign                             tl_dl_vif.tl_dl_flit_data = dut0.bsp.tlx_dlx_flit;
 
+assign                             dut0.bsp.dlx_tlx_flit_valid = tl_dl_vif.dl_tl_flit_vld;
+assign                             dut0.bsp.dlx_tlx_flit_crc_err = tl_dl_vif.dl_tl_flit_error;
+assign                             dut0.bsp.dlx_tlx_flit = tl_dl_vif.dl_tl_flit_data;
+assign                             dut0.bsp.dlx_tlx_flit_credit = tl_dl_vif.dl_tl_flit_credit;
+assign                             dut0.bsp.dlx_tlx_link_up = tl_dl_vif.dl_tl_link_up;
+assign                             dut0.bsp.dlx_config_info = 32'b0;
+assign                             dut0.bsp.dlx_tlx_init_flit_depth = tl_dl_vif.dl_tl_init_flit_depth;
 //**********************************************
 // VERIFICATION INITIALIZATION
 //**********************************************

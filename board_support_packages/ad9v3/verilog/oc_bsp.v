@@ -18,7 +18,6 @@
 // *! The background Specification upon which this is based is managed by and available from
 // *! the OpenCAPI Consortium.  More information can be found at https://opencapi.org. 
 // *!***************************************************************************
-`define FLASH
 
 module oc_bsp (
 //-------------
@@ -569,7 +568,6 @@ DLx_phy_vio_0 DLx_phy_vio_0_inst (
   // -- VPD
   // -- ********************************************************************************************************************************
 
-`ifdef VPD
   vpd_stub  vpd
     (
       // -- Miscellaneous Ports
@@ -588,7 +586,6 @@ DLx_phy_vio_0 DLx_phy_vio_0_inst (
       .vpd_err_unimplemented_addr                  ( vpd_err_unimplemented_addr )              // -- output
 
     );
-`endif
 
 `ifdef FLASH
   flash_sub_system FLASH

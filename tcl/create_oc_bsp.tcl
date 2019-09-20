@@ -36,6 +36,7 @@ set card_dir         $::env(CARD_DIR)
 set card_src         $::env(CARD_SRC)
 set use_flash        "true"
 set transceiver_type "bypass"
+set transceiver_speed "25.78125"
 
 source $common_tcl/create_ip.tcl
 
@@ -93,34 +94,34 @@ foreach xdc_files [glob -nocomplain -dir $oc_bsp_xdc *] {
   add_files -fileset constrs_1 -norecurse $xdc_files >> $log_file
 }
 
-### Package project as IP
-puts "	                Packaging oc_bsp project as IP"
-update_compile_order -fileset sources_1 >> $log_file
-ipx::package_project -root_dir $oc_bsp_gen_dir -vendor ibm.com -library OpenCAPI -taxonomy /UserIP -import_files -force >> $log_file
-set_property sim.ip.auto_export_scripts false [current_project] >> $log_file
-
-set_property version $oc_bsp_version [ipx::current_core] >> $log_file
-set_property vendor_display_name IBM [ipx::current_core] >> $log_file
-set_property supported_families {zynquplus Production virtexuplus Production kintexuplus Production virtexuplushbm Production } [ipx::current_core] >> $log_file
-set_property core_revision 1 [ipx::current_core] >> $log_file
-ipx::create_xgui_files [ipx::current_core] >> $log_file
-ipx::update_checksums [ipx::current_core] >> $log_file
-ipx::save_core [ipx::current_core] >> $log_file
-ipx::check_integrity [ipx::current_core] >> $log_file
-
-
-### Add oc_bsp IP path to IP repository paths
-set_property ip_repo_paths [file normalize $oc_bsp_gen_dir] [current_project] >> $log_file
-### Rebuild user ip_repo's index before creating IP container
-update_ip_catalog >> $log_file
-
-puts "	                Generating oc_bsp IP"
-create_ip -name oc_bsp -vendor ibm.com -library OpenCAPI -version $oc_bsp_version -module_name oc_bsp_wrap -dir $ip_dir >> $log_file
-set_property generate_synth_checkpoint false [get_files oc_bsp_wrap.xci] >> $log_file
-set_property used_in_simulation false [get_files oc_bsp_wrap.xci] >> $log_file
-generate_target all [get_files oc_bsp_wrap.xci] >> $log_file
-
-set oc_bsp_ip_dir $ip_dir/oc_bsp_wrap
+#### Package project as IP
+#puts "	                Packaging oc_bsp project as IP"
+#update_compile_order -fileset sources_1 >> $log_file
+#ipx::package_project -root_dir $oc_bsp_gen_dir -vendor ibm.com -library OpenCAPI -taxonomy /UserIP -import_files -force >> $log_file
+#set_property sim.ip.auto_export_scripts false [current_project] >> $log_file
+#
+#set_property version $oc_bsp_version [ipx::current_core] >> $log_file
+#set_property vendor_display_name IBM [ipx::current_core] >> $log_file
+#set_property supported_families {zynquplus Production virtexuplus Production kintexuplus Production virtexuplushbm Production } [ipx::current_core] >> $log_file
+#set_property core_revision 1 [ipx::current_core] >> $log_file
+#ipx::create_xgui_files [ipx::current_core] >> $log_file
+#ipx::update_checksums [ipx::current_core] >> $log_file
+#ipx::save_core [ipx::current_core] >> $log_file
+#ipx::check_integrity [ipx::current_core] >> $log_file
+#
+#
+#### Add oc_bsp IP path to IP repository paths
+#set_property ip_repo_paths [file normalize $oc_bsp_gen_dir] [current_project] >> $log_file
+#### Rebuild user ip_repo's index before creating IP container
+#update_ip_catalog >> $log_file
+#
+#puts "	                Generating oc_bsp IP"
+#create_ip -name oc_bsp -vendor ibm.com -library OpenCAPI -version $oc_bsp_version -module_name oc_bsp_wrap -dir $ip_dir >> $log_file
+#set_property generate_synth_checkpoint false [get_files oc_bsp_wrap.xci] >> $log_file
+#set_property used_in_simulation false [get_files oc_bsp_wrap.xci] >> $log_file
+#generate_target all [get_files oc_bsp_wrap.xci] >> $log_file
+#
+#set oc_bsp_ip_dir $ip_dir/oc_bsp_wrap
 
 #puts "	                Creating oc_bsp IP container"
 #convert_ips -to_core_container [get_files $oc_bsp_ip_dir/oc_bsp_wrap.xci] >> $log_file
