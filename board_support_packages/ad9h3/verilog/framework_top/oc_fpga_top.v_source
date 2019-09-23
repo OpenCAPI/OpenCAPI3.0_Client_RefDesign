@@ -1,6 +1,5 @@
 `timescale 1ns / 1ps
 
-`define FLASH
 
 module oc_fpga_top (
 
