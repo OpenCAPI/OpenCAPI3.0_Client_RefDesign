@@ -18,13 +18,29 @@
 ############################################################################
 ############################################################################
 
-#Adding source files
-#add_files -scan_for_includes $common_src >> $log_file
-#add_files -scan_for_includes $dlxtlx_dir >> $log_file
+set dlx_dir          $root_dir/oc-bip/dlx
+set tlx_dir          $root_dir/oc-bip/tlx
+set cfg_dir          $root_dir/oc-bip/config_subsystem
+set common_tcl       $root_dir/oc-bip/tcl
+set oc_bsp_xdc       $fpga_card_dir/xdc
+set card_dir         $fpga_card_dir
+set card_src         $fpga_card_dir/verilog
+set use_flash          "true"
+set transceiver_type   "bypass"
+set transceiver_speed  $::env(PHY_SPEED)
 
 
-#create_fileset -srcset sources_0
-# Files for the various OpenCAPI Units
+############################################################################
+#      Print information
+puts "                        FLASH=$use_flash, transceiver type=$transceiver_type, speed=$transceiver_speed"
+
+
+
+
+
+
+############################################################################
+#      Prepare files and contraints
 set verilog_DLx     [list \
  "[file normalize "$dlx_dir/ocx_bram_infer.v"]"\
  "[file normalize "$dlx_dir/ocx_dlx_crc.v"]"\
@@ -72,11 +88,19 @@ set verilog_flash [list \
  "[file normalize "$card_src/flash_sub_system.v"]"\
 ]
 
-set verilog_board_support [list \
- "[file normalize "$card_src/oc_bsp.v"]"\
- "[file normalize "$card_src/cfg_tieoffs.v"]"\
- "[file normalize "$card_src/vpd_stub.v"]"\
+set verilog_cfg [list \
+ "[file normalize "$cfg_dir/cfg_cmdfifo.v"]"\
+ "[file normalize "$cfg_dir/cfg_descriptor.v"]"\
+ "[file normalize "$cfg_dir/cfg_fence.v"]"\
+ "[file normalize "$cfg_dir/cfg_func1_init.v"]"\
+ "[file normalize "$cfg_dir/cfg_func1.v"]"\
+ "[file normalize "$cfg_dir/cfg_func0_init.v"]"\
+ "[file normalize "$cfg_dir/cfg_func0.v"]"\
+ "[file normalize "$cfg_dir/cfg_respfifo.v"]"\
+ "[file normalize "$cfg_dir/cfg_seq.v"]"\
+ "[file normalize "$cfg_dir/oc_cfg.v"]"\
 ]
+
 
 set verilog_bypass  [list \
  "[file normalize "$card_src/xilinx/encrypted_buffer_bypass/DLx_phy_example_bit_sync.v"]"\
@@ -103,6 +127,12 @@ set verilog_elastic [list \
  "[file normalize "$card_src/xilinx/encrypted_elastic_buffer/dlx_phy_wrap.v"]"\
 ]
 
+set verilog_board_support [list \
+ "[file normalize "$card_src/cfg_tieoffs.v"]"\
+ "[file normalize "$card_src/vpd_stub.v"]"\
+ "[file normalize "$card_src/oc_bsp.v"]"\
+]
+
 if {$transceiver_type eq "bypass"} {
     set verilog_board_support [list {*}$verilog_board_support {*}$verilog_bypass]
 } else {
@@ -113,54 +143,83 @@ if {$use_flash ne ""} {
     set verilog_board_support [list {*}$verilog_board_support {*}$verilog_flash]
 }
 
-
-
-# Create 'sources_1' fileset (if not found)
-if {[string equal [get_filesets -quiet sources_1] ""]} {
-  create_fileset -srcset sources_1
-}
-
+set verilog_board_support [list {*}$verilog_board_support {*}$verilog_cfg]
+############################################################################
+#Add source files
+puts "	                Adding design sources to oc_bsp project"
 # Set 'sources_1' fileset object, create list of all nececessary verilog files
 set obj [get_filesets sources_1]
-
 set files [list {*}$verilog_DLx {*}$verilog_TLx {*}$verilog_board_support]
 add_files -norecurse -fileset $obj $files
 
+# deal with header files
+set file "DLx_phy_example_wrapper_functions.v"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Verilog Header" -objects $file_obj
+
+set file "cfg_func1_init.v"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Verilog Header" -objects $file_obj
+
+set file "cfg_func0_init.v"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Verilog Header" -objects $file_obj
+
+
+
+############################################################################
+# Add constraint files
+set xdc_files [list \
+                       "[file normalize "$oc_bsp_xdc/main_pinout.xdc"]" \
+                       "[file normalize "$oc_bsp_xdc/main_timing.xdc"]" \
+                       "[file normalize "$oc_bsp_xdc/extra.xdc"]" \
+                   ]
+
+if {$transceiver_type eq "bypass" } {
+    set xdc_files [list {*}$xdc_files \
+                         "[file normalize "$oc_bsp_xdc/main_placement_bypass.xdc"]" \
+                         "[file normalize "$oc_bsp_xdc/gty_properties.xdc"]" \
+                   ]
+} else {
+    set xdc_files [list {*}$xdc_files \
+                         "[file normalize "$oc_bsp_xdc/main_placement_elastic.xdc"]" \
+                   ]
+}
+
+if {$use_flash ne ""} {
+    set xdc_files [list {*}$xdc_files \
+                         "[file normalize "$oc_bsp_xdc/qspi_pinout.xdc"]" \
+                         "[file normalize "$oc_bsp_xdc/qspi_timing.xdc"]" \
+                   ]
+}
+
+puts "	                Adding constraints to oc_bsp project"
+set obj [get_filesets constrs_1]
+add_files -fileset constrs_1 -norecurse $xdc_files >> $log_file
+set_property -name "target_constrs_file" -value "[file normalize "$oc_bsp_xdc/extra.xdc"]" -objects $obj
+
+############################################################################
 set synth_verilog_defines ""
-if {$use_flash         ne ""                            } {set synth_verilog_defines [concat $synth_verilog_defines "FLASH"] }
-
+if {$transceiver_type  eq "bypass" } {set synth_verilog_defines [concat $synth_verilog_defines "BUFFER_BYPASS"]}
+if {$transceiver_type  eq "elastic"} {set synth_verilog_defines [concat $synth_verilog_defines "BUFFER_ELASTIC"]}
+if {$use_flash         ne ""       } {set synth_verilog_defines [concat $synth_verilog_defines "FLASH"] }
 set_property verilog_define "$synth_verilog_defines" [get_filesets sources_1]
+set_property verilog_define "$synth_verilog_defines" [get_filesets sim_1]
 
 
 ############################################################################
-#                                                                          #
-# Add encrypted DLx/TLx sources                                            #
-#                                                                          #
-############################################################################
-#add_files -scan_for_includes $dlx_dir >> $log_file
-#add_files -scan_for_includes $tlx_dir >> $log_file
+# Generate board specific IP
+#
+source $card_dir/ip/create_vio_DLx_phy_vio_0.tcl
+source $card_dir/ip/create_vio_reset_n.tcl
+source $card_dir/ip/create_DLx_PHY_${transceiver_type}_${transceiver_speed}g.tcl
+
+if {$use_flash ne ""} {
+    source $card_dir/ip/axi_quad_spi.tcl
+    source $card_dir/ip/axi_hwicap.tcl
+}
 
 
-############################################################################
-#                                                                          #
-# Add config subsystem sources                                             #
-#                                                                          #
-############################################################################
-#add_files -scan_for_includes $cfg_src >> $log_file
 
 
-############################################################################
-#                                                                          #
-# Add card specific sources                                                #
-#                                                                          #
-############################################################################
-#add_files -scan_for_includes $card_src/cfg_reg_to_axi4lite.v >> $log_file
-#add_files -scan_for_includes $card_src/flash_sub_system.v >> $log_file
-#add_files -scan_for_includes $card_src/oc_bsp.v >> $log_file
-#add_files -scan_for_includes $card_src/vpd_stub.v >> $log_file
-#if {$transceiver_type eq "bypass"} {
-#    add_files -scan_for_includes $card_src/xilinx/encrypted_buffer_bypass >> $log_file
-#} else {
-#   add_files -scan_for_includes $card_src/xilinx/encrypted_elastic_buffer >> $log_file
-#}
-
+update_compile_order -fileset sources_1
