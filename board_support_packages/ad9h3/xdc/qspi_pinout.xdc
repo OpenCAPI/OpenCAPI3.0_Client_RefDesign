@@ -9,7 +9,7 @@ set_property PACKAGE_PIN BB28 [get_ports FPGA_FLASH_DQ6]
 set_property PACKAGE_PIN BC28 [get_ports FPGA_FLASH_DQ7]
 
 # Slave select output of AXI QSPI Core
-set_property PACKAGE_PIN AV30 [get_ports FPGA_FLASH_CE2_L]
+set_property PACKAGE_PIN AW24 [get_ports FPGA_FLASH_CE2_L]
 
 #set_property IOSTANDARD LVCMOS18 [get_ports FPGA_FLASH_DQ0]
 #set_property IOSTANDARD LVCMOS18 [get_ports FPGA_FLASH_DQ1]
