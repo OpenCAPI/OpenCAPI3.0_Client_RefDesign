@@ -1128,14 +1128,14 @@ module top (
         // -- Clocks & Reset
         .clock_tlx                          ( tlx_clock                                 ),
         .clock_afu                          ( afu_clock                                 ),
-        .reset_afu                          ( ~reset_n                                  ),
+        .reset                          ( ~reset_n                                  ),
 
         // -- Bus number comes from CFG_SEQ
-        .cfg_bus_num                        ( cfg_bus_num                               ),  // -- Attached to TLX Port 0, so use cfg0_ instance
-        .cfg_device_num                     ( cfg_device_num                            ),  // -- Attached to TLX Port 0, so use cfg0_ instance
+        .cfg_bus                        ( cfg_bus_num                               ),  // -- Attached to TLX Port 0, so use cfg0_ instance
+        .ro_device                     ( cfg_device_num                            ),  // -- Attached to TLX Port 0, so use cfg0_ instance
 
         // -- Device/Function
-        .cfg_function_num                   ( 3'b001                                      ),  // -- Defined in (this function instance is number 1)
+        .ro_function                   ( 3'b001                                      ),  // -- Defined in (this function instance is number 1)
 
         // -- TLX_AFU command receive interface
         .tlx_afu_ready                      ( fen_tlx_afu_ready                         ),

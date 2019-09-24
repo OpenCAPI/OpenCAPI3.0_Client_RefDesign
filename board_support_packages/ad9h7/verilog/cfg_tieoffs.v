@@ -119,6 +119,23 @@ module cfg_tieoffs (
       assign f1_ro_octrl00_metadata_supported     =                       1'b0;
       assign f1_ro_octrl00_actag_len_supported    =                    12'h001;
 
+`elsif FRAMEWORK
+      assign f1_ro_csh_mmio_bar0_size             =    64'hFFFF_FFFF_0000_0000;
+      assign f1_ro_csh_mmio_bar1_size             =    64'hFFFF_FFFF_FFFF_FFFF;
+      assign f1_ro_csh_mmio_bar2_size             =    64'hFFFF_FFFF_FFFF_FFFF;
+      assign f1_ro_csh_mmio_bar0_prefetchable     =                       1'b0;
+      assign f1_ro_csh_mmio_bar1_prefetchable     =                       1'b0;
+      assign f1_ro_csh_mmio_bar2_prefetchable     =                       1'b0;
+      assign f1_ro_pasid_max_pasid_width          =                   5'b01001;
+      assign f1_ro_ofunc_reset_duration           =                      8'h10;
+      assign f1_ro_ofunc_afu_present              =                       1'b1;
+      assign f1_ro_ofunc_max_afu_index            =                 6'b00_0000;
+      assign f1_ro_octrl00_reset_duration         =                      8'h10;
+      assign f1_ro_octrl00_afu_control_index      =                  6'b000000;
+      assign f1_ro_octrl00_pasid_len_supported    =                   5'b01001;
+      assign f1_ro_octrl00_metadata_supported     =                       1'b0;
+      assign f1_ro_octrl00_actag_len_supported    =                    12'h020;
+
 `else
       assign f1_ro_csh_mmio_bar0_size             =    64'hFFFF_FFFF_FC00_0000;
       assign f1_ro_csh_mmio_bar1_size             =    64'hFFFF_FFFF_FFFF_FFFF;
