@@ -127,23 +127,25 @@ set verilog_elastic [list \
  "[file normalize "$card_src/xilinx/encrypted_elastic_buffer/dlx_phy_wrap.v"]"\
 ]
 
-set verilog_board_support [list \
+set verilog_bsp [list \
  "[file normalize "$card_src/cfg_tieoffs.v"]"\
  "[file normalize "$card_src/vpd_stub.v"]"\
  "[file normalize "$card_src/oc_bsp.v"]"\
 ]
 
 if {$transceiver_type eq "bypass"} {
-    set verilog_board_support [list {*}$verilog_board_support {*}$verilog_bypass]
+    set phy_package [list {*}$verilog_bypass]
 } else {
-    set verilog_board_support [list {*}$verilog_board_support {*}$verilog_elastic]
+    set phy_package [list {*}$verilog_elastic]
 }
 
 if {$use_flash ne ""} {
-    set verilog_board_support [list {*}$verilog_board_support {*}$verilog_flash]
+    set verilog_board_support [list {*}$phy_package {*}$verilog_bsp {*}$verilog_cfg {*}$verilog_flash]
+} else {
+    set verilog_board_support [list {*}$phy_package {*}$verilog_bsp {*}$verilog_cfg ]
 }
 
-set verilog_board_support [list {*}$verilog_board_support {*}$verilog_cfg]
+
 ############################################################################
 #Add source files
 puts "	                Adding design sources to oc_bsp project"

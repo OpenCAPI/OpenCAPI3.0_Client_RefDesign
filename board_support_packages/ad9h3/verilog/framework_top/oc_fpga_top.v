@@ -1,6 +1,4 @@
-`timescale 1ns / 1ps
-
-
+`include "snap_global_vars.v"
 module oc_fpga_top (
 
   // -- Reset
@@ -47,18 +45,16 @@ module oc_fpga_top (
    ,input                 mgtrefclk1_x0y0_n  // -- XLX PHY transcieve clocks 156.25 MHz
    ,input                 mgtrefclk1_x0y1_p  // -- XLX PHY transcieve clocks 156.25 MHz
    ,input                 mgtrefclk1_x0y1_n  // -- XLX PHY transcieve clocks 156.25 MHz
-
-#ifdef CONFIG_ENABLE_HBM
-    // HBM Interface
-    // Place holder
-#endif
+`ifdef ENABLE_HBM
+   //placeholder
+`endif
 
 `ifdef FLASH
-   ,inout                 FPGA_FLASH_CE2_L       // To/From FLASH of flash_sub_system.v
-   ,inout                 FPGA_FLASH_DQ4         // To/From FLASH of flash_sub_system.v
-   ,inout                 FPGA_FLASH_DQ5         // To/From FLASH of flash_sub_system.v
-   ,inout                 FPGA_FLASH_DQ6         // To/From FLASH of flash_sub_system.v
-   ,inout                 FPGA_FLASH_DQ7         // To/From FLASH of flash_sub_system.v
+   ,inout  FPGA_FLASH_CE2_L       // To/From FLASH of flash_sub_system.v
+   ,inout  FPGA_FLASH_DQ4         // To/From FLASH of flash_sub_system.v
+   ,inout  FPGA_FLASH_DQ5         // To/From FLASH of flash_sub_system.v
+   ,inout  FPGA_FLASH_DQ6         // To/From FLASH of flash_sub_system.v
+   ,inout  FPGA_FLASH_DQ7         // To/From FLASH of flash_sub_system.v
 `endif
   // -- Interface between VPD Stub to external VPD EEPROM
 
@@ -176,7 +172,7 @@ wire   [3:0]   cfg0_tlx_rdata_offset;
 wire   [31:0]  cfg0_tlx_rdata_bus;
 wire           cfg0_tlx_rdata_bdi;
 wire           tlx_cfg0_resp_ack;
-//wire           cfg_f1_octrl00_resync_credits;
+wire           cfg_f1_octrl00_resync_credits;
 wire   [14:0]  cfg_vpd_addr;
 wire           cfg_vpd_wren;
 wire   [31:0]  cfg_vpd_wdata;
@@ -863,9 +859,6 @@ oc_cfg cfg (
  ,.cfg_errvec                        (cfg_errvec             )
  ,.cfg_errvec_valid                  (cfg_errvec_valid       )
  
- ,.cfg_f0_otl0_long_backoff_timer    (cfg_f0_otl0_long_backoff_timer    )
- ,.cfg_f0_otl0_short_backoff_timer   (cfg_f0_otl0_short_backoff_timer   )
-
  ,.f1_csh_expansion_rom_bar           (f1_ro_csh_expansion_rom_bar      )
  ,.f1_csh_subsystem_id                (f1_ro_csh_subsystem_id           )
  ,.f1_csh_subsystem_vendor_id         (f1_ro_csh_subsystem_vendor_id    )
@@ -885,7 +878,13 @@ oc_cfg cfg (
  ,.f1_octrl00_metadata_supported      (f1_ro_octrl00_metadata_supported )
  ,.f1_octrl00_actag_len_supported     (f1_ro_octrl00_actag_len_supported)
  
-
+    // ------------------------------------------------------------- 
+    // HBM Interface
+    // -------------------------------------------------------------
+`ifdef ENABLE_HBM
+    // HBM Interface
+    // place holder
+`endif
 );
 
 
@@ -894,12 +893,12 @@ oc_cfg cfg (
 oc_function oc_func(
     .clock_tlx                              ( clock_tlx                          )
   , .clock_afu                              ( clock_afu                          )
-  , .reset_afu                              ( reset                              )  // (positive active)
+  , .reset                                  ( reset                              )  // (positive active)
     // Bus number comes from CFG_SEQ
-  , .cfg_bus_num                            ( cfg0_bus_num                       )  // Attached to TLX Port 0, so use cfg0_ instance
+  , .cfg_bus                                ( cfg0_bus_num                       )  // Attached to TLX Port 0, so use cfg0_ instance
     // Hardcoded configuration inputs
-  , .cfg_device_num                         ( cfg0_device_num                    )  // Passed down from *_device.v
-  , .cfg_function_num                       ( 3'b001                             )  // This function instance is number 1
+  , .ro_device                              ( cfg0_device_num                    )  // Passed down from *_device.v
+  , .ro_function                            ( 3'b001                             )  // This function instance is number 1
     // -----------------------------------
     // TLX Parser -> AFU Receive Interface
     // -----------------------------------
@@ -927,8 +926,8 @@ oc_function oc_func(
   , .tlx_afu_resp_pg_size                   ( fen_afu_resp_pg_size               )     
   , .tlx_afu_resp_dl                        ( fen_afu_resp_dl                    )
   , .tlx_afu_resp_dp                        ( fen_afu_resp_dp                    )
-  //, .tlx_afu_resp_host_tag                  ( fen_afu_resp_host_tag              )
-  //, .tlx_afu_resp_cache_state               ( fen_afu_resp_cache_state           )
+  , .tlx_afu_resp_host_tag                  ( fen_afu_resp_host_tag              )
+  , .tlx_afu_resp_cache_state               ( fen_afu_resp_cache_state           )
   , .tlx_afu_resp_addr_tag                  ( fen_afu_resp_addr_tag              )
     // Command data interface to AFU
   , .afu_tlx_cmd_rd_req                     ( afu_fen_cmd_rd_req                 )
@@ -985,17 +984,7 @@ oc_function oc_func(
   , .tlx_afu_resp_data_credit               ( fen_afu_resp_data_credit           )       
   , .afu_tlx_rdata_valid                    ( afu_fen_rdata_valid                )              
   , .afu_tlx_rdata_bus                      ( afu_fen_rdata_bus                  )             
-  , .afu_tlx_rdata_bdi                      ( afu_fen_rdata_bdi                  )
-
-    // ------------------------------------------------------------- 
-    // HBM Interface
-    // -------------------------------------------------------------
-#ifdef CONFIG_ENABLE_HBM
-    // HBM Interface
-    // place holder
-#endif
-    
-           
+  , .afu_tlx_rdata_bdi                      ( afu_fen_rdata_bdi                  )               
     // ------------------------------------------------------------- 
     // Configuration Sequencer Interface [CFG_SEQ -> CFG_Fn (n=1-7)]
     // -------------------------------------------------------------
@@ -1022,32 +1011,36 @@ oc_function oc_func(
     // Error signals into MMIO capture register
   , .vpd_err_unimplemented_addr             ( vpd_err_unimplemented_addr         )
   , .cfg0_cff_fifo_overflow                 ( cfg0_cff_fifo_overflow             )
-  //, .cfg1_cff_fifo_overflow                 ( 1'b0                               )  // Residual signal left in, tie off
+  , .cfg1_cff_fifo_overflow                 ( 1'b0                               )  // Residual signal left in, tie off
   , .cfg0_rff_fifo_overflow                 ( cfg0_rff_fifo_overflow             )
-  //, .cfg1_rff_fifo_overflow                 ( 1'b0                               )  // Residual signal left in, tie off
+  , .cfg1_rff_fifo_overflow                 ( 1'b0                               )  // Residual signal left in, tie off
   , .cfg_errvec                             ( cfg_errvec                         )
   , .cfg_errvec_valid                       ( cfg_errvec_valid                   )
     // Resync credits control
-  //, .cfg_f1_octrl00_resync_credits          ( cfg_f1_octrl00_resync_credits      )
+  , .cfg_f1_octrl00_resync_credits          ( cfg_f1_octrl00_resync_credits      )
 
- // ,.f1_csh_expansion_rom_bar                 (f1_ro_csh_expansion_rom_bar      )
- // ,.f1_csh_subsystem_id                      (f1_ro_csh_subsystem_id           )
- // ,.f1_csh_subsystem_vendor_id               (f1_ro_csh_subsystem_vendor_id    )
- // ,.f1_csh_mmio_bar0_size                    (f1_ro_csh_mmio_bar0_size         )
- // ,.f1_csh_mmio_bar1_size                    (f1_ro_csh_mmio_bar1_size         )
- // ,.f1_csh_mmio_bar2_size                    (f1_ro_csh_mmio_bar2_size         )
- // ,.f1_csh_mmio_bar0_prefetchable            (f1_ro_csh_mmio_bar0_prefetchable )
- // ,.f1_csh_mmio_bar1_prefetchable            (f1_ro_csh_mmio_bar1_prefetchable )
- // ,.f1_csh_mmio_bar2_prefetchable            (f1_ro_csh_mmio_bar2_prefetchable )
- // ,.f1_pasid_max_pasid_width                 (f1_ro_pasid_max_pasid_width      )
- // ,.f1_ofunc_reset_duration                  (f1_ro_ofunc_reset_duration       )
- // ,.f1_ofunc_afu_present                     (f1_ro_ofunc_afu_present          )
- // ,.f1_ofunc_max_afu_index                   (f1_ro_ofunc_max_afu_index        )
- // ,.f1_octrl00_reset_duration                (f1_ro_octrl00_reset_duration     )
- // ,.f1_octrl00_afu_control_index             (f1_ro_octrl00_afu_control_index  )
- // ,.f1_octrl00_pasid_len_supported           (f1_ro_octrl00_pasid_len_supported)
- // ,.f1_octrl00_metadata_supported            (f1_ro_octrl00_metadata_supported )
- // ,.f1_octrl00_actag_len_supported           (f1_ro_octrl00_actag_len_supported)
+  ,.f1_csh_expansion_rom_bar                 (f1_ro_csh_expansion_rom_bar      )
+  ,.f1_csh_subsystem_id                      (f1_ro_csh_subsystem_id           )
+  ,.f1_csh_subsystem_vendor_id               (f1_ro_csh_subsystem_vendor_id    )
+  ,.f1_csh_mmio_bar0_size                    (f1_ro_csh_mmio_bar0_size         )
+  ,.f1_csh_mmio_bar1_size                    (f1_ro_csh_mmio_bar1_size         )
+  ,.f1_csh_mmio_bar2_size                    (f1_ro_csh_mmio_bar2_size         )
+  ,.f1_csh_mmio_bar0_prefetchable            (f1_ro_csh_mmio_bar0_prefetchable )
+  ,.f1_csh_mmio_bar1_prefetchable            (f1_ro_csh_mmio_bar1_prefetchable )
+  ,.f1_csh_mmio_bar2_prefetchable            (f1_ro_csh_mmio_bar2_prefetchable )
+  ,.f1_pasid_max_pasid_width                 (f1_ro_pasid_max_pasid_width      )
+  ,.f1_ofunc_reset_duration                  (f1_ro_ofunc_reset_duration       )
+  ,.f1_ofunc_afu_present                     (f1_ro_ofunc_afu_present          )
+  ,.f1_ofunc_max_afu_index                   (f1_ro_ofunc_max_afu_index        )
+  ,.f1_octrl00_reset_duration                (f1_ro_octrl00_reset_duration     )
+  ,.f1_octrl00_afu_control_index             (f1_ro_octrl00_afu_control_index  )
+  ,.f1_octrl00_pasid_len_supported           (f1_ro_octrl00_pasid_len_supported)
+  ,.f1_octrl00_metadata_supported            (f1_ro_octrl00_metadata_supported )
+  ,.f1_octrl00_actag_len_supported           (f1_ro_octrl00_actag_len_supported)
+
+`ifdef ENABLE_HBM
+
+`endif
 
 );
 
