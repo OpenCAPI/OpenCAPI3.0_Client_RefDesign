@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+`include "snap_global_vars.v"
 
 `define FLASH
 
@@ -49,7 +50,7 @@ module oc_fpga_top (
    ,input                 mgtrefclk1_x0y1_p  // -- XLX PHY transcieve clocks 156.25 MHz
    ,input                 mgtrefclk1_x0y1_n  // -- XLX PHY transcieve clocks 156.25 MHz
 
-#ifdef CONFIG_ENABLE_DDR4
+`ifdef ENABLE_DDR
     // DDR4 SDRAM Interface
    ,input                 c0_ddr4_sys_clk_p
    ,input                 c0_ddr4_sys_clk_n
@@ -67,7 +68,7 @@ module oc_fpga_top (
    ,output                c0_ddr4_act_n
    ,output [0:0]          c0_ddr4_ck_c
    ,output [0:0]          c0_ddr4_ck_t
-#endif
+`endif
 
 `ifdef FLASH
    ,inout                 FPGA_FLASH_CE2_L       // To/From FLASH of flash_sub_system.v
@@ -910,12 +911,12 @@ oc_cfg cfg (
 oc_function oc_func(
     .clock_tlx                              ( clock_tlx                          )
   , .clock_afu                              ( clock_afu                          )
-  , .reset_afu                              ( reset                              )  // (positive active)
+  , .reset                                  ( reset                              )  // (positive active)
     // Bus number comes from CFG_SEQ
-  , .cfg_bus_num                            ( cfg0_bus_num                       )  // Attached to TLX Port 0, so use cfg0_ instance
+  , .cfg_bus                                ( cfg0_bus_num                       )  // Attached to TLX Port 0, so use cfg0_ instance
     // Hardcoded configuration inputs
-  , .cfg_device_num                         ( cfg0_device_num                    )  // Passed down from *_device.v
-  , .cfg_function_num                       ( 3'b001                             )  // This function instance is number 1
+  , .ro_device                             ( cfg0_device_num                    )  // Passed down from *_device.v
+  , .ro_function                           ( 3'b001                             )  // This function instance is number 1
     // -----------------------------------
     // TLX Parser -> AFU Receive Interface
     // -----------------------------------
@@ -1006,7 +1007,7 @@ oc_function oc_func(
     // ------------------------------------------------------------- 
     // DDR4 Interface
     // -------------------------------------------------------------
-#ifdef CONFIG_ENABLE_DDR4
+`ifdef ENABLE_DDR
     // DDR4 SDRAM Interface
   , .c0_sys_clk_p                           ( c0_ddr4_sys_clk_p                  )
   , .c0_sys_clk_n                           ( c0_ddr4_sys_clk_n                  )
@@ -1024,7 +1025,7 @@ oc_function oc_func(
   , .c0_ddr4_act_n                          ( c0_ddr4_act_n                      )
   , .c0_ddr4_ck_c                           ( c0_ddr4_ck_c                       )
   , .c0_ddr4_ck_t                           ( c0_ddr4_ck_t                       )
-#endif
+`endif
     
            
     // ------------------------------------------------------------- 
