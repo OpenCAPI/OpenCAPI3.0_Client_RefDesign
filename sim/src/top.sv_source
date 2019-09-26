@@ -655,7 +655,25 @@ module top (
 
     wire         vpd_err_unimplemented_addr;
 
-
+    wire  [31:0] f1_csh_expansion_rom_bar;       
+    wire  [15:0] f1_csh_subsystem_id;
+    wire  [15:0] f1_csh_subsystem_vendor_id;
+    wire  [63:0] f1_csh_mmio_bar0_size;
+    wire  [63:0] f1_csh_mmio_bar1_size;
+    wire  [63:0] f1_csh_mmio_bar2_size;
+    wire         f1_csh_mmio_bar0_prefetchable;
+    wire         f1_csh_mmio_bar1_prefetchable;
+    wire         f1_csh_mmio_bar2_prefetchable;
+    wire   [4:0] f1_pasid_max_pasid_width;
+    wire   [7:0] f1_ofunc_reset_duration;
+    wire         f1_ofunc_afu_present;
+    wire   [4:0] f1_ofunc_max_afu_index;
+    wire   [7:0] f1_octrl00_reset_duration;
+    wire   [5:0] f1_octrl00_afu_control_index;
+    wire   [4:0] f1_octrl00_pasid_len_supported;
+    wire         f1_octrl00_metadata_supported;
+    wire  [11:0] f1_octrl00_actag_len_supported;
+    
     #ifdef CONFIG_ENABLE_DDR
         wire          c0_ddr4_act_n;
         wire  [16:0]  c0_ddr4_adr;
@@ -1272,7 +1290,26 @@ module top (
         .cfg0_cff_fifo_overflow             ( cfg0_cff_fifo_overflow                    ),
         .cfg0_rff_fifo_overflow             ( cfg0_rff_fifo_overflow                    ),
         .cfg_errvec                         ( cfg_errvec[127:0]                         ),
-        .cfg_errvec_valid                   ( cfg_errvec_valid                          )
+        .cfg_errvec_valid                   ( cfg_errvec_valid                          ),
+
+        .f1_csh_expansion_rom_bar           ( f1_csh_expansion_rom_bar                  ), 
+        .f1_csh_subsystem_id                ( f1_csh_subsystem_id                       ),
+        .f1_csh_subsystem_vendor_id         ( f1_csh_subsystem_vendor_id                ),
+        .f1_csh_mmio_bar0_size              ( f1_csh_mmio_bar0_size                     ),
+        .f1_csh_mmio_bar1_size              ( f1_csh_mmio_bar1_size                     ),
+        .f1_csh_mmio_bar2_size              ( f1_csh_mmio_bar2_size                     ),
+        .f1_csh_mmio_bar0_prefetchable      ( f1_csh_mmio_bar0_prefetchable             ),
+        .f1_csh_mmio_bar1_prefetchable      ( f1_csh_mmio_bar1_prefetchable             ),
+        .f1_csh_mmio_bar2_prefetchable      ( f1_csh_mmio_bar2_prefetchable             ),
+        .f1_pasid_max_pasid_width           ( f1_pasid_max_pasid_width                  ),
+        .f1_ofunc_reset_duration            ( f1_ofunc_reset_duration                   ),
+        .f1_ofunc_afu_present               ( f1_ofunc_afu_present                      ),
+        .f1_ofunc_max_afu_index             ( f1_ofunc_max_afu_index                    ),
+        .f1_octrl00_reset_duration          ( f1_octrl00_reset_duration                 ),
+        .f1_octrl00_afu_control_index       ( f1_octrl00_afu_control_index              ),
+        .f1_octrl00_pasid_len_supported     ( f1_octrl00_pasid_len_supported            ),
+        .f1_octrl00_metadata_supported      ( f1_octrl00_metadata_supported             ),
+        .f1_octrl00_actag_len_supported     ( f1_octrl00_actag_len_supported            )
     );
 
     assign  vpd_err_unimplemented_addr = 1'b0;     // -- VPD not yet in current design
@@ -1611,8 +1648,26 @@ module top (
 
         //--      TLX Configuration for the TLX port(s), connected to AFUs under this Function
         .cfg_f0_otl0_long_backoff_timer       ( cfg_f0_otl0_long_backoff_timer            ),  //-- output   [3:0]
-        .cfg_f0_otl0_short_backoff_timer      ( cfg_f0_otl0_short_backoff_timer           )   //-- output   [3:0]
+        .cfg_f0_otl0_short_backoff_timer      ( cfg_f0_otl0_short_backoff_timer           ),  //-- output   [3:0]
 
+        .f1_csh_expansion_rom_bar             ( f1_csh_expansion_rom_bar                  ), 
+        .f1_csh_subsystem_id                  ( f1_csh_subsystem_id                       ),
+        .f1_csh_subsystem_vendor_id           ( f1_csh_subsystem_vendor_id                ),
+        .f1_csh_mmio_bar0_size                ( f1_csh_mmio_bar0_size                     ),
+        .f1_csh_mmio_bar1_size                ( f1_csh_mmio_bar1_size                     ),
+        .f1_csh_mmio_bar2_size                ( f1_csh_mmio_bar2_size                     ),
+        .f1_csh_mmio_bar0_prefetchable        ( f1_csh_mmio_bar0_prefetchable             ),
+        .f1_csh_mmio_bar1_prefetchable        ( f1_csh_mmio_bar1_prefetchable             ),
+        .f1_csh_mmio_bar2_prefetchable        ( f1_csh_mmio_bar2_prefetchable             ),
+        .f1_pasid_max_pasid_width             ( f1_pasid_max_pasid_width                  ),
+        .f1_ofunc_reset_duration              ( f1_ofunc_reset_duration                   ),
+        .f1_ofunc_afu_present                 ( f1_ofunc_afu_present                      ),
+        .f1_ofunc_max_afu_index               ( f1_ofunc_max_afu_index                    ),
+        .f1_octrl00_reset_duration            ( f1_octrl00_reset_duration                 ),
+        .f1_octrl00_afu_control_index         ( f1_octrl00_afu_control_index              ),
+        .f1_octrl00_pasid_len_supported       ( f1_octrl00_pasid_len_supported            ),
+        .f1_octrl00_metadata_supported        ( f1_octrl00_metadata_supported             ),
+        .f1_octrl00_actag_len_supported       ( f1_octrl00_actag_len_supported            )
     );
 
     #ifdef CONFIG_AD9V3
