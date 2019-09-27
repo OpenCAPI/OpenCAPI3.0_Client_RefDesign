@@ -205,6 +205,7 @@ set synth_verilog_defines ""
 if {$transceiver_type  eq "bypass" } {set synth_verilog_defines [concat $synth_verilog_defines "BUFFER_BYPASS"]}
 if {$transceiver_type  eq "elastic"} {set synth_verilog_defines [concat $synth_verilog_defines "BUFFER_ELASTIC"]}
 if {$use_flash         ne ""       } {set synth_verilog_defines [concat $synth_verilog_defines "FLASH"] }
+set synth_verilog_defines [concat $synth_verilog_defines "FRAMEWORK"] 
 set_property verilog_define "$synth_verilog_defines" [get_filesets sources_1]
 set_property verilog_define "$synth_verilog_defines" [get_filesets sim_1]
 

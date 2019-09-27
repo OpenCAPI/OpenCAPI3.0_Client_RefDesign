@@ -878,13 +878,6 @@ oc_cfg cfg (
  ,.f1_octrl00_metadata_supported      (f1_ro_octrl00_metadata_supported )
  ,.f1_octrl00_actag_len_supported     (f1_ro_octrl00_actag_len_supported)
  
-    // ------------------------------------------------------------- 
-    // HBM Interface
-    // -------------------------------------------------------------
-`ifdef ENABLE_HBM
-    // HBM Interface
-    // place holder
-`endif
 );
 
 
@@ -1038,10 +1031,13 @@ oc_function oc_func(
   ,.f1_octrl00_metadata_supported            (f1_ro_octrl00_metadata_supported )
   ,.f1_octrl00_actag_len_supported           (f1_ro_octrl00_actag_len_supported)
 
+    // ------------------------------------------------------------- 
+    // HBM Interface
+    // -------------------------------------------------------------
 `ifdef ENABLE_HBM
-
+    // HBM Interface
+    // place holder
 `endif
-
 );
 
 
