@@ -25,7 +25,7 @@ set common_tcl       $root_dir/oc-bip/tcl
 set oc_bsp_xdc       $fpga_card_dir/xdc
 set card_dir         $fpga_card_dir
 set card_src         $fpga_card_dir/verilog
-set use_flash          "true"
+set use_flash        $::env(FLASH_USED)
 set transceiver_type   "bypass"
 set transceiver_speed  $::env(PHY_SPEED)
 
@@ -139,7 +139,7 @@ if {$transceiver_type eq "bypass"} {
     set phy_package [list {*}$verilog_elastic]
 }
 
-if {$use_flash ne ""} {
+if {$use_flash ne "FALSE"} {
     set verilog_board_support [list {*}$phy_package {*}$verilog_bsp {*}$verilog_cfg {*}$verilog_flash]
 } else {
     set verilog_board_support [list {*}$phy_package {*}$verilog_bsp {*}$verilog_cfg ]
