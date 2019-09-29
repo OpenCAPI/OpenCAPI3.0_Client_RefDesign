@@ -188,7 +188,7 @@ if {$transceiver_type eq "bypass" } {
                    ]
 }
 
-if {$use_flash ne ""} {
+if {$use_flash ne "FALSE"} {
     set xdc_files [list {*}$xdc_files \
                          "[file normalize "$oc_bsp_xdc/qspi_pinout.xdc"]" \
                          "[file normalize "$oc_bsp_xdc/qspi_timing.xdc"]" \
@@ -204,7 +204,7 @@ set_property -name "target_constrs_file" -value "[file normalize "$oc_bsp_xdc/ex
 set synth_verilog_defines ""
 if {$transceiver_type  eq "bypass" } {set synth_verilog_defines [concat $synth_verilog_defines "BUFFER_BYPASS"]}
 if {$transceiver_type  eq "elastic"} {set synth_verilog_defines [concat $synth_verilog_defines "BUFFER_ELASTIC"]}
-if {$use_flash         ne ""       } {set synth_verilog_defines [concat $synth_verilog_defines "FLASH"] }
+if {$use_flash         ne "FALSE"       } {set synth_verilog_defines [concat $synth_verilog_defines "FLASH"] }
 set synth_verilog_defines [concat $synth_verilog_defines "FRAMEWORK"] 
 set_property verilog_define "$synth_verilog_defines" [get_filesets sources_1]
 set_property verilog_define "$synth_verilog_defines" [get_filesets sim_1]
@@ -217,7 +217,7 @@ source $card_dir/ip/create_vio_DLx_phy_vio_0.tcl
 source $card_dir/ip/create_vio_reset_n.tcl
 source $card_dir/ip/create_DLx_PHY_${transceiver_type}_${transceiver_speed}g.tcl
 
-if {$use_flash ne ""} {
+if {$use_flash ne "FALSE"} {
     source $card_dir/ip/axi_quad_spi.tcl
     source $card_dir/ip/axi_hwicap.tcl
 }
