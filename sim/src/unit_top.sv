@@ -199,7 +199,7 @@ wire                               axi_lite_bready;
 assign                             mm_axi_clk = clock_200m;
 assign                             mm_axi_rstn = dut0.oc_func.fw_afu.action_w.ap_rst_n;
 
-#ifndef CONFIG_ENABLE_ODMA
+`ifndef ENABLE_ODMA
 // AXI write resquest channel
 assign                             mm_axi_awid     = dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_awid;
 assign                             mm_axi_awuser   = dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_awuser;
@@ -268,7 +268,7 @@ assign                             axi_lite_bresp  = dut0.oc_func.fw_afu.snap_co
 assign                             axi_lite_bready = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_bready;
 
 
-#else
+`else
 // AXI write resquest channel
 assign                             mm_axi_awid     = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awid;
 assign                             mm_axi_awuser   = 0; // = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awuser;
@@ -336,7 +336,7 @@ assign                             axi_lite_bvalid = dut0.oc_func.fw_afu.snap_co
 assign                             axi_lite_bresp  = dut0.oc_func.fw_afu.snap_core_i.lite_odma2mmio_bresp;          
 assign                             axi_lite_bready = dut0.oc_func.fw_afu.snap_core_i.lite_mmio2odma_bready;
 
-#endif
+`endif
 
 axi_vip_mm_check mm_check_passthrough(
     .aclk                  (mm_axi_clk),
