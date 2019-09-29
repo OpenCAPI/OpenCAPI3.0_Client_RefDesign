@@ -25,7 +25,7 @@ set common_tcl       $root_dir/oc-bip/tcl
 set oc_bsp_xdc       $fpga_card_dir/xdc
 set card_dir         $fpga_card_dir
 set card_src         $fpga_card_dir/verilog
-set use_flash          "true"
+set use_flash        $::env(FLASH_USED)
 set transceiver_type   "bypass"
 set transceiver_speed  $::env(PHY_SPEED)
 
@@ -139,7 +139,7 @@ if {$transceiver_type eq "bypass"} {
     set phy_package [list {*}$verilog_elastic]
 }
 
-if {$use_flash ne ""} {
+if {$use_flash ne "FALSE"} {
     set verilog_board_support [list {*}$phy_package {*}$verilog_bsp {*}$verilog_cfg {*}$verilog_flash]
 } else {
     set verilog_board_support [list {*}$phy_package {*}$verilog_bsp {*}$verilog_cfg ]
@@ -188,7 +188,7 @@ if {$transceiver_type eq "bypass" } {
                    ]
 }
 
-if {$use_flash ne ""} {
+if {$use_flash ne "FALSE"} {
     set xdc_files [list {*}$xdc_files \
                          "[file normalize "$oc_bsp_xdc/qspi_pinout.xdc"]" \
                          "[file normalize "$oc_bsp_xdc/qspi_timing.xdc"]" \
@@ -204,7 +204,7 @@ set_property -name "target_constrs_file" -value "[file normalize "$oc_bsp_xdc/ex
 set synth_verilog_defines ""
 if {$transceiver_type  eq "bypass" } {set synth_verilog_defines [concat $synth_verilog_defines "BUFFER_BYPASS"]}
 if {$transceiver_type  eq "elastic"} {set synth_verilog_defines [concat $synth_verilog_defines "BUFFER_ELASTIC"]}
-if {$use_flash         ne ""       } {set synth_verilog_defines [concat $synth_verilog_defines "FLASH"] }
+if {$use_flash         ne "FALSE"       } {set synth_verilog_defines [concat $synth_verilog_defines "FLASH"] }
 set synth_verilog_defines [concat $synth_verilog_defines "FRAMEWORK"] 
 set_property verilog_define "$synth_verilog_defines" [get_filesets sources_1]
 set_property verilog_define "$synth_verilog_defines" [get_filesets sim_1]
@@ -217,7 +217,7 @@ source $card_dir/ip/create_vio_DLx_phy_vio_0.tcl
 source $card_dir/ip/create_vio_reset_n.tcl
 source $card_dir/ip/create_DLx_PHY_${transceiver_type}_${transceiver_speed}g.tcl
 
-if {$use_flash ne ""} {
+if {$use_flash ne "FALSE"} {
     source $card_dir/ip/axi_quad_spi.tcl
     source $card_dir/ip/axi_hwicap.tcl
 }
