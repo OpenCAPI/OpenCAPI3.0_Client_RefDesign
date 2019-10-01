@@ -1,7 +1,4 @@
-`timescale 1ns / 1ps
 `include "snap_global_vars.v"
-
-`define FLASH
 
 module oc_fpga_top (
 
