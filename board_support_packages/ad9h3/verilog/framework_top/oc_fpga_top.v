@@ -859,6 +859,9 @@ oc_cfg cfg (
  ,.cfg_errvec                        (cfg_errvec             )
  ,.cfg_errvec_valid                  (cfg_errvec_valid       )
  
+ ,.cfg_f0_otl0_long_backoff_timer    (cfg_f0_otl0_long_backoff_timer    )
+ ,.cfg_f0_otl0_short_backoff_timer   (cfg_f0_otl0_short_backoff_timer   )
+
  ,.f1_csh_expansion_rom_bar           (f1_ro_csh_expansion_rom_bar      )
  ,.f1_csh_subsystem_id                (f1_ro_csh_subsystem_id           )
  ,.f1_csh_subsystem_vendor_id         (f1_ro_csh_subsystem_vendor_id    )

@@ -21,7 +21,7 @@
 //     But here they come from ocse afu_driver
 //  2) Reset is also generated here just for simulation.
 
-`timescale 1ns / 1ps
+`include "snap_global_vars.v"
 
 module top (
     output          breakpoint
@@ -790,12 +790,12 @@ module top (
         reg       sys_clk_p;
         initial   sys_clk_p <= 0;
 
-        //`ifdef CONFIG_AD9V3
+        `ifdef AD9V3
             // 300.MHz DDR4 system clock
             always begin
                 sys_clk_p = !sys_clk_p; #(3.332ns / 2.0); // a line can not start with "#", because SNAP is unsing the C preprocessor
             end
-        //`endif
+        `endif
     `endif
 
     reg sys_reset_n_q;
@@ -1636,7 +1636,7 @@ module top (
         .f1_octrl00_actag_len_supported       ( f1_octrl00_actag_len_supported            )
     );
 
-    //`ifdef CONFIG_AD9V3
+    `ifdef AD9V3
         `ifdef ENABLE_DDR
             ddr4_dimm_ad9v3 ddr4_dimm_ad9v3 (
                 .sys_reset              (~sys_reset_n_q),
@@ -1656,7 +1656,7 @@ module top (
                 .c0_ddr4_dqs_t          (c0_ddr4_dqs_t)
             );
         `endif
-    //`endif
+    `endif
 
     assign vpd_cfg_rdata [31:0] = 32'h00000000;
     assign vpd_cfg_done = 1'b0;
