@@ -143,8 +143,8 @@ assign                             dut0.bsp.clock_afu = clock_200m;
     wire [5-1:0]                       mm_axi_awid;
     wire [9-1:0]                       mm_axi_awuser;
     /**************** Write Data Channel Signals ****************/
-    wire [1024-1:0]                    mm_axi_wdata;
-    wire [1024/8-1:0]                  mm_axi_wstrb;
+    wire [`AXI_MM_DW-1:0]              mm_axi_wdata;
+    wire [`AXI_MM_DW/8-1:0]            mm_axi_wstrb;
     wire                               mm_axi_wvalid;
     wire                               mm_axi_wready;
     wire                               mm_axi_wlast;
@@ -170,7 +170,7 @@ assign                             dut0.bsp.clock_afu = clock_200m;
     wire [8-1:0]                       mm_axi_arid;
     wire [9-1:0]                       mm_axi_aruser;
     /**************** Read Data Channel Signals ****************/
-    wire [1024-1:0]                    mm_axi_rdata;
+    wire [`AXI_MM_DW-1:0]              mm_axi_rdata;
     wire [2-1:0]                       mm_axi_rresp;
     wire                               mm_axi_rvalid;
     wire                               mm_axi_rready;
