@@ -44,8 +44,6 @@ module oc_bsp (
 
    ,input                 mgtrefclk1_x0y0_p  // -- XLX PHY transcieve clocks 156.25 MHz
    ,input                 mgtrefclk1_x0y0_n  // -- XLX PHY transcieve clocks 156.25 MHz
-   ,input                 mgtrefclk1_x0y1_p  // -- XLX PHY transcieve clocks 156.25 MHz
-   ,input                 mgtrefclk1_x0y1_n  // -- XLX PHY transcieve clocks 156.25 MHz
 
 `ifdef FLASH
    ,inout  FPGA_FLASH_CE2_L       // To/From FLASH of flash_sub_system.v
@@ -323,8 +321,6 @@ DLx_phy_vio_0 DLx_phy_vio_0_inst (
       // -- Differential reference clock inputs
        .mgtrefclk1_x0y0_p                           ( mgtrefclk1_x0y0_p )             // -- input
       ,.mgtrefclk1_x0y0_n                           ( mgtrefclk1_x0y0_n )             // -- input
-      ,.mgtrefclk1_x0y1_p                           ( mgtrefclk1_x0y1_p )             // -- input
-      ,.mgtrefclk1_x0y1_n                           ( mgtrefclk1_x0y1_n )             // -- input
       ,.freerun_clk_p                               ( freerun_clk_p )                 // -- input
       ,.freerun_clk_n                               ( freerun_clk_n )                 // -- input
 

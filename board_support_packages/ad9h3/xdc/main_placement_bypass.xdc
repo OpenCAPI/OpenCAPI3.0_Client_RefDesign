@@ -22,16 +22,16 @@ set_property BITSTREAM.CONFIG.OVERTEMPSHUTDOWN Enable [current_design]
 
 
 # Pblock for placing VIO IPs and Debug Hub IP closer to DLx logic. This Pblock includes everything in the design except for a couple of I/O and clock buffers and BSCAN primitives which are constrained outside of this Pblock
-#create_pblock pblock_1
-#resize_pblock pblock_1 -add CLOCKREGION_X0Y0:CLOCKREGION_X0Y1
-#add_cells_to_pblock pblock_1 [get_cells [list dbg_hub bsp/dlx_phy bsp/DLx_phy_vio_0_inst bsp/vio_reset_n_inst_tlx bsp/tlx]]
-#
-#remove_cells_from_pblock pblock_1 [get_cells bsp/dlx_phy/IBUFDS_freerun]
-## remove_cells_from_pblock pblock_1 [get_cells dbg_hub/inst/BSCANID.u_xsdbm_id/SWITCH_N_EXT_BSCAN.u_bufg_icon_tck]
-#remove_cells_from_pblock pblock_1 [get_cells bsp/dlx_phy/BUFGCE_DIV_inst]
-## remove_cells_from_pblock pblock_1 [get_cells dbg_hub/inst/BSCANID.u_xsdbm_id/SWITCH_N_EXT_BSCAN.bscan_inst/SERIES7_BSCAN.bscan_inst]
-#
-#set_property USER_CLOCK_ROOT X0Y1 [get_nets {bsp/dlx_phy/example_wrapper_inst/gtwiz_userclk_tx_inst/rxusrclk2_in[0]}]
+create_pblock pblock_1
+resize_pblock pblock_1 -add CLOCKREGION_X0Y0:CLOCKREGION_X1Y1
+add_cells_to_pblock pblock_1 [get_cells [list dbg_hub bsp/dlx_phy bsp/DLx_phy_vio_0_inst bsp/vio_reset_n_inst_tlx bsp/tlx]]
+
+remove_cells_from_pblock pblock_1 [get_cells bsp/dlx_phy/IBUFDS_freerun]
+# remove_cells_from_pblock pblock_1 [get_cells dbg_hub/inst/BSCANID.u_xsdbm_id/SWITCH_N_EXT_BSCAN.u_bufg_icon_tck]
+remove_cells_from_pblock pblock_1 [get_cells bsp/dlx_phy/BUFGCE_DIV_inst]
+# remove_cells_from_pblock pblock_1 [get_cells dbg_hub/inst/BSCANID.u_xsdbm_id/SWITCH_N_EXT_BSCAN.bscan_inst/SERIES7_BSCAN.bscan_inst]
+
+set_property USER_CLOCK_ROOT X0Y1 [get_nets {bsp/dlx_phy/example_wrapper_inst/gtwiz_userclk_tx_inst/rxusrclk2_in[0]}]
 
 set_property EXTRACT_ENABLE NO [get_cells {bsp/dlx_phy/ocx_dlx_top_inst/rx/main/replay_deskew_cntr_q_reg[*] bsp/dlx_phy/ocx_dlx_top_inst/rx/lane?/ts1_cntr_q_reg[*] bsp/dlx_phy/ocx_dlx_top_inst/rx/lane?/lfsr_q_reg[*] bsp/dlx_phy/ocx_dlx_top_inst/rx/lane?/deskew_buffer?_q_reg[*] bsp/dlx_phy/ocx_dlx_top_inst/rx/main/crc_bits_q_reg[*]}]
 set_power_opt -exclude_cells [get_cells {bsp/dlx_phy/ocx_dlx_top_inst/tx/flt/bram/ram_sdp_reg_?}]
