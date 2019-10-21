@@ -504,6 +504,19 @@ assign                             tlx_afu_vif.afu_tlx_rdata_bus_top = dut0.oc_f
 assign                             tlx_afu_vif.afu_tlx_rdata_bdi_top = dut0.oc_func.afu_tlx_rdata_bdi;
 
 //**********************************************
+// INTERRUPT INTERFACE FOR VERIF
+//**********************************************
+intrp_interface intrp_vif(
+    .action_clock             (dut0.oc_func.fw_afu.action_w.ap_clk),
+    .action_rst_n             (dut0.oc_func.fw_afu.action_w.ap_rst_n)
+);
+
+assign                             intrp_vif.intrp_req = dut0.oc_func.fw_afu.action_w.interrupt;
+assign                             intrp_vif.intrp_ack = dut0.oc_func.fw_afu.action_w.interrupt_ack;
+assign                             intrp_vif.intrp_src = dut0.oc_func.fw_afu.action_w.interrupt_src;
+assign                             intrp_vif.intrp_ctx = dut0.oc_func.fw_afu.action_w.interrupt_ctx;
+
+//**********************************************
 // DLX TLX INTERFACE FOR VERIF
 //**********************************************
 tl_dl_if tl_dl_vif(
@@ -536,6 +549,7 @@ assign                             dut0.bsp.dlx_tlx_init_flit_depth = tl_dl_vif.
 initial begin
     uvm_config_db#(virtual axi_vip_if `AXI_VIP_MM_CHECK_PARAMS)::set(null, "*", "mm_check_vif", mm_check_passthrough.inst.IF);
     uvm_config_db#(virtual tlx_afu_interface)::set(null, "*", "tlx_afu_vif", tlx_afu_vif);
+    uvm_config_db#(virtual intrp_interface)::set(null, "*", "intrp_vif", intrp_vif);
     uvm_config_db#(virtual tl_dl_if)::set(null, "*", "tl_dl_vif", tl_dl_vif);
     mm_check_passthrough.inst.set_passthrough_mode();
     mm_check_passthrough.inst.IF.set_enable_xchecks_to_warn();

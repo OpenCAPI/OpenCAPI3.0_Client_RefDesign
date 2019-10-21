@@ -1,5 +1,5 @@
 ###############################################################
-## Placement Constraints: xcvu3p-ffvc1517
+## Placement Constraints: xcvu33p-fsvh2104-2-e-es1
 ###############################################################
 
 set_property PACKAGE_PIN BF19 [get_ports ocde]
@@ -12,8 +12,7 @@ set_property IOSTANDARD LVCMOS18 [get_ports ocde]
 # DLX0 Clocks
 set_property PACKAGE_PIN AK39 [get_ports mgtrefclk1_x0y0_n]
 set_property PACKAGE_PIN AK38 [get_ports mgtrefclk1_x0y0_p]
-set_property PACKAGE_PIN AF39 [get_ports mgtrefclk1_x0y1_n]
-set_property PACKAGE_PIN AF38 [get_ports mgtrefclk1_x0y1_p]
+
 
 # Free run clock constraint
 # page 13 AD9H3        user manual.pdf

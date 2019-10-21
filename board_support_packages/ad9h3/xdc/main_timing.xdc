@@ -6,7 +6,6 @@
 ## Synthesis Constraints
 ###############################################################
 create_clock -period 6.400 -name mgtrefclk1_x0y0_p [get_ports mgtrefclk1_x0y0_p]
-create_clock -period 6.400 -name mgtrefclk1_x0y1_p [get_ports mgtrefclk1_x0y1_p]
 
 create_clock -period 3.333 -name freerun_clk_p [get_ports freerun_clk_p]
 

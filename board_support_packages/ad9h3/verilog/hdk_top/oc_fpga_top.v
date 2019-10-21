@@ -44,8 +44,6 @@ module oc_fpga_top (
 
    ,input                 mgtrefclk1_x0y0_p  // -- XLX PHY transcieve clocks 156.25 MHz
    ,input                 mgtrefclk1_x0y0_n  // -- XLX PHY transcieve clocks 156.25 MHz
-   ,input                 mgtrefclk1_x0y1_p  // -- XLX PHY transcieve clocks 156.25 MHz
-   ,input                 mgtrefclk1_x0y1_n  // -- XLX PHY transcieve clocks 156.25 MHz
 
 `ifdef FLASH
    ,inout  FPGA_FLASH_CE2_L       // To/From FLASH of flash_sub_system.v
@@ -453,8 +451,6 @@ oc_bsp bsp(
  ,.ch7_gtyrxp_in                               (ch7_gtyrxp_in                    ) //-- oc_bsp:  input  
  ,.mgtrefclk1_x0y0_p                           (mgtrefclk1_x0y0_p                ) //-- oc_bsp:  input  
  ,.mgtrefclk1_x0y0_n                           (mgtrefclk1_x0y0_n                ) //-- oc_bsp:  input  
- ,.mgtrefclk1_x0y1_p                           (mgtrefclk1_x0y1_p                ) //-- oc_bsp:  input  
- ,.mgtrefclk1_x0y1_n                           (mgtrefclk1_x0y1_n                ) //-- oc_bsp:  input  
 `ifdef FLASH   
  ,.FPGA_FLASH_CE2_L                            (FPGA_FLASH_CE2_L                 ) //-- oc_bsp:  inout
  ,.FPGA_FLASH_DQ4                              (FPGA_FLASH_DQ4                   ) //-- oc_bsp:  inout
