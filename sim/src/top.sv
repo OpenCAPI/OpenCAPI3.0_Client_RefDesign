@@ -1211,6 +1211,7 @@ module top (
         .afu_tlx_resp_initial_credit        ( fen_afu_tlx_resp_initial_credit[6:0]          ),
 
         `ifdef ENABLE_DDR
+          `ifdef AD9V3
             // DDR4
             .c0_sys_clk_p           (sys_clk_p),
             .c0_sys_clk_n           (~sys_clk_p),
@@ -1228,6 +1229,7 @@ module top (
             .c0_ddr4_dq             (c0_ddr4_dq),
             .c0_ddr4_dqs_c          (c0_ddr4_dqs_c),
             .c0_ddr4_dqs_t          (c0_ddr4_dqs_t),
+          `endif
         `endif
 
         // -- Configuration Sequencer Interface [cfg_seq -> cfg_func<n> (n=1-7)]
