@@ -266,24 +266,23 @@ assign                             mm_axi_rresp    = dut0.oc_func.fw_afu.snap_co
 assign                             mm_axi_rlast    = dut0.oc_func.fw_afu.snap_core_i.mm_snap2conv_rlast;
 assign                             mm_axi_rvalid   = dut0.oc_func.fw_afu.snap_core_i.mm_snap2conv_rvalid;
 //AXI Lite Signals
-//assign                             axi_lite_arvalid= dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_arvalid;      
-//assign                             axi_lite_araddr = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_araddr ;         
-//assign                             axi_lite_arready= dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_arready;	
-//assign                             axi_lite_rvalid = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_rvalid;         
-//assign                             axi_lite_rdata  = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_rdata;         
-//assign                             axi_lite_rresp  = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_rresp;          
-//assign                             axi_lite_rready = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_rready;
-//assign                             axi_lite_awvalid= dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_awvalid;        
-//assign                             axi_lite_awaddr = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_awaddr;         
-//assign                             axi_lite_awready= dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_awready;
-//assign                             axi_lite_wvalid = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_wvalid;         
-//assign                             axi_lite_wdata  = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_wdata;          
-//assign                             axi_lite_wstrb  = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_wstrb;          
-//assign                             axi_lite_wready = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_wready;
-//assign                             axi_lite_bvalid = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_bvalid;        
-//assign                             axi_lite_bresp  = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_bresp;          
-//assign                             axi_lite_bready = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_bready;
-
+assign                             axi_lite_arvalid= dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_arvalid;      
+assign                             axi_lite_araddr = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_araddr ;         
+assign                             axi_lite_arready= dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_arready;	
+assign                             axi_lite_rvalid = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_rvalid;         
+assign                             axi_lite_rdata  = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_rdata;         
+assign                             axi_lite_rresp  = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_rresp;          
+assign                             axi_lite_rready = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_rready;
+assign                             axi_lite_awvalid= dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_awvalid;        
+assign                             axi_lite_awaddr = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_awaddr;         
+assign                             axi_lite_awready= dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_awready;
+assign                             axi_lite_wvalid = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_wvalid;         
+assign                             axi_lite_wdata  = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_wdata;          
+assign                             axi_lite_wstrb  = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_wstrb;          
+assign                             axi_lite_wready = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_wready;
+assign                             axi_lite_bvalid = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_bvalid;        
+assign                             axi_lite_bresp  = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_bresp;          
+assign                             axi_lite_bready = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_bready;
 
 `else
     `ifndef ENABLE_ODMA_ST_MODE
