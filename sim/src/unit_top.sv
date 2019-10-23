@@ -178,18 +178,20 @@ assign                             dut0.bsp.clock_afu = clock_200m;
     wire [8-1:0]                       mm_axi_rid;
     wire [1-1:0]                       mm_axi_ruser;
 `else
-    wire                               h2a_axis_tready     ,
-    wire                               h2a_axis_tlast      ,
-    wire [AXI_ST_DW - 1:0]             h2a_axis_tdata      ,
-    wire [AXI_ST_DW/8 - 1:0]           h2a_axis_tkeep      ,
-    wire                               h2a_axis_tvalid     ,
-    wire [AXI_ST_USER - 1:0]           h2a_axis_tuser      ,
-    wire                               a2h_axis_tready     ,
-    wire                               a2h_axis_tlast      ,
-    wire [AXI_ST_DW - 1:0]             a2h_axis_tdata      ,
-    wire [AXI_ST_DW/8 - 1:0]           a2h_axis_tkeep      ,
-    wire                               a2h_axis_tvalid     ,
-    wire [AXI_ST_USER - 1:0]           a2h_axis_tuser      ,
+    wire                               h2a_axis_tready    ; 
+    wire                               h2a_axis_tlast     ; 
+    wire [`AXI_ST_DW - 1:0]            h2a_axis_tdata     ; 
+    wire [`AXI_ST_DW/8 - 1:0]          h2a_axis_tkeep     ; 
+    wire                               h2a_axis_tvalid    ; 
+    wire [`IDW - 1:0]                  h2a_axis_tid       ; 
+    wire [`AXI_ST_USER - 1:0]          h2a_axis_tuser     ; 
+    wire                               a2h_axis_tready    ; 
+    wire                               a2h_axis_tlast     ; 
+    wire [`AXI_ST_DW - 1:0]            a2h_axis_tdata     ; 
+    wire [`AXI_ST_DW/8 - 1:0]          a2h_axis_tkeep     ; 
+    wire                               a2h_axis_tvalid    ; 
+    wire [`IDW - 1:0]                  a2h_axis_tid       ; 
+    wire [`AXI_ST_USER - 1:0]          a2h_axis_tuser     ; 
 `endif
 
 /**************** AXI Lite Signals ****************/
@@ -264,23 +266,23 @@ assign                             mm_axi_rresp    = dut0.oc_func.fw_afu.snap_co
 assign                             mm_axi_rlast    = dut0.oc_func.fw_afu.snap_core_i.mm_snap2conv_rlast;
 assign                             mm_axi_rvalid   = dut0.oc_func.fw_afu.snap_core_i.mm_snap2conv_rvalid;
 //AXI Lite Signals
-assign                             axi_lite_arvalid= dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_arvalid;      
-assign                             axi_lite_araddr = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_araddr ;         
-assign                             axi_lite_arready= dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_arready;	
-assign                             axi_lite_rvalid = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_rvalid;         
-assign                             axi_lite_rdata  = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_rdata;         
-assign                             axi_lite_rresp  = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_rresp;          
-assign                             axi_lite_rready = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_rready;
-assign                             axi_lite_awvalid= dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_awvalid;        
-assign                             axi_lite_awaddr = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_awaddr;         
-assign                             axi_lite_awready= dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_awready;
-assign                             axi_lite_wvalid = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_wvalid;         
-assign                             axi_lite_wdata  = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_wdata;          
-assign                             axi_lite_wstrb  = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_wstrb;          
-assign                             axi_lite_wready = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_wready;
-assign                             axi_lite_bvalid = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_bvalid;        
-assign                             axi_lite_bresp  = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_bresp;          
-assign                             axi_lite_bready = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_bready;
+//assign                             axi_lite_arvalid= dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_arvalid;      
+//assign                             axi_lite_araddr = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_araddr ;         
+//assign                             axi_lite_arready= dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_arready;	
+//assign                             axi_lite_rvalid = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_rvalid;         
+//assign                             axi_lite_rdata  = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_rdata;         
+//assign                             axi_lite_rresp  = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_rresp;          
+//assign                             axi_lite_rready = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_rready;
+//assign                             axi_lite_awvalid= dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_awvalid;        
+//assign                             axi_lite_awaddr = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_awaddr;         
+//assign                             axi_lite_awready= dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_awready;
+//assign                             axi_lite_wvalid = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_wvalid;         
+//assign                             axi_lite_wdata  = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_wdata;          
+//assign                             axi_lite_wstrb  = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_wstrb;          
+//assign                             axi_lite_wready = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_wready;
+//assign                             axi_lite_bvalid = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_bvalid;        
+//assign                             axi_lite_bresp  = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_bresp;          
+//assign                             axi_lite_bready = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_bready;
 
 
 `else
@@ -339,12 +341,14 @@ assign                             axi_lite_bready = dut0.oc_func.fw_afu.snap_co
         assign                             h2a_axis_tdata  = dut0.oc_func.fw_afu.snap_core_i.m_axis_tdata;
         assign                             h2a_axis_tkeep  = dut0.oc_func.fw_afu.snap_core_i.m_axis_tkeep;
         assign                             h2a_axis_tvalid = dut0.oc_func.fw_afu.snap_core_i.m_axis_tvalid;
+        assign                             h2a_axis_tid    = dut0.oc_func.fw_afu.snap_core_i.m_axis_tid;
         assign                             h2a_axis_tuser  = dut0.oc_func.fw_afu.snap_core_i.m_axis_tuser;
         assign                             a2h_axis_tready = dut0.oc_func.fw_afu.snap_core_i.s_axis_tready;
         assign                             a2h_axis_tlast  = dut0.oc_func.fw_afu.snap_core_i.s_axis_tlast;
         assign                             a2h_axis_tdata  = dut0.oc_func.fw_afu.snap_core_i.s_axis_tdata;
         assign                             a2h_axis_tkeep  = dut0.oc_func.fw_afu.snap_core_i.s_axis_tkeep;
         assign                             a2h_axis_tvalid = dut0.oc_func.fw_afu.snap_core_i.s_axis_tvalid;
+        assign                             a2h_axis_tid    = dut0.oc_func.fw_afu.snap_core_i.s_axis_tid;
         assign                             a2h_axis_tuser  = dut0.oc_func.fw_afu.snap_core_i.s_axis_tuser;
     `endif
 //AXI Lite Signals
@@ -417,11 +421,30 @@ assign                             axi_lite_bready = dut0.oc_func.fw_afu.snap_co
         .m_axi_rlast           (mm_axi_rlast),
         .m_axi_rvalid          (mm_axi_rvalid)
     );
+`else
+axi_st_passthrough_h2a axis_passthrough_h2a(
+        .aclk                  (mm_axi_clk),
+        .aresetn               (mm_axi_rstn),
+        .s_axis_tvalid         (h2a_axis_tvalid),
+        //.s_axis_tready         (),
+        .s_axis_tdata          (h2a_axis_tdata),
+        .s_axis_tkeep          (h2a_axis_tkeep),
+        .s_axis_tlast          (h2a_axis_tlast),
+        .s_axis_tid            (h2a_axis_tid),
+        .s_axis_tuser          (h2a_axis_tuser),
+        //.m_axis_tvalid         (),
+        .m_axis_tready         (h2a_axis_tready)
+        //.m_axis_tdata          (),
+        //.m_axis_tkeep          (),
+        //.m_axis_tlast          (),
+        //.m_axis_tid            (),
+        //.m_axis_tuser          ()
+);
 `endif
 
 axi_lite_passthrough lite_passthrough(
 	.aclk                  (mm_axi_clk),
-    .aresetn               (mm_axi_rstn),
+        .aresetn               (mm_axi_rstn),
 	// AXI Lite write address channel
 	.s_axi_awaddr			(axi_lite_awaddr),
 	.s_axi_awvalid			(axi_lite_awvalid),
@@ -441,7 +464,6 @@ axi_lite_passthrough lite_passthrough(
 	.m_axi_rvalid			(axi_lite_rvalid),
 	.s_axi_rready			(axi_lite_rready)
 );
-
 
 //**********************************************
 // TLX AFU INTERFACE FOR VERIF
@@ -579,13 +601,20 @@ assign                             dut0.bsp.dlx_tlx_init_flit_depth = tl_dl_vif.
 // VERIFICATION INITIALIZATION
 //**********************************************
 initial begin
-    uvm_config_db#(virtual axi_vip_if `AXI_VIP_MM_CHECK_PARAMS)::set(null, "*", "mm_check_vif", mm_check_passthrough.inst.IF);
     uvm_config_db#(virtual tlx_afu_interface)::set(null, "*", "tlx_afu_vif", tlx_afu_vif);
     uvm_config_db#(virtual intrp_interface)::set(null, "*", "intrp_vif", intrp_vif);
     uvm_config_db#(virtual tl_dl_if)::set(null, "*", "tl_dl_vif", tl_dl_vif);
-    mm_check_passthrough.inst.set_passthrough_mode();
-    mm_check_passthrough.inst.IF.set_enable_xchecks_to_warn();
-    mm_check_passthrough.inst.IF.set_xilinx_reset_check_to_warn();
+    `ifndef ENABLE_ODMA_ST_MODE
+        uvm_config_db#(virtual axi_vip_if `AXI_VIP_MM_CHECK_PARAMS)::set(null, "*", "mm_check_vif", mm_check_passthrough.inst.IF);
+        mm_check_passthrough.inst.set_passthrough_mode();
+        mm_check_passthrough.inst.IF.set_enable_xchecks_to_warn();
+        mm_check_passthrough.inst.IF.set_xilinx_reset_check_to_warn();
+    `else
+        uvm_config_db#(virtual axi4stream_vip_if `AXI_STREAM_H2A_PARAMS)::set(null, "*", "st_h2a_check_vif", axis_passthrough_h2a.inst.IF);
+        axis_passthrough_h2a.inst.set_passthrough_mode();
+        axis_passthrough_h2a.inst.IF.set_enable_xchecks_to_warn();
+        axis_passthrough_h2a.inst.IF.set_xilinx_reset_check_to_warn();
+    `endif
     uvm_config_db#(virtual axi_vip_if `AXI_LITE_PARAMS)::set(null, "*", "axi_lite_vif", lite_passthrough.inst.IF);
     lite_passthrough.inst.set_passthrough_mode();
     lite_passthrough.inst.IF.set_enable_xchecks_to_warn();
