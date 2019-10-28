@@ -179,12 +179,12 @@ set xdc_files [list \
 
 if {$transceiver_type eq "bypass" } {
     set xdc_files [list {*}$xdc_files \
-                         "[file normalize "$oc_bsp_xdc/main_placement_bypass.xdc"]" \
+                         "[file normalize "$oc_bsp_xdc/main_placement_bypass_ocaccel.xdc"]" \
                          "[file normalize "$oc_bsp_xdc/gty_properties.xdc"]" \
                    ]
 } else {
     set xdc_files [list {*}$xdc_files \
-                         "[file normalize "$oc_bsp_xdc/main_placement_elastic.xdc"]" \
+                         "[file normalize "$oc_bsp_xdc/main_placement_elastic_ocaccel.xdc"]" \
                    ]
 }
 
