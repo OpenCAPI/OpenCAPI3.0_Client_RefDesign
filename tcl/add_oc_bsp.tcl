@@ -26,7 +26,7 @@ set oc_bsp_xdc       $fpga_card_dir/xdc
 set card_dir         $fpga_card_dir
 set card_src         $fpga_card_dir/verilog
 set use_flash        $::env(FLASH_USED)
-set transceiver_type   "bypass"
+set transceiver_type   "elastic"
 set transceiver_speed  $::env(PHY_SPEED)
 
 
