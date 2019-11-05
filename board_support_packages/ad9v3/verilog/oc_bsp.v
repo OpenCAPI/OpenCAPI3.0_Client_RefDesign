@@ -1,24 +1,3 @@
-// *!***************************************************************************
-// *! Copyright 2019 International Business Machines
-// *!
-// *! Licensed under the Apache License, Version 2.0 (the "License");
-// *! you may not use this file except in compliance with the License.
-// *! You may obtain a copy of the License at
-// *! http://www.apache.org/licenses/LICENSE-2.0 
-// *!
-// *! The patent license granted to you in Section 3 of the License, as applied
-// *! to the "Work," hereby includes implementations of the Work in physical form.  
-// *!
-// *! Unless required by applicable law or agreed to in writing, the reference design
-// *! distributed under the License is distributed on an "AS IS" BASIS,
-// *! WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// *! See the License for the specific language governing permissions and
-// *! limitations under the License.
-// *! 
-// *! The background Specification upon which this is based is managed by and available from
-// *! the OpenCAPI Consortium.  More information can be found at https://opencapi.org. 
-// *!***************************************************************************
-
 module oc_bsp (
 //-------------
 //-- FPGA I/O
@@ -209,6 +188,7 @@ module oc_bsp (
    ,output  [1:0]    flsh_cfg_rresp
    ,input            cfg_flsh_expand_enable
    ,input            cfg_flsh_expand_dir
+   ,input            cfg_icap_reload_en
 
   );
 
@@ -283,8 +263,21 @@ module oc_bsp (
 `endif
 
   wire            spi_clk_div_2;
-
-
+  
+  //reg             iprog_go; //MRF
+  wire            iprog_go_or;
+  wire            spoof_reset; //MRF
+  reg  [7:0]      ocde_q;
+  wire [7:0]      ocde_din;
+  wire            reset_all_out;
+  wire            reset_all_out_din;
+  reg             reset_all_out_q;
+  wire            start_reload;
+  reg  [9:0]      reload_counter;
+  reg             initial_set;
+  reg             timed_start_reload;
+  reg             dlx_tlx_link_up_last;
+  reg             link_gate;
 
   // -- ********************************************************************************************************************************
   // -- CLOCKS & RESET
@@ -313,10 +306,10 @@ assign reset_n = reset_afu_q;
 DLx_phy_vio_0 DLx_phy_vio_0_inst (
    .clk        (clock_156_25)                               // -- [0:0] < input
   ,.probe_in0  (ocde)                                       // -- [0:0] < input
-  ,.probe_in1  (1'b0)                                       // -- [0:0] < input
-  ,.probe_in2  (init_done_int)                              // -- [0:0] < input
+  ,.probe_in1  (iprog_go_or)                                       // -- [0:0] < input
+  ,.probe_in2  (cfg_icap_reload_en)                              // -- [0:0] < input
   ,.probe_in3  (init_retry_ctr_int)                         // -- [3:0] < input
-  ,.probe_in4  (8'b0)                                       // -- [7:0] < input
+  ,.probe_in4  (link_gate)                                       // -- [7:0] < input
   ,.probe_in5  (8'b0)                                       // -- [7:0] < input
   ,.probe_in6  (8'b0)                                       // -- [7:0] < input
   ,.probe_in7  (gtwiz_reset_tx_done_vio_sync)               // -- [0:0] < input
@@ -331,9 +324,39 @@ DLx_phy_vio_0 DLx_phy_vio_0_inst (
   ,.probe_out3 (hb0_gtwiz_reset_tx_datapath_int)            // -- [0:0] > output
   ,.probe_out4 (hb_gtwiz_reset_rx_pll_and_datapath_vio_int) // -- [0:0] > output
   ,.probe_out5 (hb_gtwiz_reset_rx_datapath_vio_int)         // -- [0:0] > output
-  ,.probe_out6 (unused[1])                                  // -- [0:0] > output
+  ,.probe_out6 (spoof_reset)                                  // -- [0:0] > output
 );
 
+
+
+  // -- ********************************************************************************************************************************
+  // -- ICAP for image reload
+  // -- ********************************************************************************************************************************
+
+    iprog_icap ICAP (
+        .go(iprog_go_or)
+        ,.clk(clock_156_25)
+    );
+    
+    assign ocde_din[7:0] = {ocde, ocde_q[7:1]};
+    assign reset_all_out = ((ocde_q[4:0] == 5'b11111) &  reset_all_out_q) ? 1'b0 :
+                           ((ocde_q[4:0] == 5'b00000) & ~reset_all_out_q) ? 1'b1 :
+                                                                            reset_all_out_q;
+    assign start_reload = reset_all_out_q; 
+    assign reset_all_out_din   = reset_all_out;
+    
+    always @ (posedge clock_156_25) begin
+        if ((dlx_tlx_link_up == 1) && (dlx_tlx_link_up_last == 0))
+            link_gate <= 1'b1;
+               
+        ocde_q          <= ocde_din;
+        reset_all_out_q <= reset_all_out_din;
+        dlx_tlx_link_up_last <= dlx_tlx_link_up; 
+        
+    end
+
+    assign iprog_go_or = (start_reload & link_gate & cfg_icap_reload_en)| spoof_reset;
+    
 
   // -- ********************************************************************************************************************************
   // -- DLX & PHY

@@ -269,6 +269,7 @@ set verilog_board_support [list \
  "[file normalize "$origin_dir/board_support_packages/$card/verilog/oc_bsp.v"]"\
  "[file normalize "$origin_dir/board_support_packages/$card/verilog/cfg_tieoffs.v"]"\
  "[file normalize "$origin_dir/board_support_packages/$card/verilog/vpd_stub.v"]"\
+"[file normalize "$origin_dir/board_support_packages/$card/verilog/iprog_icap.vhdl"]"\
 ]
 
 # Xilinx Example Design Wrappers for either buffer bypass or elastic buffer
