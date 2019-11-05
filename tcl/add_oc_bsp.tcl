@@ -131,6 +131,7 @@ set verilog_bsp [list \
  "[file normalize "$card_src/cfg_tieoffs.v"]"\
  "[file normalize "$card_src/vpd_stub.v"]"\
  "[file normalize "$card_src/oc_bsp.v"]"\
+ "[file normalize "$card_src/iprog_icap.vhdl"]"\
 ]
 
 if {$transceiver_type eq "bypass"} {
