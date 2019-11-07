@@ -259,7 +259,11 @@ module oc_bsp (
   assign flsh_cfg_rresp  = { 2{1'b0}};
 `endif
 
-  wire            spi_clk_div_2;
+  //wire            spi_clk_div_2;
+  // choose a clock source for icap that is a global clock.  
+  // ICAP IP allows this to be async to axi clock
+  wire   icap_clk;
+  assign icap_clk = clock_156_25;
 
 
 
@@ -563,10 +567,15 @@ DLx_phy_vio_0 DLx_phy_vio_0_inst (
     );
 
 `ifdef FLASH
+  wire spi_clk;  // 100Mhz
+  BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) spi_clk_inst (
+      .O(spi_clk), .CE(1'b1), .CLR(1'b0), .I(clock_afu)
+  );
+
   flash_sub_system FLASH
     (
       // -- Outputs
-      .spi_clk_div_2                         ( spi_clk_div_2 ),          // -- output
+      //.spi_clk_div_2                         ( spi_clk_div_2 ),          // -- output
       .axi_cfg_rdata                         ( flsh_cfg_rdata[31:0] ),   // -- output
       .axi_cfg_done                          ( flsh_cfg_done ),          // -- output
       .axi_cfg_bresp                         ( flsh_cfg_bresp[1:0] ),    // -- output
@@ -580,8 +589,8 @@ DLx_phy_vio_0 DLx_phy_vio_0_inst (
       .FPGA_FLASH_DQ7                        ( FPGA_FLASH_DQ7 ),         // -- inout
       // -- Inputs
       .axi_clk                               ( clock_tlx ),              // -- input
-      .spi_clk                               ( clock_afu ),              // -- input
-      .icap_clk                              ( spi_clk_div_2 ),          // -- input
+      .spi_clk                               ( spi_clk   ),              // -- input
+      .icap_clk                              ( icap_clk  ),          // -- input
       .reset_n                               ( reset_afu_q ),            // -- input
       .cfg_axi_devsel                        ( cfg_flsh_devsel[1:0] ),   // -- input
       .cfg_axi_addr                          ( cfg_flsh_addr[13:0] ),    // -- input
