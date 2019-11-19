@@ -1,25 +1,6 @@
-// *!***************************************************************************
-// *! Copyright 2019 International Business Machines
-// *!
-// *! Licensed under the Apache License, Version 2.0 (the "License");
-// *! you may not use this file except in compliance with the License.
-// *! You may obtain a copy of the License at
-// *! http://www.apache.org/licenses/LICENSE-2.0 
-// *!
-// *! The patent license granted to you in Section 3 of the License, as applied
-// *! to the "Work," hereby includes implementations of the Work in physical form.  
-// *!
-// *! Unless required by applicable law or agreed to in writing, the reference design
-// *! distributed under the License is distributed on an "AS IS" BASIS,
-// *! WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// *! See the License for the specific language governing permissions and
-// *! limitations under the License.
-// *! 
-// *! The background Specification upon which this is based is managed by and available from
-// *! the OpenCAPI Consortium.  More information can be found at https://opencapi.org. 
-// *!***************************************************************************
 `timescale 1ps / 1ps
 // -------------------------------------------------------------------
+// Copyright 2017 IBM
 //
 // Title    : flash_sub_system.v
 // Function : This file combines Xilinx Ultrascale+ IP cores and Micron FLASH memory into a sub-system to which
@@ -27,11 +8,12 @@
 //            Other development or application boards may use a different approach to downloading an FPGA configuration
 //            file from the host and triggering it to be loaded into the FPGA.
 //
+// Designer : Jeff Ruedinger   (rueding@us.ibm.com)
 // -------------------------------------------------------------------
 // Modification History :
 //                               |Version    |     |Author   |Description of change
 //                               |-----------|     |-------- |---------------------
-  `define FLASH_SUB_SYS_VERSION   07_Dec_2017   //            Initial creation         
+  `define FLASH_SUB_SYS_VERSION   07_Dec_2017   //  rueding   Initial creation         
 // -------------------------------------------------------------------
 
 
@@ -73,11 +55,11 @@ module flash_sub_system (
   , input          data_expand_enable     // When 1, expand/collapse 4 bytes of data into four, 1 byte AXI operations
   , input          data_expand_dir        // When 0, expand bytes [3:0] in order 0,1,2,3 . When 1, expand in order 3,2,1,0 .  
 
-  , inout          FPGA_FLASH_CE2_L       //         Interface to SPI flash
-  , inout          FPGA_FLASH_DQ4         //         Interface to SPI flash
-  , inout          FPGA_FLASH_DQ5         //         Interface to SPI flash
-  , inout          FPGA_FLASH_DQ6         //         Interface to SPI flash
-  , inout          FPGA_FLASH_DQ7         //         Interface to SPI flash
+  , inout          FPGA_FLASH_CE2_L       // jda 3/2 Interface to SPI flash
+  , inout          FPGA_FLASH_DQ4         // jda 3/2 Interface to SPI flash
+  , inout          FPGA_FLASH_DQ5         // jda 3/2 Interface to SPI flash
+  , inout          FPGA_FLASH_DQ6         // jda 3/2 Interface to SPI flash
+  , inout          FPGA_FLASH_DQ7         // jda 3/2 Interface to SPI flash
 );
 
 // AXI4-Lite signals between Master and Slave(s)
@@ -117,6 +99,11 @@ wire       eos;
   wire FPGA_FLASH_DQ3;      // AC8  (9v3 signal name = FPGA_FLASH_DQ3)
   wire FPGA_FLASH_CCLK;     // AB10 (9v3 signal name = CCLK)
 `endif
+// jda 3/2 wire FPGA_FLASH_CE2_L;    // AV30 (9v3 signal name = FPGA_FLASH_CE2_L)
+// jda 3/2 wire FPGA_FLASH_DQ4;      // AF30 (9v3 signal name = FPGA_FLASH_DQ4)
+// jda 3/2 wire FPGA_FLASH_DQ5;      // AG30 (9v3 signal name = FPGA_FLASH_DQ5)
+// jda 3/2 wire FPGA_FLASH_DQ6;      // AF28 (9v3 signal name = FPGA_FLASH_DQ6)
+// jda 3/2 wire FPGA_FLASH_DQ7;      // AG28 (9v3 signal name = FPGA_FLASH_DQ7)
 
 // Combine signals into vectors
 wire [7:0] spi_dq_i;   
@@ -226,20 +213,24 @@ always @(*)  // Combinational
              s_axi_awready = g_axi_awready[0];
              s_axi_wready  = g_axi_wready[0];
              s_axi_bresp   = {2{g_axi_bresp[0]}};
+//-- jda 3/5             s_axi_bresp   = g_axi_bresp[0];
              s_axi_bvalid  = g_axi_bvalid[0];
              s_axi_arready = g_axi_arready[0];
              s_axi_rdata   = g_axi_rdata[0];
              s_axi_rresp   = {2{g_axi_rresp[0]}};
+//-- jda 3/5             s_axi_rresp   = g_axi_rresp[0];
              s_axi_rvalid  = g_axi_rvalid[0];
            end
     2'b01: begin
              s_axi_awready = g_axi_awready[1];
              s_axi_wready  = g_axi_wready[1];
              s_axi_bresp   = {2{g_axi_bresp[1]}};
+//-- jda 3/5             s_axi_bresp   = g_axi_bresp[1];
              s_axi_bvalid  = g_axi_bvalid[1];
              s_axi_arready = g_axi_arready[1];
              s_axi_rdata   = g_axi_rdata[1];
              s_axi_rresp   = {2{g_axi_rresp[1]}};
+//-- jda 3/5             s_axi_rresp   = g_axi_rresp[1];
              s_axi_rvalid  = g_axi_rvalid[1];
            end
     default: begin
@@ -284,6 +275,14 @@ axi_hwicap_0 ICAP (
   , .s_axi_rvalid   ( g_axi_rvalid[1]    ) // output
   , .s_axi_rready   ( s_axi_rready       ) // input
   , .ip2intc_irpt   ( icap_interrupt     ) // output
+  , .icap_avail     (1'b0)
+  , .icap_csib      ()
+  , .icap_o         ()
+  , .icap_i         (32'b0)
+  , .icap_rdwrb     ()
+  , .cap_gnt        (1'b0)
+  , .cap_rel        (1'b0)
+  , .cap_req        ()
 );
 
    
@@ -354,7 +353,15 @@ axi_quad_spi_0 QSPI (
      // Misc
   , .ip2intc_irpt   ( qspi_interrupt     )  // output
 );
-//assign spi_clk_div_2 = spi_sck_o;           // Pass clock going to STARTUP upwards so it can be used as ICAP clock
+// assign spi_clk_div_2 = spi_sck_o;           // Pass clock going to STARTUP upwards so it can be used as ICAP clock
+
+// --------------------------------------------------------------------------------------------
+// STARTUP for Virtex Ultrascale+, found in Language Templates
+// Vivado Simulation model:
+// /afs/rchland.ibm.com/rel/common/proj/surelock/tools/xilinx/2017.2/vol1/Vivado/2017.2/data/verilog/src/unisims/STARTUPE3.v
+// Modified simulation model to work outside Vivado: 
+// /afs/rchland.ibm.com/rel/common/proj/opencapi30/afu/common/9v3_flash/sim/startup_model/STARTUPE3_mod.v
+// --------------------------------------------------------------------------------------------
 
 // In synthesis and implementation (when CFG_FLASH_SIM is NOT defined, thus ifndef vs ifdef), use the real
 // STARTUPE3 block to interface to the 1st FLASH device.
@@ -390,6 +397,7 @@ STARTUPE3 #(
 // indicates this block won't simulate correctly. Instead use IOBUFs to connect the Quad SPI signals directly to 
 // the 1st FLASH just like the 2nd FLASH is connected.
 //
+// From Sai Krishna Marella, 12/7/17, on why STARTUP shouldn't be part of simulation:
 // "The Startup model is not supposed to be used as a replacment for the entire configuration block. All this represents
 // is the STARTUP so all you will see are the Global signals on it. Now the way the silicon works is that there are no
 // physical connections for this that the customer connects up. In order to mimic this behavior we have decided to use the
@@ -450,6 +458,7 @@ IOBUF IOBUF_CE1 (
 
 
 // Second SPI interface
+// 10/31/17 Mark Paluszkiewicz
 // Because the I/O that connects the SPI_0 is dedicated configuration only I/O (are not accessible via normal routing 
 // and do not have visible I/O blocks) they are accessed via the STARTUPE3 block.  So Yes the SPI_0 is connected to 
 // the STARTUPE3 block.  But because the pins dedicated to the 2nd SPI device of a dual quad SPI interface go specific 
