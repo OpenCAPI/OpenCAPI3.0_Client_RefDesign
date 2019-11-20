@@ -190,6 +190,7 @@ wire   [1:0]   flsh_cfg_bresp;
 wire   [1:0]   flsh_cfg_rresp;
 wire           cfg_flsh_expand_enable;
 wire           cfg_flsh_expand_dir;
+wire           cfg_icap_reload_en;
 
 //oc_function wires
 
@@ -594,6 +595,7 @@ oc_bsp bsp(
  ,.flsh_cfg_rresp                              (flsh_cfg_rresp                   )  // -- oc_bsp:  output  [1:0]         
  ,.cfg_flsh_expand_enable                      (cfg_flsh_expand_enable           )  // -- oc_bsp:  input
  ,.cfg_flsh_expand_dir                         (cfg_flsh_expand_dir              )  // -- oc_bsp:  input            
+ ,.cfg_icap_reload_en                          (cfg_icap_reload_en               )  // -- oc_bsp:  input            
 );
 
 //-- Future hierarchy implementation
@@ -877,6 +879,7 @@ oc_cfg cfg (
  ,.f1_octrl00_metadata_supported      (f1_ro_octrl00_metadata_supported )
  ,.f1_octrl00_actag_len_supported     (f1_ro_octrl00_actag_len_supported)
  
+ ,.cfg_icap_reload_en                 (cfg_icap_reload_en               )
 );
 
 
