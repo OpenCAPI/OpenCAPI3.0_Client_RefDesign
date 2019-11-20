@@ -108,6 +108,7 @@ set verilog_board_support [list \
  "[file normalize "$card_src/vpd_stub.v"]"\
  "[file normalize "$oc_bip_sim_dir/src/dlx_phy_wrap.v"]"\
  "[file normalize "$card_src/oc_bsp_unit_sim.v"]"\
+ "[file normalize "$card_src/iprog_icap.vhdl"]"\
 ]
 
 if {$use_flash ne ""} {

@@ -24,6 +24,7 @@
 `timescale 1ns / 10ps
     // Include verification files
     `include "../../sim/unit_verif/env/action_tb_pkg.svh"
+    `include "../../../hdl/core/snap_global_vars.v"
 `define FLASH
 
 module unit_top (
