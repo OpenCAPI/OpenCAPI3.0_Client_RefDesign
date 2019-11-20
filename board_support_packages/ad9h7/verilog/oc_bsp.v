@@ -185,6 +185,7 @@ module oc_bsp (
    ,output  [1:0]    flsh_cfg_rresp
    ,input            cfg_flsh_expand_enable
    ,input            cfg_flsh_expand_dir
+   ,input            cfg_icap_reload_en
 
   );
 
@@ -259,7 +260,27 @@ module oc_bsp (
   assign flsh_cfg_rresp  = { 2{1'b0}};
 `endif
 
+  // choose a clock source for icap that is a global clock.  
+  // ICAP IP allows this to be async to axi clock
+  wire   icap_clk;
+  assign icap_clk = clock_156_25;  
+
   wire            spi_clk_div_2;
+  
+  //reg             iprog_go; //MRF
+  wire            iprog_go_or;
+  wire            spoof_reset; //MRF
+  reg  [7:0]      ocde_q;
+  wire [7:0]      ocde_din;
+  wire            reset_all_out;
+  wire            reset_all_out_din;
+  reg             reset_all_out_q;
+  wire            start_reload;
+  reg  [9:0]      reload_counter;
+  reg             initial_set;
+  reg             timed_start_reload;
+  reg             dlx_tlx_link_up_last;
+  reg             link_gate;
 
 
 
@@ -310,6 +331,34 @@ DLx_phy_vio_0 DLx_phy_vio_0_inst (
   ,.probe_out5 (hb_gtwiz_reset_rx_datapath_vio_int)         // -- [0:0] > output
   ,.probe_out6 (unused[1])                                  // -- [0:0] > output
 );
+
+ // -- ********************************************************************************************************************************
+  // -- ICAP for image reload
+  // -- ********************************************************************************************************************************
+
+    iprog_icap ICAP (
+        .go(iprog_go_or)
+        ,.clk(clock_156_25)
+    );
+    
+    assign ocde_din[7:0] = {ocde, ocde_q[7:1]};
+    assign reset_all_out = ((ocde_q[4:0] == 5'b11111) &  reset_all_out_q) ? 1'b0 :
+                           ((ocde_q[4:0] == 5'b00000) & ~reset_all_out_q) ? 1'b1 :
+                                                                            reset_all_out_q;
+    assign start_reload = reset_all_out_q; 
+    assign reset_all_out_din   = reset_all_out;
+    
+    always @ (posedge clock_156_25) begin
+        if ((dlx_tlx_link_up == 1) && (dlx_tlx_link_up_last == 0))
+            link_gate <= 1'b1;
+               
+        ocde_q          <= ocde_din;
+        reset_all_out_q <= reset_all_out_din;
+        dlx_tlx_link_up_last <= dlx_tlx_link_up; 
+        
+    end
+
+    assign iprog_go_or = (start_reload & link_gate & cfg_icap_reload_en)| spoof_reset;
 
 
   // -- ********************************************************************************************************************************
@@ -562,10 +611,15 @@ DLx_phy_vio_0 DLx_phy_vio_0_inst (
     );
 
 `ifdef FLASH
+  wire spi_clk;  // 100Mhz
+  BUFGCE_DIV #(.BUFGCE_DIVIDE(2)) spi_clk_inst (
+      .O(spi_clk), .CE(1'b1), .CLR(1'b0), .I(clock_afu)
+  );
+
   flash_sub_system FLASH
     (
       // -- Outputs
-      .spi_clk_div_2                         ( spi_clk_div_2 ),          // -- output
+      // .spi_clk_div_2                         ( spi_clk_div_2 ),          // -- output
       .axi_cfg_rdata                         ( flsh_cfg_rdata[31:0] ),   // -- output
       .axi_cfg_done                          ( flsh_cfg_done ),          // -- output
       .axi_cfg_bresp                         ( flsh_cfg_bresp[1:0] ),    // -- output
@@ -579,8 +633,8 @@ DLx_phy_vio_0 DLx_phy_vio_0_inst (
       .FPGA_FLASH_DQ7                        ( FPGA_FLASH_DQ7 ),         // -- inout
       // -- Inputs
       .axi_clk                               ( clock_tlx ),              // -- input
-      .spi_clk                               ( clock_afu ),              // -- input
-      .icap_clk                              ( spi_clk_div_2 ),          // -- input
+      .spi_clk                               ( spi_clk ),                // -- input
+      .icap_clk                              ( icap_clk ),               // -- input
       .reset_n                               ( reset_afu_q ),            // -- input
       .cfg_axi_devsel                        ( cfg_flsh_devsel[1:0] ),   // -- input
       .cfg_axi_addr                          ( cfg_flsh_addr[13:0] ),    // -- input
