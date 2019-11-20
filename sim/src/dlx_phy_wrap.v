@@ -76,7 +76,7 @@ module dlx_phy_wrap
   input  [0:0] hb_gtwiz_reset_rx_datapath_vio_int,
   
   
-  // --@ Josh Andersen added port declarations to interface with DLx drivers
+  // Add port declarations to interface with DLx drivers
   output wire [31:0]   dlx_config_info,
   output wire [31:0]   ro_dlx_version,
   output wire [2:0]    dlx_tlx_init_flit_depth, 
@@ -111,6 +111,5 @@ module dlx_phy_wrap
   
 );
 
-    // Hey, I'm dummy
 
 endmodule;

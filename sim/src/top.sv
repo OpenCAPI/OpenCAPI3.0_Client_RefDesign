@@ -1,5 +1,5 @@
 //
-// Copyright 2018 International Business Machines
+// Copyright 2019 International Business Machines
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -124,14 +124,6 @@ module top (
 
         // These signals do not appear on the RefDesign Doc. However it is present
         // on the TLX spec
-        // mcp3 update on 12/Jun/2017 - port is absent    inout             afu_cfg_in_rcv_tmpl_capability_0_top,
-        // mcp3 update on 12/Jun/2017 - port is absent    inout             afu_cfg_in_rcv_tmpl_capability_1_top,
-        // mcp3 update on 12/Jun/2017 - port is absent    inout             afu_cfg_in_rcv_tmpl_capability_2_top,
-        // mcp3 update on 12/Jun/2017 - port is absent    inout             afu_cfg_in_rcv_tmpl_capability_3_top,
-        // mcp3 update on 12/Jun/2017 - port is absent    inout [3:0]       afu_cfg_in_rcv_rate_capability_0_top,
-        // mcp3 update on 12/Jun/2017 - port is absent    inout [3:0]       afu_cfg_in_rcv_rate_capability_1_top,
-        // mcp3 update on 12/Jun/2017 - port is absent    inout [3:0]       afu_cfg_in_rcv_rate_capability_2_top,
-        // mcp3 update on 12/Jun/2017 - port is absent    inout [3:0]       afu_cfg_in_rcv_rate_capability_3_top,
         inout             tlx_afu_ready_top,
         inout             tlx_cfg0_in_rcv_tmpl_capability_0_top,
         inout             tlx_cfg0_in_rcv_tmpl_capability_1_top,
@@ -227,14 +219,6 @@ module top (
 
     // These signals do not appear on the RefDesign Doc. However it is present
     // on the TLX spec
-    // mcp3 release of 12/Jun does not have this port  reg             afu_cfg_in_rcv_tmpl_capability_0_top;
-    // mcp3 release of 12/Jun does not have this port  reg             afu_cfg_in_rcv_tmpl_capability_1_top;
-    // mcp3 release of 12/Jun does not have this port  reg             afu_cfg_in_rcv_tmpl_capability_2_top;
-    // mcp3 release of 12/Jun does not have this port  reg             afu_cfg_in_rcv_tmpl_capability_3_top;
-    // mcp3 release of 12/Jun does not have this port  reg [3:0]       afu_cfg_in_rcv_rate_capability_0_top;
-    // mcp3 release of 12/Jun does not have this port  reg [3:0]       afu_cfg_in_rcv_rate_capability_1_top;
-    // mcp3 release of 12/Jun does not have this port  reg [3:0]       afu_cfg_in_rcv_rate_capability_2_top;
-    // mcp3 release of 12/Jun does not have this port  reg [3:0]       afu_cfg_in_rcv_rate_capability_3_top;
     reg             tlx_afu_ready_top;
     reg   [4:0]     ro_device_top;
     reg             tlx_cfg0_in_rcv_tmpl_capability_0_top;
@@ -315,14 +299,6 @@ module top (
     reg             afu_tlx_rdata_bdi_top;
 
     // Table 10: TLX Framer Template Configuration
-    // mcp3 release of 12/Jun does not have this port  reg   afu_cfg_xmit_tmpl_config_0_top               ;
-    // mcp3 release of 12/Jun does not have this port  reg   afu_cfg_xmit_tmpl_config_1_top               ;
-    // mcp3 release of 12/Jun does not have this port  reg   afu_cfg_xmit_tmpl_config_2_top               ;
-    // mcp3 release of 12/Jun does not have this port  reg   afu_cfg_xmit_tmpl_config_3_top               ;
-    // mcp3 release of 12/Jun does not have this port  reg [3:0]  afu_cfg_xmit_rate_config_0_top               ;
-    // mcp3 release of 12/Jun does not have this port  reg [3:0]  afu_cfg_xmit_rate_config_1_top               ;
-    // mcp3 release of 12/Jun does not have this port  reg [3:0]  afu_cfg_xmit_rate_config_2_top               ;
-    // mcp3 release of 12/Jun does not have this port  reg [3:0]  afu_cfg_xmit_rate_config_3_top               ;
 
     // Wires for AFU o/p
     // Table 2: TLX Response Credit Interface
@@ -390,14 +366,6 @@ module top (
     wire         afu_tlx_rdata_bdi;
 
     // Table 10: TLX Framer Template Configuration
-    // mcp3 release of 12/Jun does not have this port wire        afu_cfg_xmit_tmpl_config_0;
-    // mcp3 release of 12/Jun does not have this port wire        afu_cfg_xmit_tmpl_config_1;
-    // mcp3 release of 12/Jun does not have this port wire        afu_cfg_xmit_tmpl_config_2;
-    // mcp3 release of 12/Jun does not have this port wire        afu_cfg_xmit_tmpl_config_3;
-    // mcp3 release of 12/Jun does not have this port wire [3:0]  afu_cfg_xmit_rate_config_0;
-    // mcp3 release of 12/Jun does not have this port wire [3:0]  afu_cfg_xmit_rate_config_1;
-    // mcp3 release of 12/Jun does not have this port wire [3:0]  afu_cfg_xmit_rate_config_2;
-    // mcp3 release of 12/Jun does not have this port wire [3:0]  afu_cfg_xmit_rate_config_3;
 
     // Other wires
     wire            reset_n;
@@ -448,14 +416,6 @@ module top (
 
     // These signals do not appear on the RefDesign Doc. However it is present
     // on the TLX spec
-    // mcp3 release of 12/Jun does not have this port  wire             afu_cfg_in_rcv_tmpl_capability_0;
-    // mcp3 release of 12/Jun does not have this port  wire             afu_cfg_in_rcv_tmpl_capability_1;
-    // mcp3 release of 12/Jun does not have this port  wire             afu_cfg_in_rcv_tmpl_capability_2;
-    // mcp3 release of 12/Jun does not have this port  wire             afu_cfg_in_rcv_tmpl_capability_3;
-    // mcp3 release of 12/Jun does not have this port  wire [3:0]       afu_cfg_in_rcv_rate_capability_0;
-    // mcp3 release of 12/Jun does not have this port  wire [3:0]       afu_cfg_in_rcv_rate_capability_1;
-    // mcp3 release of 12/Jun does not have this port  wire [3:0]       afu_cfg_in_rcv_rate_capability_2;
-    // mcp3 release of 12/Jun does not have this port  wire [3:0]       afu_cfg_in_rcv_rate_capability_3;
     wire          tlx_afu_ready;
     wire          tlx_cfg0_in_rcv_tmpl_capability_0;
     wire          tlx_cfg0_in_rcv_tmpl_capability_1;
@@ -726,14 +686,6 @@ module top (
 
         // These signals do not appear on the RefDesign Doc. However it is present
         // on the TLX spec
-        // mcp3 release of 12/Jun does not have this port   afu_cfg_in_rcv_tmpl_capability_0_top <= 0;
-        // mcp3 release of 12/Jun does not have this port   afu_cfg_in_rcv_tmpl_capability_1_top <= 0;
-        // mcp3 release of 12/Jun does not have this port   afu_cfg_in_rcv_tmpl_capability_2_top <= 0;
-        // mcp3 release of 12/Jun does not have this port   afu_cfg_in_rcv_tmpl_capability_3_top <= 0;
-        // mcp3 release of 12/Jun does not have this port   afu_cfg_in_rcv_rate_capability_0_top <= 4'b0;
-        // mcp3 release of 12/Jun does not have this port   afu_cfg_in_rcv_rate_capability_1_top <= 4'b0;
-        // mcp3 release of 12/Jun does not have this port   afu_cfg_in_rcv_rate_capability_2_top <= 4'b0;
-        // mcp3 release of 12/Jun does not have this port   afu_cfg_in_rcv_rate_capability_3_top <= 4'b0;
         tlx_afu_ready_top   <= 1;
         tlx_cfg0_in_rcv_tmpl_capability_0_top <= 0;
         tlx_cfg0_in_rcv_tmpl_capability_1_top <= 0;
@@ -841,14 +793,6 @@ module top (
         afu_tlx_rdata_valid_top               <= afu_tlx_rdata_valid;
         afu_tlx_rdata_bus_top                 <= afu_tlx_rdata_bus;
         afu_tlx_rdata_bdi_top                 <= afu_tlx_rdata_bdi;
-        // mcp3 release of 12/Jun does not have this port  afu_cfg_xmit_tmpl_config_0_top        <= afu_cfg_xmit_tmpl_config_0;
-        // mcp3 release of 12/Jun does not have this port  afu_cfg_xmit_tmpl_config_1_top        <= afu_cfg_xmit_tmpl_config_1;
-        // mcp3 release of 12/Jun does not have this port  afu_cfg_xmit_tmpl_config_2_top        <= afu_cfg_xmit_tmpl_config_2;
-        // mcp3 release of 12/Jun does not have this port  afu_cfg_xmit_tmpl_config_3_top        <= afu_cfg_xmit_tmpl_config_3;
-        // mcp3 release of 12/Jun does not have this port  afu_cfg_xmit_rate_config_0_top        <= afu_cfg_xmit_rate_config_0;
-        // mcp3 release of 12/Jun does not have this port  afu_cfg_xmit_rate_config_1_top        <= afu_cfg_xmit_rate_config_1;
-        // mcp3 release of 12/Jun does not have this port  afu_cfg_xmit_rate_config_2_top        <= afu_cfg_xmit_rate_config_2;
-        // mcp3 release of 12/Jun does not have this port  afu_cfg_xmit_rate_config_3_top        <= afu_cfg_xmit_rate_config_3;
         cfg0_tlx_initial_credit_top  <= cfg0_tlx_initial_credit; // new
         cfg0_tlx_credit_return_top  <= cfg0_tlx_credit_return;  // new lgt
         cfg0_tlx_resp_valid_top              <= cfg0_tlx_resp_valid;
@@ -912,14 +856,6 @@ module top (
 
     // These signals do not appear on the RefDesign Doc. However it is present
     // on the TLX spec
-    // mcp3 release of 12/Jun does not have this port   assign  afu_cfg_in_rcv_tmpl_capability_0 = afu_cfg_in_rcv_tmpl_capability_0_top;
-    // mcp3 release of 12/Jun does not have this port   assign  afu_cfg_in_rcv_tmpl_capability_1 = afu_cfg_in_rcv_tmpl_capability_1_top;
-    // mcp3 release of 12/Jun does not have this port   assign  afu_cfg_in_rcv_tmpl_capability_2 = afu_cfg_in_rcv_tmpl_capability_2_top;
-    // mcp3 release of 12/Jun does not have this port   assign  afu_cfg_in_rcv_tmpl_capability_3 = afu_cfg_in_rcv_tmpl_capability_3_top;
-    // mcp3 release of 12/Jun does not have this port   assign  afu_cfg_in_rcv_rate_capability_0 = afu_cfg_in_rcv_rate_capability_0_top;
-    // mcp3 release of 12/Jun does not have this port   assign  afu_cfg_in_rcv_rate_capability_1 = afu_cfg_in_rcv_rate_capability_1_top;
-    // mcp3 release of 12/Jun does not have this port   assign  afu_cfg_in_rcv_rate_capability_2 = afu_cfg_in_rcv_rate_capability_2_top;
-    // mcp3 release of 12/Jun does not have this port   assign  afu_cfg_in_rcv_rate_capability_3 = afu_cfg_in_rcv_rate_capability_3_top;
     assign  tlx_afu_ready                     = tlx_afu_ready_top;
     assign  ro_device                         = ro_device_top;
     assign  tlx_cfg0_in_rcv_tmpl_capability_0 = tlx_cfg0_in_rcv_tmpl_capability_0_top;

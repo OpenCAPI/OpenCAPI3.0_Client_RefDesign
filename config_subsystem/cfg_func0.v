@@ -1,17 +1,23 @@
-//
-// Copyright 2018 International Business Machines
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
+// *!***************************************************************************
+// *! Copyright 2019 International Business Machines
+// *!
+// *! Licensed under the Apache License, Version 2.0 (the "License");
+// *! you may not use this file except in compliance with the License.
+// *! You may obtain a copy of the License at
+// *! http://www.apache.org/licenses/LICENSE-2.0 
+// *!
+// *! The patent license granted to you in Section 3 of the License, as applied
+// *! to the "Work," hereby includes implementations of the Work in physical form.  
+// *!
+// *! Unless required by applicable law or agreed to in writing, the reference design
+// *! distributed under the License is distributed on an "AS IS" BASIS,
+// *! WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// *! See the License for the specific language governing permissions and
+// *! limitations under the License.
+// *! 
+// *! The background Specification upon which this is based is managed by and available from
+// *! the OpenCAPI Consortium.  More information can be found at https://opencapi.org. 
+// *!***************************************************************************
 `timescale 1ps / 1ps
 // -------------------------------------------------------------------
 //
@@ -32,18 +38,7 @@
 // Modification History :
 //                                |Version    |     |Author   |Description of change
 //                                |-----------|     |-------- |---------------------
-//`define CFG_FUNC0_VERSION        09_May_2017   //  rueding   Match 'OpenCAPI 3.0 Discovery and Configuration Specification', Ver 0.4 (preliminary) 4/27/17, 'OpenCAPI_CFG_V03_042717.pdf'
-//`define CFG_FUNC0_VERSION        31_May_2017   //  rueding   Change PASID starting offset from h100 to h100
-//`define CFG_FUNC0_VERSION        12_Jun_2017   //  rueding   Fix OTL1 TLx Index field (from h00 to h01)      
-//`define CFG_FUNC0_VERSION        26_Jun_2017   //  rueding   Change OFUNC_LAST from h30C to h30F     
-//`define CFG_FUNC0_VERSION        17_Jul_2017   //  rueding   Add 'Multi-Function' bit to CSH, x0C[23] for Linux lab bring up
-//`define CFG_FUNC0_VERSION        18_Jul_2017   //  rueding   Use `define's to include/exclude port 1,2,3 logic (OTL)                        
-//`define CFG_FUNC0_VERSION        23_Aug_2017   //  rueding   Fix copy/paste typos in OTL port 1,2,3 logic
-//`define CFG_FUNC0_VERSION        12_Sep_2017   //  rueding   Change items reported by HAL check  
-//`define CFG_FUNC0_VERSION        24_Oct_2017   //  rueding   Add CFG, TLX, DLX version registers in OVSEC0
-//`define CFG_FUNC0_VERSION        09_Nov_2017   //  rueding   Add FLASH Control registers in OVSEC0
-//`define CFG_FUNC0_VERSION        16_Jan_2018   //  rueding   Change reg_ovsec_004_q[31:20] from h30 to h38. Add AXI expander bits.
-  `define CFG_FUNC0_VERSION        04_Oct_2019   //  mfernan   Added image reload enable register/bit in OVSEC0
+  `define CFG_FUNC0_VERSION        04_Oct_2019   //            Added image reload enable register/bit in OVSEC0
 // -------------------------------------------------------------------
 
 // This define contains the snapshot version of the CFG implementation. Overlay it each time a version snapshot is made.

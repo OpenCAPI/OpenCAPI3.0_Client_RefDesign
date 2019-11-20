@@ -1,7 +1,7 @@
 ############################################################################
 ############################################################################
 ##
-## Copyright 2018 International Business Machines
+## Copyright 2019 International Business Machines
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ set oc_bip_sim_dir   $root_dir/oc-bip/sim
 set card_dir         $fpga_card_dir
 set card_src         $fpga_card_dir/verilog
 set use_flash        "true"
-set transceiver_type "elastic"
+set transceiver_type "bypass"
 set transceiver_speed  $::env(PHY_SPEED)
 
 
