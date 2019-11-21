@@ -166,7 +166,7 @@
 //       Keeping _ovsec_ the same makes it easier to copy/paste common logic between the function instances.
 //
 `define OVSEC0_BASE  12'h600
-`define OVSEC0_LAST  12'h637
+`define OVSEC0_LAST  12'h63B
  
  
 // ==============================================================================================================================
