@@ -231,6 +231,7 @@ wire   [1:0]   oc0_flsh_cfg_bresp;
 wire   [1:0]   oc0_flsh_cfg_rresp;
 wire           oc0_cfg_flsh_expand_enable;
 wire           oc0_cfg_flsh_expand_dir;
+wire           oc0_icap_reload_en;
 wire           oc0_cfg0_cff_fifo_overflow;        // Added to internal error vector sent to MMIO logic
 wire  [7:0]    oc0_cfg0_bus_num;
 wire  [4:0]    oc0_cfg0_device_num;
@@ -475,6 +476,7 @@ wire   [1:0]   oc1_flsh_cfg_bresp;
 wire   [1:0]   oc1_flsh_cfg_rresp;
 wire           oc1_cfg_flsh_expand_enable;
 wire           oc1_cfg_flsh_expand_dir;
+wire           oc1_cfg_icap_reload_en; 
 wire           oc1_cfg0_cff_fifo_overflow;        // Added to internal error vector sent to MMIO logic
 wire  [7:0]    oc1_cfg0_bus_num;
 wire  [4:0]    oc1_cfg0_device_num;
@@ -787,6 +789,7 @@ oc_bsp bsp0(
  ,.flsh_cfg_rresp                              (oc0_flsh_cfg_rresp                   ) // -- oc_bsp0:  output  [1:0]
  ,.cfg_flsh_expand_enable                      (oc0_cfg_flsh_expand_enable           ) // -- oc_bsp0:  input
  ,.cfg_flsh_expand_dir                         (oc0_cfg_flsh_expand_dir              ) // -- oc_bsp0:  input
+ ,.cfg_icap_reload_en                          (oc0_cfg_icap_reload_en               ) // -- oc_bsp0:  input
 );
 
 oc_cfg cfg0 (
@@ -1026,6 +1029,8 @@ oc_cfg cfg0 (
  ,.f1_octrl00_pasid_len_supported    (oc0_f1_ro_octrl00_pasid_len_supported) // -- oc_cfg0:  output [4:0]
  ,.f1_octrl00_metadata_supported     (oc0_f1_ro_octrl00_metadata_supported ) // -- oc_cfg0:  output 
  ,.f1_octrl00_actag_len_supported    (oc0_f1_ro_octrl00_actag_len_supported) // -- oc_cfg0:  output [11:0]       
+
+ ,.cfg_icap_reload_en                (oc0_cfg_icap_reload_en               ) // -- oc_cfg0:         
 );
 
 oc_function oc_func0(
@@ -1367,6 +1372,7 @@ oc_bsp bsp1(
  ,.flsh_cfg_rresp                              (oc1_flsh_cfg_rresp                   ) // -- oc_bsp1:  output  [1:0]
  ,.cfg_flsh_expand_enable                      (oc1_cfg_flsh_expand_enable           ) // -- oc_bsp1:  input
  ,.cfg_flsh_expand_dir                         (oc1_cfg_flsh_expand_dir              ) // -- oc_bsp1:  input
+ ,.cfg_icap_reload_en                          (oc1_cfg_icap_reload_en               ) // -- oc_bsp0:  input
 );
 
 oc_cfg cfg1 (
@@ -1606,6 +1612,8 @@ oc_cfg cfg1 (
  ,.f1_octrl00_pasid_len_supported    (oc1_f1_ro_octrl00_pasid_len_supported) // -- oc_cfg1:  output [4:0]
  ,.f1_octrl00_metadata_supported     (oc1_f1_ro_octrl00_metadata_supported ) // -- oc_cfg1:  output 
  ,.f1_octrl00_actag_len_supported    (oc1_f1_ro_octrl00_actag_len_supported) // -- oc_cfg1:  output [11:0]       
+
+ ,.cfg_icap_reload_en                (oc1_cfg_icap_reload_en               ) // -- oc_cfg0:         
 );
 
 oc_function oc_func1(
