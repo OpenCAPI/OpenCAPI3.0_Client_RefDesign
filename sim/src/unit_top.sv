@@ -123,60 +123,77 @@ assign                             dut0.bsp.clock_tlx = clock_400m;
 assign                             dut0.bsp.clock_afu = clock_200m;
 //assign                             dut0.reset = reset;
 
-//**********************************************
-// MM AXI INTERFACE FOR VERIF
-//**********************************************
-/**************** Write Address Channel Signals ****************/
-wire                               mm_axi_clk;
-wire                               mm_axi_rstn;
-wire [64-1:0]                      mm_axi_awaddr;
-wire [3-1:0]                       mm_axi_awprot;
-wire                               mm_axi_awvalid;
-wire                               mm_axi_awready;
-wire [3-1:0]                       mm_axi_awsize;
-wire [2-1:0]                       mm_axi_awburst;
-wire [4-1:0]                       mm_axi_awcache;
-wire [8-1:0]                       mm_axi_awlen;
-wire [1-1:0]                       mm_axi_awlock;
-wire [4-1:0]                       mm_axi_awqos;
-wire [4-1:0]                       mm_axi_awregion;
-wire [5-1:0]                       mm_axi_awid;
-wire [9-1:0]                       mm_axi_awuser;
-/**************** Write Data Channel Signals ****************/
-wire [1024-1:0]                    mm_axi_wdata;
-wire [1024/8-1:0]                  mm_axi_wstrb;
-wire                               mm_axi_wvalid;
-wire                               mm_axi_wready;
-wire                               mm_axi_wlast;
-wire [1-1:0]                       mm_axi_wuser;
-/**************** Write Response Channel Signals ****************/
-wire [2-1:0]                       mm_axi_bresp;
-wire                               mm_axi_bvalid;
-wire                               mm_axi_bready;
-wire [8-1:0]                       mm_axi_bid;
-wire [1-1:0]                       mm_axi_buser;
-/**************** Read Address Channel Signals ****************/
-wire [64-1:0]                      mm_axi_araddr;
-wire [3-1:0]                       mm_axi_arprot;
-wire                               mm_axi_arvalid;
-wire                               mm_axi_arready;
-wire [3-1:0]                       mm_axi_arsize;
-wire [2-1:0]                       mm_axi_arburst;
-wire [4-1:0]                       mm_axi_arcache;
-wire [1-1:0]                       mm_axi_arlock;
-wire [8-1:0]                       mm_axi_arlen;
-wire [4-1:0]                       mm_axi_arqos;
-wire [4-1:0]                       mm_axi_arregion;
-wire [8-1:0]                       mm_axi_arid;
-wire [9-1:0]                       mm_axi_aruser;
-/**************** Read Data Channel Signals ****************/
-wire [1024-1:0]                    mm_axi_rdata;
-wire [2-1:0]                       mm_axi_rresp;
-wire                               mm_axi_rvalid;
-wire                               mm_axi_rready;
-wire                               mm_axi_rlast;
-wire [8-1:0]                       mm_axi_rid;
-wire [1-1:0]                       mm_axi_ruser;
+`ifndef ENABLE_ODMA_ST_MODE
+    //**********************************************
+    // MM AXI INTERFACE FOR VERIF
+    //**********************************************
+    /**************** Write Address Channel Signals ****************/
+    wire                               mm_axi_clk;
+    wire                               mm_axi_rstn;
+    wire [64-1:0]                      mm_axi_awaddr;
+    wire [3-1:0]                       mm_axi_awprot;
+    wire                               mm_axi_awvalid;
+    wire                               mm_axi_awready;
+    wire [3-1:0]                       mm_axi_awsize;
+    wire [2-1:0]                       mm_axi_awburst;
+    wire [4-1:0]                       mm_axi_awcache;
+    wire [8-1:0]                       mm_axi_awlen;
+    wire [1-1:0]                       mm_axi_awlock;
+    wire [4-1:0]                       mm_axi_awqos;
+    wire [4-1:0]                       mm_axi_awregion;
+    wire [5-1:0]                       mm_axi_awid;
+    wire [9-1:0]                       mm_axi_awuser;
+    /**************** Write Data Channel Signals ****************/
+    wire [`AXI_MM_DW-1:0]              mm_axi_wdata;
+    wire [`AXI_MM_DW/8-1:0]            mm_axi_wstrb;
+    wire                               mm_axi_wvalid;
+    wire                               mm_axi_wready;
+    wire                               mm_axi_wlast;
+    wire [1-1:0]                       mm_axi_wuser;
+    /**************** Write Response Channel Signals ****************/
+    wire [2-1:0]                       mm_axi_bresp;
+    wire                               mm_axi_bvalid;
+    wire                               mm_axi_bready;
+    wire [8-1:0]                       mm_axi_bid;
+    wire [1-1:0]                       mm_axi_buser;
+    /**************** Read Address Channel Signals ****************/
+    wire [64-1:0]                      mm_axi_araddr;
+    wire [3-1:0]                       mm_axi_arprot;
+    wire                               mm_axi_arvalid;
+    wire                               mm_axi_arready;
+    wire [3-1:0]                       mm_axi_arsize;
+    wire [2-1:0]                       mm_axi_arburst;
+    wire [4-1:0]                       mm_axi_arcache;
+    wire [1-1:0]                       mm_axi_arlock;
+    wire [8-1:0]                       mm_axi_arlen;
+    wire [4-1:0]                       mm_axi_arqos;
+    wire [4-1:0]                       mm_axi_arregion;
+    wire [8-1:0]                       mm_axi_arid;
+    wire [9-1:0]                       mm_axi_aruser;
+    /**************** Read Data Channel Signals ****************/
+    wire [`AXI_MM_DW-1:0]              mm_axi_rdata;
+    wire [2-1:0]                       mm_axi_rresp;
+    wire                               mm_axi_rvalid;
+    wire                               mm_axi_rready;
+    wire                               mm_axi_rlast;
+    wire [8-1:0]                       mm_axi_rid;
+    wire [1-1:0]                       mm_axi_ruser;
+`else
+    wire                               h2a_axis_tready    ; 
+    wire                               h2a_axis_tlast     ; 
+    wire [`AXI_ST_DW - 1:0]            h2a_axis_tdata     ; 
+    wire [`AXI_ST_DW/8 - 1:0]          h2a_axis_tkeep     ; 
+    wire                               h2a_axis_tvalid    ; 
+    wire [`IDW - 1:0]                  h2a_axis_tid       ; 
+    wire [`AXI_ST_USER - 1:0]          h2a_axis_tuser     ; 
+    wire                               a2h_axis_tready    ; 
+    wire                               a2h_axis_tlast     ; 
+    wire [`AXI_ST_DW - 1:0]            a2h_axis_tdata     ; 
+    wire [`AXI_ST_DW/8 - 1:0]          a2h_axis_tkeep     ; 
+    wire                               a2h_axis_tvalid    ; 
+    wire [`IDW - 1:0]                  a2h_axis_tid       ; 
+    wire [`AXI_ST_USER - 1:0]          a2h_axis_tuser     ; 
+`endif
 
 /**************** AXI Lite Signals ****************/
 wire                               axi_lite_arvalid;      
@@ -268,56 +285,72 @@ assign                             axi_lite_bvalid = dut0.oc_func.fw_afu.snap_co
 assign                             axi_lite_bresp  = dut0.oc_func.fw_afu.snap_core_i.lite_conv2snap_bresp;          
 assign                             axi_lite_bready = dut0.oc_func.fw_afu.snap_core_i.lite_snap2conv_bready;
 
-
 `else
-// AXI write resquest channel
-assign                             mm_axi_awid     = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awid;
-assign                             mm_axi_awuser   = 0; // = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awuser;
-assign                             mm_axi_awaddr   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awaddr;
-assign                             mm_axi_awlen    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awlen;
-assign                             mm_axi_awsize   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awsize;
-assign                             mm_axi_awburst  = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awburst;
-assign                             mm_axi_awlock   = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awlock;
-assign                             mm_axi_awcache  = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awcache;
-assign                             mm_axi_awprot   = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awprot;
-assign                             mm_axi_awregion = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awregion;
-assign                             mm_axi_awqos    = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awqos;
-assign                             mm_axi_awvalid  = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awvalid;
-assign                             mm_axi_awready  = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awready;
-assign                             mm_axi_wdata    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_wdata;
-assign                             mm_axi_wstrb    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_wstrb;
-assign                             mm_axi_wlast    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_wlast;
-assign                             mm_axi_wvalid   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_wvalid;
-assign                             mm_axi_wuser    = 1'b0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_wuser;
-assign                             mm_axi_wready   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_wready;
-// AXI write response channel
-assign                             mm_axi_bready   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_bready;
-assign                             mm_axi_bid      = dut0.oc_func.fw_afu.snap_core_i.axi_mm_bid;
-assign                             mm_axi_buser    = 1'b0;//= dut0.oc_func.fw_afu.snap_core_i.axi_mm_buser;
-assign                             mm_axi_bresp    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_bresp;
-assign                             mm_axi_bvalid   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_bvalid;
-// AXI read response channel
-assign                             mm_axi_arid     = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arid;
-assign                             mm_axi_aruser   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_aruser;
-assign                             mm_axi_araddr   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_araddr;
-assign                             mm_axi_arlen    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arlen;
-assign                             mm_axi_arsize   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arsize;
-assign                             mm_axi_arburst  = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arburst;
-assign                             mm_axi_arlock   = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arlock;
-assign                             mm_axi_arcache  = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arcache;
-assign                             mm_axi_arprot   = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arprot;
-assign                             mm_axi_arregion = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arregion;
-assign                             mm_axi_arqos    = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arqos;
-assign                             mm_axi_arvalid  = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arvalid;
-assign                             mm_axi_arready  = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arready;
-// AXI read data channel
-assign                             mm_axi_rready   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_rready;
-assign                             mm_axi_rid      = dut0.oc_func.fw_afu.snap_core_i.axi_mm_rid;
-assign                             mm_axi_ruser    = 1'b0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_ruser;
-assign                             mm_axi_rdata    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_rdata;
-assign                             mm_axi_rresp    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_rresp;
-assign                             mm_axi_rlast    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_rlast;
-assign                             mm_axi_rvalid   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_rvalid;
+    `ifndef ENABLE_ODMA_ST_MODE
+    // AXI write resquest channel
+        assign                             mm_axi_awid     = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awid;
+        assign                             mm_axi_awuser   = 0; // = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awuser;
+        assign                             mm_axi_awaddr   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awaddr;
+        assign                             mm_axi_awlen    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awlen;
+        assign                             mm_axi_awsize   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awsize;
+        assign                             mm_axi_awburst  = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awburst;
+        assign                             mm_axi_awlock   = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awlock;
+        assign                             mm_axi_awcache  = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awcache;
+        assign                             mm_axi_awprot   = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awprot;
+        assign                             mm_axi_awregion = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awregion;
+        assign                             mm_axi_awqos    = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awqos;
+        assign                             mm_axi_awvalid  = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awvalid;
+        assign                             mm_axi_awready  = dut0.oc_func.fw_afu.snap_core_i.axi_mm_awready;
+        assign                             mm_axi_wdata    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_wdata;
+        assign                             mm_axi_wstrb    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_wstrb;
+        assign                             mm_axi_wlast    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_wlast;
+        assign                             mm_axi_wvalid   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_wvalid;
+        assign                             mm_axi_wuser    = 1'b0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_wuser;
+        assign                             mm_axi_wready   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_wready;
+        // AXI write response channel
+        assign                             mm_axi_bready   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_bready;
+        assign                             mm_axi_bid      = dut0.oc_func.fw_afu.snap_core_i.axi_mm_bid;
+        assign                             mm_axi_buser    = 1'b0;//= dut0.oc_func.fw_afu.snap_core_i.axi_mm_buser;
+        assign                             mm_axi_bresp    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_bresp;
+        assign                             mm_axi_bvalid   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_bvalid;
+        // AXI read response channel
+        assign                             mm_axi_arid     = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arid;
+        assign                             mm_axi_aruser   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_aruser;
+        assign                             mm_axi_araddr   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_araddr;
+        assign                             mm_axi_arlen    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arlen;
+        assign                             mm_axi_arsize   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arsize;
+        assign                             mm_axi_arburst  = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arburst;
+        assign                             mm_axi_arlock   = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arlock;
+        assign                             mm_axi_arcache  = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arcache;
+        assign                             mm_axi_arprot   = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arprot;
+        assign                             mm_axi_arregion = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arregion;
+        assign                             mm_axi_arqos    = 0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arqos;
+        assign                             mm_axi_arvalid  = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arvalid;
+        assign                             mm_axi_arready  = dut0.oc_func.fw_afu.snap_core_i.axi_mm_arready;
+        // AXI read data channel
+        assign                             mm_axi_rready   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_rready;
+        assign                             mm_axi_rid      = dut0.oc_func.fw_afu.snap_core_i.axi_mm_rid;
+        assign                             mm_axi_ruser    = 1'b0;// = dut0.oc_func.fw_afu.snap_core_i.axi_mm_ruser;
+        assign                             mm_axi_rdata    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_rdata;
+        assign                             mm_axi_rresp    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_rresp;
+        assign                             mm_axi_rlast    = dut0.oc_func.fw_afu.snap_core_i.axi_mm_rlast;
+        assign                             mm_axi_rvalid   = dut0.oc_func.fw_afu.snap_core_i.axi_mm_rvalid;
+    `else
+        assign                             h2a_axis_tready = dut0.oc_func.fw_afu.snap_core_i.m_axis_tready;
+        assign                             h2a_axis_tlast  = dut0.oc_func.fw_afu.snap_core_i.m_axis_tlast;
+        assign                             h2a_axis_tdata  = dut0.oc_func.fw_afu.snap_core_i.m_axis_tdata;
+        assign                             h2a_axis_tkeep  = dut0.oc_func.fw_afu.snap_core_i.m_axis_tkeep;
+        assign                             h2a_axis_tvalid = dut0.oc_func.fw_afu.snap_core_i.m_axis_tvalid;
+        assign                             h2a_axis_tid    = dut0.oc_func.fw_afu.snap_core_i.m_axis_tid;
+        assign                             h2a_axis_tuser  = dut0.oc_func.fw_afu.snap_core_i.m_axis_tuser;
+        assign                             a2h_axis_tready = dut0.oc_func.fw_afu.snap_core_i.s_axis_tready;
+        assign                             a2h_axis_tlast  = dut0.oc_func.fw_afu.snap_core_i.s_axis_tlast;
+        assign                             a2h_axis_tdata  = dut0.oc_func.fw_afu.snap_core_i.s_axis_tdata;
+        assign                             a2h_axis_tkeep  = dut0.oc_func.fw_afu.snap_core_i.s_axis_tkeep;
+        assign                             a2h_axis_tvalid = dut0.oc_func.fw_afu.snap_core_i.s_axis_tvalid;
+        assign                             a2h_axis_tid    = dut0.oc_func.fw_afu.snap_core_i.s_axis_tid;
+        assign                             a2h_axis_tuser  = dut0.oc_func.fw_afu.snap_core_i.s_axis_tuser;
+    `endif
 //AXI Lite Signals
 assign                             axi_lite_arvalid= dut0.oc_func.fw_afu.snap_core_i.lite_mmio2odma_arvalid;      
 assign                             axi_lite_araddr = dut0.oc_func.fw_afu.snap_core_i.lite_mmio2odma_araddr ;         
@@ -339,54 +372,75 @@ assign                             axi_lite_bready = dut0.oc_func.fw_afu.snap_co
 
 `endif
 
-axi_vip_mm_check mm_check_passthrough(
-    .aclk                  (mm_axi_clk),
-    .aresetn               (mm_axi_rstn),
-    // AXI write address channel
-    .s_axi_awid            (mm_axi_awid),
-    .s_axi_awaddr          (mm_axi_awaddr),
-    .s_axi_awlen           (mm_axi_awlen),
-    .s_axi_awsize          (mm_axi_awsize),
-    .s_axi_awburst         (mm_axi_awburst),
-    .s_axi_awlock          (mm_axi_awlock),
-    .s_axi_awcache         (mm_axi_awcache),
-    .s_axi_awprot          (mm_axi_awprot),
-    .s_axi_awregion        (mm_axi_awregion),
-    .s_axi_awqos           (mm_axi_awqos),
-    .s_axi_awvalid         (mm_axi_awvalid),
-    .m_axi_awready         (mm_axi_awready),
-    // AXI write data channel
-    .s_axi_wdata           (mm_axi_wdata),
-    .s_axi_wstrb           (mm_axi_wstrb),
-    .s_axi_wlast           (mm_axi_wlast),
-    .s_axi_wvalid          (mm_axi_wvalid),
-    .m_axi_wready          (mm_axi_wready),
-    // AXI write response channel
-    .s_axi_bready          (mm_axi_bready),
-    .m_axi_bid             (mm_axi_bid),
-    .m_axi_bresp           (mm_axi_bresp),
-    .m_axi_bvalid          (mm_axi_bvalid),
-    // AXI read response channel
-    .s_axi_arid            (mm_axi_arid),
-    .s_axi_araddr          (mm_axi_araddr),
-    .s_axi_arlen           (mm_axi_arlen),
-    .s_axi_arsize          (mm_axi_arsize),
-    .s_axi_arburst         (mm_axi_arburst),
-    .s_axi_arlock          (mm_axi_arlock),
-    .s_axi_arcache         (mm_axi_arcache),
-    .s_axi_arprot          (mm_axi_arprot),
-    .s_axi_arregion        (mm_axi_arregion),
-    .s_axi_arqos           (mm_axi_arqos),
-    .s_axi_arvalid         (mm_axi_arvalid),
-    .m_axi_arready         (mm_axi_arready),
-    // AXI read data channel
-    .s_axi_rready          (mm_axi_rready),
-    .m_axi_rid             (mm_axi_rid),
-    .m_axi_rdata           (mm_axi_rdata),
-    .m_axi_rresp           (mm_axi_rresp),
-    .m_axi_rlast           (mm_axi_rlast),
-    .m_axi_rvalid          (mm_axi_rvalid)
+`ifndef ENABLE_ODMA_ST_MODE
+    axi_vip_mm_check mm_check_passthrough(
+        .aclk                  (mm_axi_clk),
+        .aresetn               (mm_axi_rstn),
+        // AXI write address channel
+        .s_axi_awid            (mm_axi_awid),
+        .s_axi_awaddr          (mm_axi_awaddr),
+        .s_axi_awlen           (mm_axi_awlen),
+        .s_axi_awsize          (mm_axi_awsize),
+        .s_axi_awburst         (mm_axi_awburst),
+        .s_axi_awlock          (mm_axi_awlock),
+        .s_axi_awcache         (mm_axi_awcache),
+        .s_axi_awprot          (mm_axi_awprot),
+        .s_axi_awregion        (mm_axi_awregion),
+        .s_axi_awqos           (mm_axi_awqos),
+        .s_axi_awvalid         (mm_axi_awvalid),
+        .m_axi_awready         (mm_axi_awready),
+        // AXI write data channel
+        .s_axi_wdata           (mm_axi_wdata),
+        .s_axi_wstrb           (mm_axi_wstrb),
+        .s_axi_wlast           (mm_axi_wlast),
+        .s_axi_wvalid          (mm_axi_wvalid),
+        .m_axi_wready          (mm_axi_wready),
+        // AXI write response channel
+        .s_axi_bready          (mm_axi_bready),
+        .m_axi_bid             (mm_axi_bid),
+        .m_axi_bresp           (mm_axi_bresp),
+        .m_axi_bvalid          (mm_axi_bvalid),
+        // AXI read response channel
+        .s_axi_arid            (mm_axi_arid),
+        .s_axi_araddr          (mm_axi_araddr),
+        .s_axi_arlen           (mm_axi_arlen),
+        .s_axi_arsize          (mm_axi_arsize),
+        .s_axi_arburst         (mm_axi_arburst),
+        .s_axi_arlock          (mm_axi_arlock),
+        .s_axi_arcache         (mm_axi_arcache),
+        .s_axi_arprot          (mm_axi_arprot),
+        .s_axi_arregion        (mm_axi_arregion),
+        .s_axi_arqos           (mm_axi_arqos),
+        .s_axi_arvalid         (mm_axi_arvalid),
+        .m_axi_arready         (mm_axi_arready),
+        // AXI read data channel
+        .s_axi_rready          (mm_axi_rready),
+        .m_axi_rid             (mm_axi_rid),
+        .m_axi_rdata           (mm_axi_rdata),
+        .m_axi_rresp           (mm_axi_rresp),
+        .m_axi_rlast           (mm_axi_rlast),
+        .m_axi_rvalid          (mm_axi_rvalid)
+    );
+`else
+axi_st_passthrough_h2a axis_passthrough_h2a(
+        .aclk                  (mm_axi_clk),
+        .aresetn               (mm_axi_rstn),
+        .s_axis_tvalid         (h2a_axis_tvalid),
+        //.s_axis_tready         (),
+        .s_axis_tdata          (h2a_axis_tdata),
+        .s_axis_tkeep          (h2a_axis_tkeep),
+        .s_axis_tlast          (h2a_axis_tlast),
+        .s_axis_tid            (h2a_axis_tid),
+        .s_axis_tuser          (h2a_axis_tuser),
+        //.m_axis_tvalid         (),
+        .m_axis_tready         (h2a_axis_tready)
+        //.m_axis_tdata          (),
+        //.m_axis_tkeep          (),
+        //.m_axis_tlast          (),
+        //.m_axis_tid            (),
+        //.m_axis_tuser          ()
 );
+`endif
 
 axi_lite_passthrough lite_passthrough(
 	.aclk                  (mm_axi_clk),
@@ -548,13 +602,20 @@ assign                             dut0.bsp.dlx_tlx_init_flit_depth = tl_dl_vif.
 // VERIFICATION INITIALIZATION
 //**********************************************
 initial begin
-    uvm_config_db#(virtual axi_vip_if `AXI_VIP_MM_CHECK_PARAMS)::set(null, "*", "mm_check_vif", mm_check_passthrough.inst.IF);
     uvm_config_db#(virtual tlx_afu_interface)::set(null, "*", "tlx_afu_vif", tlx_afu_vif);
     uvm_config_db#(virtual intrp_interface)::set(null, "*", "intrp_vif", intrp_vif);
     uvm_config_db#(virtual tl_dl_if)::set(null, "*", "tl_dl_vif", tl_dl_vif);
-    mm_check_passthrough.inst.set_passthrough_mode();
-    mm_check_passthrough.inst.IF.set_enable_xchecks_to_warn();
-    mm_check_passthrough.inst.IF.set_xilinx_reset_check_to_warn();
+    `ifndef ENABLE_ODMA_ST_MODE
+        uvm_config_db#(virtual axi_vip_if `AXI_VIP_MM_CHECK_PARAMS)::set(null, "*", "mm_check_vif", mm_check_passthrough.inst.IF);
+        mm_check_passthrough.inst.set_passthrough_mode();
+        mm_check_passthrough.inst.IF.set_enable_xchecks_to_warn();
+        mm_check_passthrough.inst.IF.set_xilinx_reset_check_to_warn();
+    `else
+        uvm_config_db#(virtual axi4stream_vip_if `AXI_STREAM_H2A_PARAMS)::set(null, "*", "st_h2a_check_vif", axis_passthrough_h2a.inst.IF);
+        axis_passthrough_h2a.inst.set_passthrough_mode();
+        axis_passthrough_h2a.inst.IF.set_enable_xchecks_to_warn();
+        axis_passthrough_h2a.inst.IF.set_xilinx_reset_check_to_warn();
+    `endif
     uvm_config_db#(virtual axi_vip_if `AXI_LITE_PARAMS)::set(null, "*", "axi_lite_vif", lite_passthrough.inst.IF);
     lite_passthrough.inst.set_passthrough_mode();
     lite_passthrough.inst.IF.set_enable_xchecks_to_warn();
