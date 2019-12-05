@@ -265,7 +265,11 @@ module oc_bsp (
   wire   icap_clk;
   assign icap_clk = clock_156_25;  
 
-  wire            spi_clk_div_2;
+  //wire            spi_clk_div_2;
+  // choose a clock source for icap that is a global clock.  
+  // ICAP IP allows this to be async to axi clock
+  wire   icap_clk;
+  assign icap_clk = clock_156_25;
   
   //reg             iprog_go; //MRF
   wire            iprog_go_or;
