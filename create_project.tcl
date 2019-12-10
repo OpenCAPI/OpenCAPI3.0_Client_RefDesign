@@ -1,8 +1,26 @@
-#
-# Author: Joshua Andersen (joshua.andersen1@ibm.com)
+# *!***************************************************************************
+# *! Copyright 2019 International Business Machines
+# *!
+# *! Licensed under the Apache License, Version 2.0 (the "License");
+# *! you may not use this file except in compliance with the License.
+# *! You may obtain a copy of the License at
+# *! http://www.apache.org/licenses/LICENSE-2.0 
+# *!
+# *! The patent license granted to you in Section 3 of the License, as applied
+# *! to the "Work," hereby includes implementations of the Work in physical form.  
+# *!
+# *! Unless required by applicable law or agreed to in writing, the reference design
+# *! distributed under the License is distributed on an "AS IS" BASIS,
+# *! WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# *! See the License for the specific language governing permissions and
+# *! limitations under the License.
+# *! 
+# *! The background Specification upon which this is based is managed by and available from
+# *! the OpenCAPI Consortium.  More information can be found at https://opencapi.org. 
+# *!***************************************************************************
 # 
 # Description: Creates a Vivado project for OpenCAPI AFUs on a variety of different OpenCAPI enabled cards
-# HELP: See the Github wiki for use https://github.ibm.com/Joshua-Andersen1/OpenCapiBuilds/wiki
+# HELP: See the Github wiki
 
 # Create the default command line arguments
 set afu               "afp"
@@ -14,7 +32,7 @@ set card              "ad9v3"
 set proj              "viv_proj"
 
 # Available options to set
-set afus { afp }
+set afus { lpc afp }
 set transceiver_types { bypass }
 set transceiver_speeds { 25.78125 25.625 20.0 }
 set cards { ad9v3 }
@@ -71,6 +89,7 @@ if { $::argc > 0 } {
     switch -regexp -- $option {
       "--origin_dir"  { incr i; set origin_dir [lindex $::argv $i] }
       "--help"        { help }
+      "--afu"         {incr i; set afu               [string tolower [lindex $::argv $i]]}
       "--speed"       {incr i; set transceiver_speed [string tolower [lindex $::argv $i]]}
       "--flash"       {        set use_flash         "yes"                               }
       "--proj"        {incr i; set proj              [string tolower [lindex $::argv $i]]}
@@ -249,7 +268,17 @@ set verilog_afp     [list \
  "[file normalize "$origin_dir/afu/afp/mcp3_ram512x080.v"]"\
  "[file normalize "$origin_dir/afu/afp/mcp3_trace.v"]"\
 ]
-set verilog_lpc     [list ""]
+set verilog_lpc     [list \
+ "[file normalize "$origin_dir/afu/lpc/lpc_afu.v"]"\
+ "[file normalize "$origin_dir/afu/lpc/lpc_bulk_mem.v"]"\
+ "[file normalize "$origin_dir/afu/lpc/lpc_cmdfifo.v"]"\
+ "[file normalize "$origin_dir/afu/lpc/lpc_errary.v"]"\
+ "[file normalize "$origin_dir/afu/lpc/oc_function.v"]"\
+ "[file normalize "$origin_dir/afu/lpc/lpc_mmio_regs.v"]"\
+ "[file normalize "$origin_dir/afu/lpc/lpc_respfifo.v"]"\
+ "[file normalize "$origin_dir/afu/lpc/lpc_sparse.v"]"\
+ "[file normalize "$origin_dir/afu/lpc/lpc_tlx_afu_credit_mgr.v"]"\
+]
 set verilog_xlx     [list ""]
 
 # Select to correct afu to build with.  config is common to all AFUs
@@ -777,6 +806,11 @@ source $origin_dir/board_support_packages/$card/ip/create_DLx_PHY_${transceiver_
 if {$use_flash ne ""} {
     source $origin_dir/board_support_packages/$card/ip/axi_quad_spi.tcl
     source $origin_dir/board_support_packages/$card/ip/axi_hwicap.tcl
+}
+
+# Generate all AFU specific IP
+foreach tcl_ip [glob -nocomplain -path ${origin_dir}/afu/${afu}/ip/ *.tcl] {
+    source $tcl_ip
 }
 
 # Create global variable to pass to the following tcl script
