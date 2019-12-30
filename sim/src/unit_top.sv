@@ -371,7 +371,7 @@ assign                             dut0.bsp.clock_afu = clock_200m;
             //.s_axi_awregion        (dut0.oc_func.fw_afu.action_w.axi_mm_awregion),
             //.s_axi_awqos           (dut0.oc_func.fw_afu.action_w.axi_mm_awqos),
             .s_axi_awvalid         (dut0.oc_func.fw_afu.action_w.axi_mm_awvalid),
-            .m_axi_awready         (dut0.oc_func.fw_afu.action_w.axi_mm_awready),
+            .s_axi_awready         (dut0.oc_func.fw_afu.action_w.axi_mm_awready),
             // AXI write data channel
             .s_axi_wdata           (dut0.oc_func.fw_afu.action_w.axi_mm_wdata),
             .s_axi_wstrb           (dut0.oc_func.fw_afu.action_w.axi_mm_wstrb),
@@ -423,23 +423,45 @@ assign                             dut0.bsp.clock_afu = clock_200m;
             //.m_axis_tid            (),
             //.m_axis_tuser          ()
         );
+        axi_vip_st_passthrough_a2h st_passthrough_a2h(
+            .aclk                  (dut0.oc_func.fw_afu.action_w.ap_clk),
+            .aresetn               (dut0.oc_func.fw_afu.action_w.ap_rst_n),
+            .s_axis_tvalid         (dut0.oc_func.fw_afu.snap_core_i.s_axis_tvalid),
+            //.s_axis_tready         (),
+            .s_axis_tdata          (dut0.oc_func.fw_afu.snap_core_i.s_axis_tdata),
+            .s_axis_tkeep          (dut0.oc_func.fw_afu.snap_core_i.s_axis_tkeep),
+            .s_axis_tlast          (dut0.oc_func.fw_afu.snap_core_i.s_axis_tlast),
+            .s_axis_tid            (dut0.oc_func.fw_afu.snap_core_i.s_axis_tid),
+            .s_axis_tuser          (dut0.oc_func.fw_afu.snap_core_i.s_axis_tuser),
+            //.m_axis_tvalid         (),
+            .m_axis_tready         (dut0.oc_func.fw_afu.snap_core_i.s_axis_tready)
+            //.m_axis_tdata          (),
+            //.m_axis_tkeep          (),
+            //.m_axis_tlast          (),
+            //.m_axis_tid            (),
+            //.m_axis_tuser          ()
+        );
         axi_vip_st_slave st_slave(
             .aclk                  (dut0.oc_func.fw_afu.action_w.ap_clk),
             .aresetn               (dut0.oc_func.fw_afu.action_w.ap_rst_n),
             .s_axis_tvalid         (dut0.oc_func.fw_afu.action_w.m_axis_tvalid),
-            //.s_axis_tready         (),
             .s_axis_tdata          (dut0.oc_func.fw_afu.action_w.m_axis_tdata),
             .s_axis_tkeep          (dut0.oc_func.fw_afu.action_w.m_axis_tkeep),
             .s_axis_tlast          (dut0.oc_func.fw_afu.action_w.m_axis_tlast),
             .s_axis_tid            (dut0.oc_func.fw_afu.action_w.m_axis_tid),
             .s_axis_tuser          (dut0.oc_func.fw_afu.action_w.m_axis_tuser),
-            //.s_axis_tvalid         (),
             .s_axis_tready         (dut0.oc_func.fw_afu.action_w.m_axis_tready)
-            //.s_axis_tdata          (),
-            //.s_axis_tkeep          (),
-            //.s_axis_tlast          (),
-            //.s_axis_tid            (),
-            //.s_axis_tuser          ()
+        );
+         axi_vip_st_master st_master(
+            .aclk                  (dut0.oc_func.fw_afu.action_w.ap_clk),
+            .aresetn               (dut0.oc_func.fw_afu.action_w.ap_rst_n),
+            .m_axis_tvalid         (dut0.oc_func.fw_afu.action_w.s_axis_tvalid),
+            .m_axis_tdata          (dut0.oc_func.fw_afu.action_w.s_axis_tdata),
+            .m_axis_tkeep          (dut0.oc_func.fw_afu.action_w.s_axis_tkeep),
+            .m_axis_tlast          (dut0.oc_func.fw_afu.action_w.s_axis_tlast),
+            .m_axis_tid            (dut0.oc_func.fw_afu.action_w.s_axis_tid),
+            .m_axis_tuser          (dut0.oc_func.fw_afu.action_w.s_axis_tuser),
+            .m_axis_tready         (dut0.oc_func.fw_afu.action_w.s_axis_tready)
         );
     `endif
 `endif
@@ -544,13 +566,16 @@ intrp_interface intrp_vif(
     .action_rst_n             (dut0.oc_func.fw_afu.action_w.ap_rst_n)
 );
 
-//assign                             intrp_vif.intrp_req = dut0.oc_func.fw_afu.action_w.interrupt;
 assign                             intrp_vif.intrp_ack = dut0.oc_func.fw_afu.action_w.interrupt_ack;
-//assign                             intrp_vif.intrp_src = dut0.oc_func.fw_afu.action_w.interrupt_src;
-//assign                             intrp_vif.intrp_ctx = dut0.oc_func.fw_afu.action_w.interrupt_ctx;
-assign                             dut0.oc_func.fw_afu.action_w.interrupt = intrp_vif.intrp_req;
-assign                             dut0.oc_func.fw_afu.action_w.interrupt_src = intrp_vif.intrp_src;
-assign                             dut0.oc_func.fw_afu.action_w.interrupt_ctx = intrp_vif.intrp_ctx;
+`ifndef ENABLE_ODMA
+    assign                             dut0.oc_func.fw_afu.action_w.interrupt = intrp_vif.intrp_req;
+    assign                             dut0.oc_func.fw_afu.action_w.interrupt_src = intrp_vif.intrp_src;
+    assign                             dut0.oc_func.fw_afu.action_w.interrupt_ctx = intrp_vif.intrp_ctx;
+`else
+    assign                             intrp_vif.intrp_req = dut0.oc_func.fw_afu.action_w.interrupt;
+    assign                             intrp_vif.intrp_src = dut0.oc_func.fw_afu.action_w.interrupt_src;
+    assign                             intrp_vif.intrp_ctx = dut0.oc_func.fw_afu.action_w.interrupt_ctx;
+`endif
 
 //**********************************************
 // DLX TLX INTERFACE FOR VERIF
@@ -599,9 +624,16 @@ initial begin
             st_passthrough_h2a.inst.set_passthrough_mode();
             st_passthrough_h2a.inst.IF.set_enable_xchecks_to_warn(); 
             st_passthrough_h2a.inst.IF.set_xilinx_reset_check_to_warn();
+            uvm_config_db#(virtual axi4stream_vip_if `AXI_VIP_ST_PASSTHROUGH_A2H_PARAMS)::set(null, "*", "axi_vip_st_passthrough_a2h_vif", st_passthrough_a2h.inst.IF);
+            st_passthrough_a2h.inst.set_passthrough_mode();
+            st_passthrough_a2h.inst.IF.set_enable_xchecks_to_warn(); 
+            st_passthrough_a2h.inst.IF.set_xilinx_reset_check_to_warn();
             uvm_config_db#(virtual axi4stream_vip_if `AXI_VIP_ST_SLAVE_PARAMS)::set(null, "*", "axi_vip_st_slave_vif", st_slave.inst.IF);
             st_slave.inst.IF.set_enable_xchecks_to_warn();
             st_slave.inst.IF.set_xilinx_reset_check_to_warn();
+            uvm_config_db#(virtual axi4stream_vip_if `AXI_VIP_ST_MASTER_PARAMS)::set(null, "*", "axi_vip_st_master_vif", st_master.inst.IF);
+            st_master.inst.IF.set_enable_xchecks_to_warn();
+            st_master.inst.IF.set_xilinx_reset_check_to_warn();
         `endif
     `endif
     uvm_config_db#(virtual axi_vip_if `AXI_VIP_LITE_PASSTHROUGH_PARAMS)::set(null, "*", "axi_vip_lite_passthrough_vif", lite_passthrough.inst.IF);
