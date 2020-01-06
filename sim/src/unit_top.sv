@@ -177,6 +177,7 @@ assign                             dut0.bsp.clock_afu = clock_200m;
         .s_axi_awlen           (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_awlen),
         .s_axi_awsize          (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_awsize),
         .s_axi_awburst         (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_awburst),
+        .s_axi_awuser          (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_awuser),
         //.s_axi_awlock          (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_awlock),
         //.s_axi_awcache         (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_awcache),
         //.s_axi_awprot          (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_awprot),
@@ -188,12 +189,14 @@ assign                             dut0.bsp.clock_afu = clock_200m;
         .s_axi_wdata           (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_wdata),
         .s_axi_wstrb           (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_wstrb),
         .s_axi_wlast           (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_wlast),
+        //.s_axi_wuser           (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_wuser),
         .s_axi_wvalid          (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_wvalid),
         .m_axi_wready          (dut0.oc_func.fw_afu.snap_core_i.mm_snap2conv_wready),
         // AXI write response channel
         .s_axi_bready          (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_bready),
         .m_axi_bid             (dut0.oc_func.fw_afu.snap_core_i.mm_snap2conv_bid),
         .m_axi_bresp           (dut0.oc_func.fw_afu.snap_core_i.mm_snap2conv_bresp),
+        .m_axi_buser           (dut0.oc_func.fw_afu.snap_core_i.mm_snap2conv_buser),
         .m_axi_bvalid          (dut0.oc_func.fw_afu.snap_core_i.mm_snap2conv_bvalid),
         // AXI read response channel
         .s_axi_arid            (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_arid),
@@ -201,6 +204,7 @@ assign                             dut0.bsp.clock_afu = clock_200m;
         .s_axi_arlen           (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_arlen),
         .s_axi_arsize          (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_arsize),
         .s_axi_arburst         (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_arburst),
+        .s_axi_aruser          (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_aruser),
         //.s_axi_arlock          (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_arlock),
         //.s_axi_arcache         (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_arcache),
         //.s_axi_arprot          (dut0.oc_func.fw_afu.snap_core_i.mm_conv2snap_arprot),
@@ -214,6 +218,7 @@ assign                             dut0.bsp.clock_afu = clock_200m;
         .m_axi_rdata           (dut0.oc_func.fw_afu.snap_core_i.mm_snap2conv_rdata),
         .m_axi_rresp           (dut0.oc_func.fw_afu.snap_core_i.mm_snap2conv_rresp),
         .m_axi_rlast           (dut0.oc_func.fw_afu.snap_core_i.mm_snap2conv_rlast),
+        .m_axi_ruser           (dut0.oc_func.fw_afu.snap_core_i.mm_snap2conv_ruser),
         .m_axi_rvalid          (dut0.oc_func.fw_afu.snap_core_i.mm_snap2conv_rvalid)
     );
     axi_vip_mm_master mm_master(
@@ -225,6 +230,7 @@ assign                             dut0.bsp.clock_afu = clock_200m;
         .m_axi_awlen           (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_awlen),
         .m_axi_awsize          (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_awsize),
         .m_axi_awburst         (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_awburst),
+        .m_axi_awuser          (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_awuser),
         //.m_axi_awlock          (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_awlock),
         //.m_axi_awcache         (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_awcache),
         //.m_axi_awprot          (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_awprot),
@@ -236,12 +242,14 @@ assign                             dut0.bsp.clock_afu = clock_200m;
         .m_axi_wdata           (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_wdata),
         .m_axi_wstrb           (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_wstrb),
         .m_axi_wlast           (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_wlast),
+        //.m_axi_wuser           (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_wuser),
         .m_axi_wvalid          (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_wvalid),
         .m_axi_wready          (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_wready),
         // AXI write response channel
         .m_axi_bready          (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_bready),
         .m_axi_bid             (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_bid),
         .m_axi_bresp           (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_bresp),
+        .m_axi_buser           (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_buser),
         .m_axi_bvalid          (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_bvalid),
         // AXI read response channel
         .m_axi_arid            (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_arid),
@@ -249,6 +257,7 @@ assign                             dut0.bsp.clock_afu = clock_200m;
         .m_axi_arlen           (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_arlen),
         .m_axi_arsize          (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_arsize),
         .m_axi_arburst         (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_arburst),
+        .m_axi_aruser          (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_aruser),
         //.m_axi_arlock          (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_arlock),
         //.m_axi_arcache         (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_arcache),
         //.m_axi_arprot          (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_arprot),
@@ -262,6 +271,7 @@ assign                             dut0.bsp.clock_afu = clock_200m;
         .m_axi_rdata           (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_rdata),
         .m_axi_rresp           (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_rresp),
         .m_axi_rlast           (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_rlast),
+        .m_axi_ruser           (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_ruser),
         .m_axi_rvalid          (dut0.oc_func.fw_afu.action_w.m_axi_host_mem_rvalid)
     );
 `else
@@ -317,6 +327,7 @@ assign                             dut0.bsp.clock_afu = clock_200m;
             .s_axi_awlen           (dut0.oc_func.fw_afu.snap_core_i.axi_mm_awlen),
             .s_axi_awsize          (dut0.oc_func.fw_afu.snap_core_i.axi_mm_awsize),
             .s_axi_awburst         (dut0.oc_func.fw_afu.snap_core_i.axi_mm_awburst),
+            .s_axi_awuser          (dut0.oc_func.fw_afu.snap_core_i.axi_mm_awuser),
             //.s_axi_awlock          (dut0.oc_func.fw_afu.snap_core_i.axi_mm_awlock),
             //.s_axi_awcache         (dut0.oc_func.fw_afu.snap_core_i.axi_mm_awcache),
             //.s_axi_awprot          (dut0.oc_func.fw_afu.snap_core_i.axi_mm_awprot),
@@ -328,12 +339,14 @@ assign                             dut0.bsp.clock_afu = clock_200m;
             .s_axi_wdata           (dut0.oc_func.fw_afu.snap_core_i.axi_mm_wdata),
             .s_axi_wstrb           (dut0.oc_func.fw_afu.snap_core_i.axi_mm_wstrb),
             .s_axi_wlast           (dut0.oc_func.fw_afu.snap_core_i.axi_mm_wlast),
+            //.s_axi_wuser           (dut0.oc_func.fw_afu.snap_core_i.axi_mm_wuser),
             .s_axi_wvalid          (dut0.oc_func.fw_afu.snap_core_i.axi_mm_wvalid),
             .m_axi_wready          (dut0.oc_func.fw_afu.snap_core_i.axi_mm_wready),
             // AXI write response channel
             .s_axi_bready          (dut0.oc_func.fw_afu.snap_core_i.axi_mm_bready),
             .m_axi_bid             (dut0.oc_func.fw_afu.snap_core_i.axi_mm_bid),
             .m_axi_bresp           (dut0.oc_func.fw_afu.snap_core_i.axi_mm_bresp),
+            .m_axi_buser           (dut0.oc_func.fw_afu.snap_core_i.axi_mm_buser),
             .m_axi_bvalid          (dut0.oc_func.fw_afu.snap_core_i.axi_mm_bvalid),
             // AXI read response channel
             .s_axi_arid            (dut0.oc_func.fw_afu.snap_core_i.axi_mm_arid),
@@ -341,6 +354,7 @@ assign                             dut0.bsp.clock_afu = clock_200m;
             .s_axi_arlen           (dut0.oc_func.fw_afu.snap_core_i.axi_mm_arlen),
             .s_axi_arsize          (dut0.oc_func.fw_afu.snap_core_i.axi_mm_arsize),
             .s_axi_arburst         (dut0.oc_func.fw_afu.snap_core_i.axi_mm_arburst),
+            .s_axi_aruser          (dut0.oc_func.fw_afu.snap_core_i.axi_mm_aruser),
             //.s_axi_arlock          (dut0.oc_func.fw_afu.snap_core_i.axi_mm_arlock),
             //.s_axi_arcache         (dut0.oc_func.fw_afu.snap_core_i.axi_mm_arcache),
             //.s_axi_arprot          (dut0.oc_func.fw_afu.snap_core_i.axi_mm_arprot),
@@ -354,6 +368,7 @@ assign                             dut0.bsp.clock_afu = clock_200m;
             .m_axi_rdata           (dut0.oc_func.fw_afu.snap_core_i.axi_mm_rdata),
             .m_axi_rresp           (dut0.oc_func.fw_afu.snap_core_i.axi_mm_rresp),
             .m_axi_rlast           (dut0.oc_func.fw_afu.snap_core_i.axi_mm_rlast),
+            .m_axi_ruser           (dut0.oc_func.fw_afu.snap_core_i.axi_mm_ruser),
             .m_axi_rvalid          (dut0.oc_func.fw_afu.snap_core_i.axi_mm_rvalid)
         );
         axi_vip_mm_slave mm_slave(
@@ -365,6 +380,7 @@ assign                             dut0.bsp.clock_afu = clock_200m;
             .s_axi_awlen           (dut0.oc_func.fw_afu.action_w.axi_mm_awlen),
             .s_axi_awsize          (dut0.oc_func.fw_afu.action_w.axi_mm_awsize),
             .s_axi_awburst         (dut0.oc_func.fw_afu.action_w.axi_mm_awburst),
+            .s_axi_awuser          (dut0.oc_func.fw_afu.action_w.axi_mm_awuser),
             //.s_axi_awlock          (dut0.oc_func.fw_afu.action_w.axi_mm_awlock),
             //.s_axi_awcache         (dut0.oc_func.fw_afu.action_w.axi_mm_awcache),
             //.s_axi_awprot          (dut0.oc_func.fw_afu.action_w.axi_mm_awprot),
@@ -376,12 +392,14 @@ assign                             dut0.bsp.clock_afu = clock_200m;
             .s_axi_wdata           (dut0.oc_func.fw_afu.action_w.axi_mm_wdata),
             .s_axi_wstrb           (dut0.oc_func.fw_afu.action_w.axi_mm_wstrb),
             .s_axi_wlast           (dut0.oc_func.fw_afu.action_w.axi_mm_wlast),
+            //.s_axi_wuser           (dut0.oc_func.fw_afu.action_w.axi_mm_wuser),
             .s_axi_wvalid          (dut0.oc_func.fw_afu.action_w.axi_mm_wvalid),
             .s_axi_wready          (dut0.oc_func.fw_afu.action_w.axi_mm_wready),
             // AXI write response channel
             .s_axi_bready          (dut0.oc_func.fw_afu.action_w.axi_mm_bready),
             .s_axi_bid             (dut0.oc_func.fw_afu.action_w.axi_mm_bid),
             .s_axi_bresp           (dut0.oc_func.fw_afu.action_w.axi_mm_bresp),
+            .s_axi_buser           (dut0.oc_func.fw_afu.action_w.axi_mm_buser),
             .s_axi_bvalid          (dut0.oc_func.fw_afu.action_w.axi_mm_bvalid),
             // AXI read response channel
             .s_axi_arid            (dut0.oc_func.fw_afu.action_w.axi_mm_arid),
@@ -389,6 +407,7 @@ assign                             dut0.bsp.clock_afu = clock_200m;
             .s_axi_arlen           (dut0.oc_func.fw_afu.action_w.axi_mm_arlen),
             .s_axi_arsize          (dut0.oc_func.fw_afu.action_w.axi_mm_arsize),
             .s_axi_arburst         (dut0.oc_func.fw_afu.action_w.axi_mm_arburst),
+            .s_axi_aruser          (dut0.oc_func.fw_afu.action_w.axi_mm_aruser),
             //.s_axi_arlock          (dut0.oc_func.fw_afu.action_w.axi_mm_arlock),
             //.s_axi_arcache         (dut0.oc_func.fw_afu.action_w.axi_mm_arcache),
             //.s_axi_arprot          (dut0.oc_func.fw_afu.action_w.axi_mm_arprot),
@@ -402,6 +421,7 @@ assign                             dut0.bsp.clock_afu = clock_200m;
             .s_axi_rdata           (dut0.oc_func.fw_afu.action_w.axi_mm_rdata),
             .s_axi_rresp           (dut0.oc_func.fw_afu.action_w.axi_mm_rresp),
             .s_axi_rlast           (dut0.oc_func.fw_afu.action_w.axi_mm_rlast),
+            .s_axi_ruser           (dut0.oc_func.fw_afu.action_w.axi_mm_ruser),
             .s_axi_rvalid          (dut0.oc_func.fw_afu.action_w.axi_mm_rvalid)
         );
     `else
