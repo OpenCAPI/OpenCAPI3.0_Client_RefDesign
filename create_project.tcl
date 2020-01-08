@@ -33,7 +33,7 @@ set proj              "viv_proj"
 
 # Available options to set
 set afus { lpc afp }
-set transceiver_types { bypass }
+set transceiver_types { bypass elastic}
 set transceiver_speeds { 25.78125 25.625 20.0 }
 set cards { ad9v3 }
 set fpgas { xcvu3p-ffvc1517-2-i }
@@ -90,6 +90,7 @@ if { $::argc > 0 } {
       "--origin_dir"  { incr i; set origin_dir [lindex $::argv $i] }
       "--help"        { help }
       "--afu"         {incr i; set afu               [string tolower [lindex $::argv $i]]}
+      "--buffer"      {incr i; set transceiver_type  [string tolower [lindex $::argv $i]]}
       "--speed"       {incr i; set transceiver_speed [string tolower [lindex $::argv $i]]}
       "--flash"       {        set use_flash         "yes"                               }
       "--proj"        {incr i; set proj              [string tolower [lindex $::argv $i]]}

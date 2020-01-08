@@ -7,3 +7,4 @@
 
 # Supported AFUs
 1. AFP
+2. LPC
