@@ -52,7 +52,8 @@ module flash_sub_system (
                                           //   the quad SPI core on .ext_spi_clk immediately after initial configuration is over.
                                           //   The quad SPI core divides this in half and drives it to the STARTUPE3 core on .USRCCLKO
                                           //   See ug570-ultrascale-configuration.pdf and ug470_7Series_Config.pdf page 92 for more details.
-  , output         spi_clk_div_2          // Make half freq spi_clk available for wrapping back in as 'icap_clk' if desired
+// sck_o should only connect to STARTUP IP so remove spi_clk_div_2 output                         
+//  , output         spi_clk_div_2          // Make half freq spi_clk available for wrapping back in as 'icap_clk' if desired
   , input          icap_clk               // This is a 100 MHz (max freq) clock into the ICAP block 
   , input          reset_n                // (active low) Hardware reset
 
@@ -147,7 +148,7 @@ assign axi_cfg_status[0]    = eos;
 // Convert CFG registers to AXI4-Lite master interface
 // ---------------------------------------------------------------------------------
 cfg_reg_to_axi4lite CFG2AXI4L (
-    .s_axi_aclk       ( spi_clk         ) // input 
+    .s_axi_aclk       ( axi_clk         ) // input 
   , .s_axi_aresetn    ( reset_n         ) // input 
     // Configuration register interface
   , .cfg_axi_addr     ( cfg_axi_addr    ) // input   [15:0]
@@ -263,7 +264,7 @@ always @(*)  // Combinational
 axi_hwicap_0 ICAP (
     .icap_clk       ( icap_clk           ) // input (max freq = 100 MHz, pg134-axi-hwicap.pdf)
   , .eos_in         ( eos                ) // input
-  , .s_axi_aclk     ( spi_clk            ) // input
+  , .s_axi_aclk     ( axi_clk            ) // input
   , .s_axi_aresetn  ( reset_n            ) // input (active low)
   , .s_axi_awaddr   ( s_axi_awaddr[8:0]  ) // input [8:0]
   , .s_axi_awvalid  ( g_axi_awvalid[1]   ) // input 
@@ -295,7 +296,7 @@ axi_hwicap_0 ICAP (
 // reference the Verilog simulation library.
 axi_quad_spi_0 QSPI (
     .ext_spi_clk    ( spi_clk            ) // input 
-  , .s_axi_aclk     ( spi_clk            ) // input 
+  , .s_axi_aclk     ( axi_clk            ) // input 
   , .s_axi_aresetn  ( reset_n            ) // input (active low)
      // AXI_LITE
   , .s_axi_awaddr   ( s_axi_awaddr[6:0]  ) // input [6:0]
@@ -353,7 +354,7 @@ axi_quad_spi_0 QSPI (
      // Misc
   , .ip2intc_irpt   ( qspi_interrupt     )  // output
 );
-assign spi_clk_div_2 = spi_sck_o;           // Pass clock going to STARTUP upwards so it can be used as ICAP clock
+//assign spi_clk_div_2 = spi_sck_o;           // Pass clock going to STARTUP upwards so it can be used as ICAP clock
 
 // In synthesis and implementation (when CFG_FLASH_SIM is NOT defined, thus ifndef vs ifdef), use the real
 // STARTUPE3 block to interface to the 1st FLASH device.
