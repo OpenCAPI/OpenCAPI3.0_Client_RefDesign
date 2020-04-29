@@ -38,7 +38,7 @@
 // Modification History :
 //                                |Version    |     |Author   |Description of change
 //                                |-----------|     |-------- |---------------------
-  `define CFG_FUNC0_VERSION        16_Jan_2018   //            Change reg_ovsec_004_q[31:20] from h30 to h38. Add AXI expander bits.
+  `define CFG_FUNC0_VERSION        04_Oct_2019   //            Added image reload enable register/bit in OVSEC0
 // -------------------------------------------------------------------
 
 // This define contains the snapshot version of the CFG implementation. Overlay it each time a version snapshot is made.
@@ -129,7 +129,7 @@
 // Note: Because Capabilities pointers are only 8 bits, create a special version of the pointer of that size. The value is the same as *_BASE.
 `define VPD_BASE    12'h040
 `define VPD_LAST    12'h047
-`define VPD_PTR     8'h40
+`define VPD_PTR     8'h00
 
 // - Extended Capabilities - all must appear between x100 and xFFF
 //   (dsn)   Extended Capability: Device Serial Number 
@@ -166,7 +166,7 @@
 //       Keeping _ovsec_ the same makes it easier to copy/paste common logic between the function instances.
 //
 `define OVSEC0_BASE  12'h600
-`define OVSEC0_LAST  12'h637
+`define OVSEC0_LAST  12'h63B
  
  
 // ==============================================================================================================================
@@ -330,6 +330,8 @@ module cfg_func0
   , input    [1:0] flsh_cfg_rresp         // Read  response from selected AXI4-Lite device
   , output         cfg_flsh_expand_enable // When 1, expand/collapse 4 bytes of data into four, 1 byte AXI operations
   , output         cfg_flsh_expand_dir    // When 0, expand bytes [3:0] in order 0,1,2,3 . When 1, expand in order 3,2,1,0 .
+   // Image reload enable
+  , output         cfg_icap_reload_en
 
 ) ;
 
@@ -794,6 +796,9 @@ wire sel_ovsec_020;
 wire sel_ovsec_024;
 wire sel_ovsec_028;
 wire sel_ovsec_02C;
+wire sel_ovsec_030;
+wire sel_ovsec_034;
+wire sel_ovsec_038;
 
 assign sel_ovsec_000 = (addr_q >= (`OVSEC0_BASE + 12'h000) && addr_q < (`OVSEC0_BASE + 12'h004)) ? 1'b1 : 1'b0;
 assign sel_ovsec_004 = (addr_q >= (`OVSEC0_BASE + 12'h004) && addr_q < (`OVSEC0_BASE + 12'h008)) ? 1'b1 : 1'b0;
@@ -809,6 +814,7 @@ assign sel_ovsec_028 = (addr_q >= (`OVSEC0_BASE + 12'h028) && addr_q < (`OVSEC0_
 assign sel_ovsec_02C = (addr_q >= (`OVSEC0_BASE + 12'h02C) && addr_q < (`OVSEC0_BASE + 12'h030)) ? 1'b1 : 1'b0;
 assign sel_ovsec_030 = (addr_q >= (`OVSEC0_BASE + 12'h030) && addr_q < (`OVSEC0_BASE + 12'h034)) ? 1'b1 : 1'b0;
 assign sel_ovsec_034 = (addr_q >= (`OVSEC0_BASE + 12'h034) && addr_q < (`OVSEC0_BASE + 12'h038)) ? 1'b1 : 1'b0;
+assign sel_ovsec_038 = (addr_q >= (`OVSEC0_BASE + 12'h038) && addr_q < (`OVSEC0_BASE + 12'h03C)) ? 1'b1 : 1'b0;
 
 
 // Check for the condition 'access to un-implemented address in architected range'.
@@ -2617,7 +2623,8 @@ wire [31:0] reg_ovsec_024_q;
 wire [31:0] reg_ovsec_028_q; 
 wire [31:0] reg_ovsec_02C_q; 
 reg  [31:0] reg_ovsec_030_q; 
-reg  [31:0] reg_ovsec_034_q; 
+reg  [31:0] reg_ovsec_034_q;
+reg  [31:0] reg_ovsec_038_q; 
 
 wire [31:0] reg_ovsec_000_rdata; 
 wire [31:0] reg_ovsec_004_rdata; 
@@ -2633,6 +2640,7 @@ wire [31:0] reg_ovsec_028_rdata;
 wire [31:0] reg_ovsec_02C_rdata;
 wire [31:0] reg_ovsec_030_rdata;
 wire [31:0] reg_ovsec_034_rdata;
+wire [31:0] reg_ovsec_038_rdata;
 
 
 assign reg_ovsec_000_q[31:20] = 12'h000;     // Last Extended Capability
@@ -2641,7 +2649,7 @@ assign reg_ovsec_000_q[15: 0] = 16'h0023;
 assign reg_ovsec_000_rdata = (sel_ovsec_000 == 1'b1 && do_read == 1'b1) ? reg_ovsec_000_q : 32'h00000000;
 
 
-assign reg_ovsec_004_q[31:20] = 12'h038;     // Capability structure length in bytes (last byte address + 1)
+assign reg_ovsec_004_q[31:20] = 12'h03C;     // Capability structure length in bytes (last byte address + 1)
 assign reg_ovsec_004_q[19:16] = 4'h0;     
 assign reg_ovsec_004_q[15: 0] = 16'h1014;      
 assign reg_ovsec_004_rdata = (sel_ovsec_004 == 1'b1 && do_read == 1'b1) ? reg_ovsec_004_q : 32'h00000000;
@@ -2793,6 +2801,25 @@ always @(posedge(clock))
 assign reg_ovsec_034_rdata = (sel_ovsec_034 == 1'b1 && do_read == 1'b1) ? reg_ovsec_034_q : 32'h00000000;
 
 
+always @(posedge(clock))
+  begin
+    if (reset_q == 1'b1) reg_ovsec_038_q <= 32'b0;     // Load initial value during reset
+
+    else if (sel_ovsec_038 == 1'b1)                                 // If selected, write any byte that is active (wr_be=0000 on read)
+      begin
+        reg_ovsec_038_q[31:24] <= (wr_be[3] == 1'b1) ? wdata_q[31:24] : reg_ovsec_038_q[31:24];
+        reg_ovsec_038_q[23:16] <= (wr_be[2] == 1'b1) ? wdata_q[23:16] : reg_ovsec_038_q[23:16];
+        reg_ovsec_038_q[15: 8] <= (wr_be[1] == 1'b1) ? wdata_q[15: 8] : reg_ovsec_038_q[15: 8];
+        reg_ovsec_038_q[ 7: 0] <= (wr_be[0] == 1'b1) ? wdata_q[ 7: 0] : reg_ovsec_038_q[ 7: 0];
+      end
+    else                 reg_ovsec_038_q <= reg_ovsec_038_q;        // Hold value when register is not selected or operation is on-going
+  end
+assign reg_ovsec_038_rdata = (sel_ovsec_038 == 1'b1 && do_read == 1'b1) ? reg_ovsec_038_q : 32'h00000000;
+
+
+
+
+
 
 // ----------------------------------
 // Select source for ultimate read data
@@ -2854,7 +2881,7 @@ assign final_rdata_d = reg_csh_000_rdata   | reg_csh_004_rdata   | reg_csh_008_r
                        reg_ovsec_000_rdata | reg_ovsec_004_rdata | reg_ovsec_008_rdata | reg_ovsec_00C_rdata |
                        reg_ovsec_010_rdata | reg_ovsec_014_rdata | reg_ovsec_018_rdata | reg_ovsec_01C_rdata |
                        reg_ovsec_020_rdata | reg_ovsec_024_rdata | reg_ovsec_028_rdata | reg_ovsec_02C_rdata |
-                       reg_ovsec_030_rdata | reg_ovsec_034_rdata 
+                       reg_ovsec_030_rdata | reg_ovsec_034_rdata | reg_ovsec_038_rdata
                        ;                      
 
 always @(posedge(clock))
@@ -2931,5 +2958,9 @@ assign cfg_flsh_wren          = reg_ovsec_030_q[17];
 assign cfg_flsh_rden          = reg_ovsec_030_q[16];
 assign cfg_flsh_wdata         = reg_ovsec_034_q;
 
+
+//Enable/disable of image reload through oc-reset
+
+assign cfg_icap_reload_en     = reg_ovsec_038_q[0];
 
 endmodule 
