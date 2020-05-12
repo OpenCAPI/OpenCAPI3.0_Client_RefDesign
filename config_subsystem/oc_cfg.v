@@ -354,8 +354,8 @@ module oc_cfg (
   ,output  [4:0] f1_octrl00_pasid_len_supported 
   ,output        f1_octrl00_metadata_supported  
   ,output [11:0] f1_octrl00_actag_len_supported 
-
-  
+  ,output        cfg_icap_reload_en
+  ,output        cfg_xfer_done_interrupt
 
 );
 
@@ -682,8 +682,8 @@ cfg_respfifo CFG0_RFF  (
 ; wire         cfg_f0_csh_expansion_ROM_enable
 ; wire   [7:0] cfg_f0_otl0_tl_major_vers_config 
 ; wire   [7:0] cfg_f0_otl0_tl_minor_vers_config
-; wire   [3:0] cfg_f0_otl0_long_backoff_timer
-; wire   [3:0] cfg_f0_otl0_short_backoff_timer
+//; wire   [3:0] cfg_f0_otl0_long_backoff_timer
+//; wire   [3:0] cfg_f0_otl0_short_backoff_timer
 ; wire  [63:0] cfg_f0_otl0_xmt_tmpl_config
 ; wire [255:0] cfg_f0_otl0_xmt_rate_tmpl_config  
 ; wire         cfg_f0_ofunc_function_reset      
@@ -798,6 +798,8 @@ cfg_func0 CFG_F0  (
   , .flsh_cfg_rresp                      ( flsh_cfg_rresp                       )
   , .cfg_flsh_expand_enable              ( cfg_flsh_expand_enable               )
   , .cfg_flsh_expand_dir                 ( cfg_flsh_expand_dir                  )
+  , .cfg_icap_reload_en                  ( cfg_icap_reload_en                   )
+  , .cfg_xfer_done_interrupt             ( cfg_xfer_done_interrupt              )
 
 );
 
