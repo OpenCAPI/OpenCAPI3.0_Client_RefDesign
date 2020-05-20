@@ -1,178 +1,121 @@
-//-----------------------------------------------------------------------------
-//
-// (c) Copyright 2011 Xilinx, Inc. All rights reserved.
-//
-// This file contains confidential and proprietary information
-// of Xilinx, Inc. and is protected under U.S. and
-// international copyright and other intellectual property
-// laws.
-//
-// DISCLAIMER
-// This disclaimer is not a license and does not grant any
-// rights to the materials distributed herewith. Except as
-// otherwise provided in a valid license issued to you by
-// Xilinx, and to the maximum extent permitted by applicable
-// law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
-// WITH ALL FAULTS, AND XILINX HEREBY DISCLAIMS ALL WARRANTIES
-// AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
-//- BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
-// INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
-// (2) Xilinx shall not be liable (whether in contract or tort,
-// including negligence, or under any other theory of
-// liability) for any loss or damage of any kind or nature
-// related to, arising under or in connection with these
-// materials, including for any direct, or any indirect,
-// special, incidental, or consequential loss or damage
-// (including loss of data, profits, goodwill, or any type of
-// loss or damage suffered as a result of any action brought
-// by a third party) even if such damage or loss was
-// reasonably foreseeable or Xilinx had been advised of the
-// possibility of the same.
-//
-// CRITICAL APPLICATIONS
-// Xilinx products are not designed or intended to be fail-
-// safe, or for use in any application requiring fail-safe
-// performance, such as life-support or safety devices or
-// systems, Class III medical devices, nuclear facilities,
-// applications related to the deployment of airbags, or any
-// other applications that could lead to death, personal
-// injury, or severe property or environmental damage
-// (individually and collectively, "Critical
-// Applications"). Customer assumes the sole risk and
-// liability of any use of Xilinx products in Critical
-// Applications, subject only to applicable laws and
-// regulations governing limitations on product liability.
-//
-// THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
-// PART OF THIS FILE AT ALL TIMES.
-//
-//-----------------------------------------------------------------------------
-//Author : 
-// 
-// Create Date:    110916 
-// Design Name: 
-// Module Name:    drp_read_modify_write.v - Behavioral 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description:  Hierarchal block to modify GTX modes via DRP interface.  
-//
-//
-//--------------------------------------------------------------------------------
+`pragma protect begin_protected
+`pragma protect version = 2
+`pragma protect encrypt_agent = "XILINX"
+`pragma protect encrypt_agent_info = "Xilinx Encryption Tool 2019.1"
+`pragma protect begin_commonblock
+`pragma protect end_commonblock
+`pragma protect begin_toolblock
+`pragma protect rights_digest_method="sha256"
+`pragma protect key_keyowner = "Xilinx", key_keyname= "xilinxt_2019_02", key_method = "rsa", key_block
+cTcTmBQKin/EPaznXQTDcHLaoYrAky3d65Iukco6jsIsqF3IX0dZRTQHdYdpmu5jcFhO1cqLf/Z5
+HicikTAtIxs8JxVSqsJtFvtHC5nooZPW6imNq3yGyUzeZUDsS2Fo66/wniRqFU5FTMyz7/2I3weJ
+ny/I99lPfE0IhXxTofg8dUqptJ/RTIN2nAjmHvJOLaZfh3vl4AJQAFAcL6wNHqOvV1jJcAhu92WR
+3AI08uGdcBRuZw01WDy7GAh3eWlS3Mz9fc//vdC5XX+4ffFdzUmuAOw7ynxrG7pK6OqM775u/9FV
+6u75OqFnw8jNUd8CWvYfayg8Zm/fwAc4zx2XJA==
 
-`timescale 1ns / 1ps
-`define DLY #1
-module drp_read_modify_write
-(
-  input  wire        RESET,             //   
-  input  wire        START,             // start rmw 
-  output wire        DONE,              // rmw complete
-  input  wire [9:0]  GT_DRP_ADDRESS,    // DRP register address to be nodified
-  input  wire [15:0] GT_DRP_DI_MASK,    // Write data value/s  to drp
-  input  wire [15:0] GT_DRP_DO_MASK,    // preserve rd data with a '1'  from drp
-  output wire [9:0]  GT_DRPADDR,        // 
-  output wire [15:0] GT_DI,             //
-  output wire        GT_DEN,            //
-  output wire        GT_DWE,            //
-  input  wire        GT_DRDY,           //
-  input  wire [15:0] GT_DO,             //
-  input  wire        DCLK               //
-);
-
-  localparam [6:0] DRP_WAIT      = 7'd1;
-  localparam [6:0] DRP_READ      = 7'd2;
-  localparam [6:0] DRP_READ_ACK  = 7'd4;
-  localparam [6:0] DRP_MODIFY    = 7'd8;
-  localparam [6:0] DRP_WRITE     = 7'd16;
-  localparam [6:0] DRP_WRITE_ACK = 7'd32;
-  localparam [6:0] DRP_DONE      = 7'd64;
-  
-
-  reg [6:0] drp_state = 7'd1;
-  reg [15:0] di;
-  reg den = 1'b0;
-  reg dwe = 1'b0;
-  reg wr  = 1'b0;
-  reg rd  = 1'b0;
-  wire drp_done;
-  wire [15:0] data_out;
-  wire drdy;
-
-
-  assign GT_DRPADDR =  GT_DRP_ADDRESS;
-  assign GT_DI      =  di;
-  assign GT_DEN     =  den;
-  assign GT_DWE     =  dwe;
-  assign drdy       =  GT_DRDY;
-  assign data_out   =  GT_DO;
-  assign DONE       =  drp_done;
-  
-  // Start read modify write cycle
-  always @(posedge DCLK or posedge RESET) begin
-    if (RESET) begin 
-      wr <= `DLY 1'b0;
-      rd <= `DLY 1'b0;
-    end
-    else if (START && !rd) begin
-      rd <= `DLY 1'b1;
-    end
-    else begin 
-     rd <= `DLY 1'b0;
-    end
-  end
-        
-
-  // DRP FSM
-  always @(posedge DCLK or posedge RESET) begin
-  if (RESET) begin
-    den     <= `DLY 1'b0;
-    dwe     <= `DLY 1'b0;
-    di      <= `DLY 16'h0000;
-    drp_state <= `DLY DRP_WAIT;
-  end
-  else begin
-    case (drp_state)
-        DRP_WAIT: begin
-    if (wr | rd) drp_state <= `DLY DRP_READ;
-    else         drp_state <= `DLY DRP_WAIT;
-  end
-  DRP_READ: begin
-    den <= `DLY 1'b1;
-    drp_state <= `DLY DRP_READ_ACK;
-  end
-  DRP_READ_ACK: begin
-    den <= `DLY 1'b0;
-    if (drdy == 1'b1) begin
-      if (rd) drp_state <= `DLY DRP_DONE;
-      else    drp_state <= `DLY DRP_MODIFY;
-    end
-    else      drp_state <= `DLY DRP_READ_ACK; 
-  end
-  DRP_MODIFY: begin
-    di <= `DLY GT_DRP_DI_MASK | (data_out & GT_DRP_DO_MASK);
-    drp_state <= `DLY DRP_WRITE;
-  end
-  DRP_WRITE: begin
-    den <= `DLY 1'b1;
-    dwe <= `DLY 1'b1;
-    drp_state <= `DLY DRP_WRITE_ACK;
-  end
-  DRP_WRITE_ACK: begin
-    den <= `DLY 1'b0;
-    dwe <= `DLY 1'b0;
-    if (drdy == 1'b1) drp_state <= `DLY DRP_DONE;
-    else              drp_state <= `DLY DRP_WRITE_ACK;
-  end
-  DRP_DONE: begin
-    drp_state <= `DLY DRP_WAIT;
-  end
-        default: drp_state <= `DLY DRP_WAIT;
-    endcase
-  end
-  end
-
-  assign drp_done = (drp_state == DRP_DONE);
-
-
-
-endmodule //drp_read_modify_write
+`pragma protect end_toolblock="k60eovL2wCQZzkgE17wa7DLbVRUCHvvfgX1sg4QXS04="
+`pragma protect data_method = "AES128-CBC"
+`pragma protect encoding = (enctype = "BASE64", line_length = 76, bytes = 5744)
+`pragma protect data_block
+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
+`pragma protect end_protected

@@ -1,480 +1,362 @@
-//-----------------------------------------------------------------------------
-//
-// (c) Copyright 2017 Xilinx, Inc. All rights reserved.
-//
-// This file contains confidential and proprietary information
-// of Xilinx, Inc. and is protected under U.S. and
-// international copyright and other intellectual property
-// laws.
-//
-// DISCLAIMER
-// This disclaimer is not a license and does not grant any
-// rights to the materials distributed herewith. Except as
-// otherwise provided in a valid license issued to you by
-// Xilinx, and to the maximum extent permitted by applicable
-// law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
-// WITH ALL FAULTS, AND XILINX HEREBY DISCLAIMS ALL WARRANTIES
-// AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
-//- BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
-// INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
-// (2) Xilinx shall not be liable (whether in contract or tort,
-// including negligence, or under any other theory of
-// liability) for any loss or damage of any kind or nature
-// related to, arising under or in connection with these
-// materials, including for any direct, or any indirect,
-// special, incidental, or consequential loss or damage
-// (including loss of data, profits, goodwill, or any type of
-// loss or damage suffered as a result of any action brought
-// by a third party) even if such damage or loss was
-// reasonably foreseeable or Xilinx had been advised of the
-// possibility of the same.
-//
-// CRITICAL APPLICATIONS
-// Xilinx products are not designed or intended to be fail-
-// safe, or for use in any application requiring fail-safe
-// performance, such as life-support or safety devices or
-// systems, Class III medical devices, nuclear facilities,
-// applications related to the deployment of airbags, or any
-// other applications that could lead to death, personal
-// injury, or severe property or environmental damage
-// (individually and collectively, "Critical
-// Applications"). Customer assumes the sole risk and
-// liability of any use of Xilinx products in Critical
-// Applications, subject only to applicable laws and
-// regulations governing limitations on product liability.
-//
-// THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
-// PART OF THIS FILE AT ALL TIMES.
-//
-//-----------------------------------------------------------------------------
-//Author : 
-// 
+`pragma protect begin_protected
+`pragma protect version = 2
+`pragma protect encrypt_agent = "XILINX"
+`pragma protect encrypt_agent_info = "Xilinx Encryption Tool 2019.1"
+`pragma protect begin_commonblock
+`pragma protect end_commonblock
+`pragma protect begin_toolblock
+`pragma protect rights_digest_method="sha256"
+`pragma protect key_keyowner = "Xilinx", key_keyname= "xilinxt_2019_02", key_method = "rsa", key_block
+cTcTmBQKin/EPaznXQTDcHLaoYrAky3d65Iukco6jsIsqF3IX0dZRTQHdYdpmu5jcFhO1cqLf/Z5
+HicikTAtIxs8JxVSqsJtFvtHC5nooZPW6imNq3yGyUzeZUDsS2Fo66/wniRqFU5FTMyz7/2I3weJ
+ny/I99lPfE0IhXxTofg8dUqptJ/RTIN2nAjmHvJOLaZfh3vl4AJQAFAcL6wNHqOvV1jJcAhu92WR
+3AI08uGdcBRuZw01WDy7GAh3eWlS3Mz9fc//vdC5XX+4ffFdzUmuAOw7ynxrG7pK6OqM775u/9FV
+6u75OqFnw8jNUd8CWvYfayg8Zm/fwAc4zx2XJA==
 
-// Design Name: 
-// Module Name:    
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description:  Hierarchal block to modify GTY modes via DRP interface.  
-//
-//
-//--------------------------------------------------------------------------------
-
-`timescale 1ns / 1ps
-`define DLY #1
-
-module tx_mod_da_fsm #(
-  parameter NUM_LANES             = 8      // Number of data lane
-)
-(
-  input  wire                     reset,
-  input  wire                     set_initial_cfg,
-  input  wire                     enable_txphydly_cfg,
-  input  wire                     enable_txsyncovrd_buf_cfg,
-  output reg                      initial_cfg_done =1'b1,
-  output reg                      txphydly_cfg_done =1'b0, 
-  output reg                      txsyncovrd_buf_cfg_done =1'b0,
-  // DRP port interface,  
-  output wire [NUM_LANES*10-1:0]  GT_DRPADDR,        // 
-  output wire [NUM_LANES*16-1:0]  GT_DI,             //
-  output wire [NUM_LANES -1:0]    GT_DEN,            //
-  output wire [NUM_LANES -1:0]    GT_DWE,            //
-  input  wire [NUM_LANES -1:0]    GT_DRDY,           //
-  input  wire [NUM_LANES*16-1:0]  GT_DO,             //
-  input  wire                     DCLK               //
-);
-
-
-/*
-    Initial Configuration:
-      TXPHDLY_CFG0[13] = 1   address = 0090  bit [13] = 1
-      TXSYNC_OVRD = 1'b1     address = 008A  bit [13] = 1
-      TXDLY_CFG = 16'h101f   address = 008E  = 16'h101f
-      TXBUF_EN = 'TRUE'      address = 007C  BIT [7]  = 1
-    Initial Inputs
-      TXPHALIGNEN = 1'b0     Buffer Bypass input 
-      TXDLYOVRDEN = 1'b1     Buffer Bypass input
-    Tx Channel Reset
-      After TXRESETDONE = 1
-      TXDLYOVRDEN = 1'b0     Buffer Bypass input
-    Tx Configuraton 
-      TXPHDLY_CFG0[13] = 0   address = 0090  bit [13] = 0
-      TXSYNC_OVRD = 1'b0     address = 008A  bit [13] = 0
-      TXBUF_EN = 'FALSE'     address = 007C  BIT [7]  = 0
-    TXDLYSRESET (USRCLK source lane followed by all other lanes).
-     Wait for TXDLYSRESETDONE to go high.
-*/ 
-
-
-   localparam [4:0]IDLE                   = 5'd0; 
-   localparam [4:0]INIT_TXPHDLY_CFG0      = 5'd1; 
-   localparam [4:0]WAIT1                  = 5'd2; 
-   localparam [4:0]INIT_TXSYNC_OVRD       = 5'd3; 
-   localparam [4:0]WAIT2                  = 5'd4; 
-   localparam [4:0]INIT_TXDLY_CFG         = 5'd5; 
-   localparam [4:0]WAIT3                  = 5'd6; 
-   localparam [4:0]INIT_TXBUF_EN          = 5'd7; 
-   localparam [4:0]WAIT4                  = 5'd8; 
-   localparam [4:0]INIT_DONE              = 5'd9; 
-   localparam [4:0]TXPHDLY_CFG0           = 5'd10;
-   localparam [4:0]WAIT5                  = 5'd11;
-   localparam [4:0]TXPHDLY_CFG0_DONE      = 5'd12;
-   localparam [4:0]TXSYNCOVRD_BUFEN       = 5'd13;
-   localparam [4:0]WAIT6                  = 5'd14;
-   localparam [4:0]SET_TXBUF_EN           = 5'd15;
-   localparam [4:0]WAIT7                  = 5'd16;
-   localparam [4:0]TXSYNCOVRD_BUFEN_DONE  = 5'd17;  
- 
-  reg  [4:0]               fsm_state                     =  IDLE;
-  reg                      start_drprmw                  =  1'b0;
-  reg                      init_cfg                      =  1'b0;
-  reg                      set_initial_cfg_reg           =  1'b0;
-  reg                      enable_txphydly_cfg_reg       =  1'b0;
-  reg                      enable_txsyncovrd_buf_cfg_reg =  1'b0;
-  reg                      reset_init_cfg                =  1'b0; 
-  reg                      txphydly_cfg                  =  1'b0;
-  reg                      txsyncovrd_buf_cfg            =  1'b0;
-  reg                      reset_align_cfg               =  1'b0;
-  reg                      reset_txsyncovrd_buf_cfg      =  1'b0;
-  reg  [10-1:0]            drprmw_address                = 10'b0;
-  reg  [16-1:0]            drprmw_di_mask                = 16'b0; 
-  reg  [16-1:0]            drprmw_do_mask                = 16'b0;
-  wire [NUM_LANES -1:0]    drprmw_done;
-  wire [NUM_LANES -1:0]    den_rip;
-  wire [NUM_LANES -1:0]    dwe_rip;
-  
-  // only enamle master lane3
-  //assign GT_DEN = {1'b0,1'b0,1'b0,1'b0, den_rip[3],1'b0,1'b0,1'b0};
-  //assign GT_DWE = {1'b0,1'b0,1'b0,1'b0, dwe_rip[3],1'b0,1'b0,1'b0};
-  
-  // only enamle master lane4
-  assign GT_DEN = {1'b0,1'b0,1'b0,den_rip[4],1'b0, 1'b0,1'b0,1'b0};
-  assign GT_DWE = {1'b0,1'b0,1'b0,dwe_rip[4],1'b0, 1'b0,1'b0,1'b0};  
-  // instanciate DRP RMW module
-  genvar lanes;
-  generate
-    for (lanes=0; lanes < NUM_LANES; lanes=lanes+1)
-    begin: GEN_GTY_LANE
-    drp_read_modify_write drp_rmw_inst
-    (
-      .RESET            (reset),              //   
-      .START            (start_drprmw),       // start rmw 
-      .DONE             (drprmw_done[lanes]), // rmw complete
-      .GT_DRP_ADDRESS   (drprmw_address),     // DRP register address to be nodified
-      .GT_DRP_DI_MASK   (drprmw_di_mask),     // Write data value/s  to drp
-      .GT_DRP_DO_MASK   (drprmw_do_mask),     // preserve rd data with a '1'  from drp
-      // I/O to GTY DRP ports
-      .GT_DRPADDR       (GT_DRPADDR[(lanes+1)*10-1:lanes*10]),    // 
-      .GT_DI            (GT_DI[(lanes+1)*16-1:lanes*16]),         //
-      //.GT_DEN           (GT_DEN[lanes]),                          //
-      //.GT_DWE           (GT_DWE[lanes]),
-      .GT_DEN           (den_rip[lanes]),                          //
-      .GT_DWE           (dwe_rip[lanes]),                          //                                    //
-      .GT_DRDY          (GT_DRDY[lanes]),                         //
-      .GT_DO            (GT_DO[(lanes+1)*16-1:lanes*16]),         //
-      .DCLK             (DCLK)                                    //
-    );
-  end 
-  endgenerate
-
-
-   
-  begin                     
-     always @(posedge DCLK)begin
-      set_initial_cfg_reg            <= set_initial_cfg;
-      enable_txphydly_cfg_reg        <= enable_txphydly_cfg;
-      enable_txsyncovrd_buf_cfg_reg  <= enable_txsyncovrd_buf_cfg;
-    end
-  end
-       
-  begin
-    always @(posedge DCLK)
-    if (reset_init_cfg) begin
-     init_cfg <= 1'b0;
-    end 
-    else if (set_initial_cfg == 1'b1 && set_initial_cfg_reg == 1'b0)begin
-     init_cfg <=    1'b1;
-    end 
-    else begin
-     init_cfg <= init_cfg;
-    end
-  end           
-
-  begin
-    always @(posedge DCLK)
-    if (reset_align_cfg) begin
-     txphydly_cfg <= 1'b0;
-    end
-    else if (enable_txphydly_cfg == 1'b1 && enable_txphydly_cfg_reg == 1'b0)begin
-     txphydly_cfg <= 1'b1;
-    end       
-    else begin
-     txphydly_cfg <= txphydly_cfg;
-    end
-  end                    
-                         
-  begin
-    always @(posedge DCLK)
-    if (reset_txsyncovrd_buf_cfg) begin
-     txsyncovrd_buf_cfg <= 1'b0;
-    end
-    else if (enable_txsyncovrd_buf_cfg == 1'b1 && enable_txsyncovrd_buf_cfg_reg == 1'b0)begin
-     txsyncovrd_buf_cfg <= 1'b1;
-    end       
-    else begin
-     txsyncovrd_buf_cfg <= txsyncovrd_buf_cfg;
-    end
-  end   
- 
-
-                         
-   always @(posedge DCLK)
-      if (reset) begin
-         fsm_state <= IDLE;
-         //<outputs> <= <initial_values>;
-         start_drprmw      <=    1'b0;
-         initial_cfg_done  <=    1'b0;
-         reset_init_cfg    <=    1'b0;
-         txphydly_cfg_done  <=    1'b0;
-         reset_align_cfg   <=    1'b0;
-         drprmw_address    <=   10'b0;
-         drprmw_di_mask    <=   16'b0;
-         drprmw_do_mask    <=   16'b0;
-      end
-      else
-         case (fsm_state)
-            IDLE : begin
-               if (init_cfg)
-                  fsm_state <= INIT_TXPHDLY_CFG0;
-               else if (txphydly_cfg)
-                  fsm_state <= TXPHDLY_CFG0;
-               else if (txsyncovrd_buf_cfg)
-                  fsm_state <= TXSYNCOVRD_BUFEN;
-               else
-                  fsm_state <= IDLE;
-               //<outputs> <= <values>;
-               start_drprmw      <=    1'b0;
-               //initial_cfg_done  <=    1'b0;
-               //txphydly_cfg_done  <=    1'b0;
-               drprmw_address    <=   10'b0;
-               drprmw_di_mask    <=   16'b0;
-               drprmw_do_mask    <=   16'b0;
-            end
-            INIT_TXPHDLY_CFG0 : begin
-             fsm_state         <=    WAIT1;
-             start_drprmw      <=    1'b1;
-             txsyncovrd_buf_cfg_done    <=    1'b0;
-             initial_cfg_done  <=    1'b0;
-             txphydly_cfg_done  <=    1'b0;
-             drprmw_address    <=   10'h0090;
-             drprmw_di_mask    <=   16'b0010_0000_0000_0000;
-             drprmw_do_mask    <=   16'b1101_1111_1111_1111;
-            end
-            WAIT1 : begin
-             start_drprmw      <=    1'b0;
-             //if (&drprmw_done) begin
-             if (|drprmw_done) begin   // just master lane is don          
-                fsm_state <= INIT_TXSYNC_OVRD;
-             end
-             else
-                fsm_state <= WAIT1;
-             reset_init_cfg    <=    1'b1;
-             initial_cfg_done  <=    1'b0;
-             txphydly_cfg_done  <=    1'b0;
-             drprmw_address    <=   10'h0090;
-             drprmw_di_mask    <=   16'b0010_0000_0000_0000;
-             drprmw_do_mask    <=   16'b1101_1111_1111_1111;
-            end            
-            INIT_TXSYNC_OVRD : begin
-             fsm_state         <=    WAIT2;
-             reset_init_cfg    <=    1'b0;             
-             start_drprmw      <=    1'b1;
-             initial_cfg_done  <=    1'b0;
-             txphydly_cfg_done  <=    1'b0;
-             drprmw_address    <=   10'h008A;
-             drprmw_di_mask    <=   16'b0010_0000_0000_0000;
-             drprmw_do_mask    <=   16'b1101_1111_1111_1111;
-            end
-            WAIT2 : begin
-            start_drprmw      <=    1'b0;
-             //if (&drprmw_done) begin
-            if (|drprmw_done) begin   // just master lane is done  
-                fsm_state <= INIT_TXDLY_CFG;
-             end
-             else 
-             fsm_state         <=   WAIT2;
-             initial_cfg_done  <=    1'b0;
-             txphydly_cfg_done  <=    1'b0;
-             drprmw_address    <=   10'h008A;
-             drprmw_di_mask    <=   16'b0010_0000_0000_0000;
-             drprmw_do_mask    <=   16'b1101_1111_1111_1111;
-            end                                
-            INIT_TXDLY_CFG : begin
-             fsm_state         <=    WAIT3;
-             start_drprmw      <=    1'b1;
-             initial_cfg_done  <=    1'b0;
-             txphydly_cfg_done  <=    1'b0;
-             drprmw_address    <=   10'h008E;
-             drprmw_di_mask    <=   16'h101f;
-             drprmw_do_mask    <=   16'b0;
-            end            
-            WAIT3 : begin
-             start_drprmw      <=    1'b0;
-             //if (&drprmw_done) begin
-             if (|drprmw_done) begin   // just master lane is done  
-                fsm_state <= INIT_TXBUF_EN;
-              end 
-              else begin
-             fsm_state         <= WAIT3;
-             initial_cfg_done  <=    1'b0;
-             txphydly_cfg_done  <=    1'b0;
-             drprmw_address    <=   10'h008E;
-             drprmw_di_mask    <=   16'h101f;
-             drprmw_do_mask    <=   16'b0;
-              end
-            end
-            INIT_TXBUF_EN : begin
-             fsm_state         <=    WAIT4;
-             start_drprmw      <=    1'b1;
-             initial_cfg_done  <=    1'b0;
-             txphydly_cfg_done  <=    1'b0;
-             drprmw_address    <=   10'h007C;
-             drprmw_di_mask    <=   16'b0000_0000_1000_0000;
-             drprmw_do_mask    <=   16'b1111_1111_0111_1111;
-            end
-            WAIT4 : begin
-             start_drprmw      <=    1'b0;
-             //if (&drprmw_done) begin
-             if (|drprmw_done) begin   // just master lane is done  
-                fsm_state <= INIT_DONE;
-              end              
-             else begin
-             fsm_state         <=   WAIT4;
-             initial_cfg_done  <=    1'b0;               
-             txphydly_cfg_done  <=    1'b0;
-             drprmw_address    <=   10'h007C;
-             drprmw_di_mask    <=   16'b0000_0000_1000_0000;
-             drprmw_do_mask    <=   16'b1111_1111_0111_1111;
-              end
-            end
-            INIT_DONE : begin
-             fsm_state         <=    IDLE;
-             start_drprmw      <=    1'b0;
-             initial_cfg_done  <=    1'b1;
-             txphydly_cfg_done  <=    1'b0;
-             drprmw_address    <=   10'b0;
-             drprmw_di_mask    <=   16'b0;
-             drprmw_do_mask    <=   16'b0;
-            end 
-            
-            
-            
-            TXPHDLY_CFG0 : begin
-             fsm_state         <=    WAIT5;
-             txsyncovrd_buf_cfg_done    <=    1'b0;
-             start_drprmw      <=    1'b1;
-             initial_cfg_done  <=    1'b0;
-             txphydly_cfg_done  <=    1'b0;
-             drprmw_address    <=   10'h0090;               
-             drprmw_di_mask    <=   16'b0000_0000_0000_0000;
-             drprmw_do_mask    <=   16'b1101_1111_1111_1111;
-            end
-            WAIT5 : begin
-             start_drprmw      <=    1'b0;
-             //if (&drprmw_done) begin
-             if (|drprmw_done) begin   // just master lane is done  
-                //fsm_state <= TXSYNCOVRD_BUFEN;
-                fsm_state <= TXPHDLY_CFG0_DONE;
-                end
-             else begin
-             fsm_state         <=    WAIT5;
-             reset_align_cfg   <=    1'b1;             
-             initial_cfg_done  <=    1'b0;
-             txphydly_cfg_done  <=    1'b0;
-             drprmw_address    <=   10'h0090;
-             drprmw_di_mask    <=   16'b0000_0000_0000_0000;
-             drprmw_do_mask    <=   16'b1101_1111_1111_1111;
-              end
-            end
-            
-            TXPHDLY_CFG0_DONE:begin
-             fsm_state                <=    IDLE;
-             start_drprmw             <=    1'b0;
-             reset_align_cfg          <=    1'b0;
-             initial_cfg_done         <=    1'b0;
-             txphydly_cfg_done        <=    1'b1;
-             txsyncovrd_buf_cfg_done  <=    1'b0;
-             drprmw_address           <=   10'b0;
-             drprmw_di_mask           <=   16'b0;
-             drprmw_do_mask           <=   16'b0; 
-             end  
-            
-            TXSYNCOVRD_BUFEN : begin
-             fsm_state                <=    WAIT6;
-             reset_align_cfg          <=    1'b0;
-             reset_txsyncovrd_buf_cfg <=    1'b1;            
-             start_drprmw             <=    1'b1;
-             txsyncovrd_buf_cfg_done  <=    1'b0;
-             initial_cfg_done         <=    1'b0;
-             txphydly_cfg_done        <=    1'b0;
-             
-             drprmw_address           <=   10'h008A;
-             drprmw_di_mask           <=   16'b0000_0000_0000_0000;
-             drprmw_do_mask           <=   16'b1101_1111_1111_1111;
-            end
-            WAIT6 : begin
-             start_drprmw      <=    1'b0;
-             reset_txsyncovrd_buf_cfg <=    1'b0; 
-             //if (&drprmw_done) begin
-             if (|drprmw_done) begin   // just master lane is done  
-                fsm_state <=  SET_TXBUF_EN;
-              end
-             else begin
-             fsm_state         <=    WAIT6;
-             initial_cfg_done  <=    1'b0;
-             txphydly_cfg_done  <=    1'b0;
-             drprmw_address    <=   10'h008A;
-             drprmw_di_mask    <=   16'b0000_0000_0000_0000;
-             drprmw_do_mask    <=   16'b1101_1111_1111_1111;
-              end
-            end
-            SET_TXBUF_EN : begin
-             fsm_state         <=    WAIT7;
-             start_drprmw      <=    1'b1;
-             initial_cfg_done  <=    1'b0;
-             txphydly_cfg_done  <=    1'b0;
-             drprmw_address    <=   10'h007C;
-             drprmw_di_mask    <=   16'b0000_0000_0000_0000;
-             drprmw_do_mask    <=   16'b1111_1111_0111_1111;
-            end
-            WAIT7 : begin
-             start_drprmw      <=    1'b0;
-             //if (&drprmw_done) begin
-             if (|drprmw_done) begin   // just master lane is done  
-                fsm_state <= TXSYNCOVRD_BUFEN_DONE;
-                end
-             else begin
-             fsm_state         <=    WAIT7;
-             initial_cfg_done  <=    1'b0;
-             drprmw_address    <=   10'h007C;
-             drprmw_di_mask    <=   16'b0000_0000_0000_0000;
-             drprmw_do_mask    <=   16'b1111_1111_0111_1111;
-              end
-            end
-            TXSYNCOVRD_BUFEN_DONE : begin
-             fsm_state                  <=    IDLE;
-             start_drprmw               <=    1'b0;
-             reset_align_cfg            <=    1'b0;
-             initial_cfg_done           <=    1'b0;
-             txphydly_cfg_done          <=    1'b0;
-             txsyncovrd_buf_cfg_done    <=    1'b1;
-             drprmw_address             <=   10'b0;
-             drprmw_di_mask             <=   16'b0;
-             drprmw_do_mask             <=   16'b0; 
-             end           
-            default: begin  // Fault Recovery
-               fsm_state <= IDLE;
-	    end
-      endcase
-
-endmodule
+`pragma protect end_toolblock="k60eovL2wCQZzkgE17wa7DLbVRUCHvvfgX1sg4QXS04="
+`pragma protect data_method = "AES128-CBC"
+`pragma protect encoding = (enctype = "BASE64", line_length = 76, bytes = 19440)
+`pragma protect data_block
+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
+R2P9
+`pragma protect end_protected

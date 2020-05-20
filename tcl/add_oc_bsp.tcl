@@ -103,19 +103,19 @@ set verilog_cfg [list \
 
 
 set verilog_bypass  [list \
- "[file normalize "$card_src/xilinx/buffer_bypass/DLx_phy_example_bit_sync.v"]"\
- "[file normalize "$card_src/xilinx/buffer_bypass/DLx_phy_example_gtwiz_userclk_tx.v"]"\
- "[file normalize "$card_src/xilinx/buffer_bypass/DLx_phy_example_init.v"]"\
- "[file normalize "$card_src/xilinx/buffer_bypass/DLx_phy_example_reset_sync.v"]"\
- "[file normalize "$card_src/xilinx/buffer_bypass/DLx_phy_example_wrapper_functions.v"]"\
- "[file normalize "$card_src/xilinx/buffer_bypass/DLx_phy_example_wrapper.v"]"\
- "[file normalize "$card_src/xilinx/buffer_bypass/DLx_phy_example_gtwiz_buffbypass_rx.v"]"\
- "[file normalize "$card_src/xilinx/buffer_bypass/DLx_phy_example_gtwiz_buffbypass_tx.v"]"\
- "[file normalize "$card_src/xilinx/buffer_bypass/DLx_phy_example_gtwiz_reset.v"]"\
- "[file normalize "$card_src/xilinx/buffer_bypass/dlx_phy_wrap.v"]"\
- "[file normalize "$card_src/xilinx/buffer_bypass/tx_mod_da_fsm.v"]"\
- "[file normalize "$card_src/xilinx/buffer_bypass/drp_read_modify_write.v"]"\
- "[file normalize "$card_src/xilinx/buffer_bypass/DLx_phy_example_reset_inv_sync.v"]"\
+ "[file normalize "$card_src/xilinx/encrypted_buffer_bypass/DLx_phy_example_bit_sync.v"]"\
+ "[file normalize "$card_src/xilinx/encrypted_buffer_bypass/DLx_phy_example_gtwiz_userclk_tx.v"]"\
+ "[file normalize "$card_src/xilinx/encrypted_buffer_bypass/DLx_phy_example_init.v"]"\
+ "[file normalize "$card_src/xilinx/encrypted_buffer_bypass/DLx_phy_example_reset_sync.v"]"\
+ "[file normalize "$card_src/xilinx/encrypted_buffer_bypass/DLx_phy_example_wrapper_functions.v"]"\
+ "[file normalize "$card_src/xilinx/encrypted_buffer_bypass/DLx_phy_example_wrapper.v"]"\
+ "[file normalize "$card_src/xilinx/encrypted_buffer_bypass/DLx_phy_example_gtwiz_buffbypass_rx.v"]"\
+ "[file normalize "$card_src/xilinx/encrypted_buffer_bypass/DLx_phy_example_gtwiz_buffbypass_tx.v"]"\
+ "[file normalize "$card_src/xilinx/encrypted_buffer_bypass/DLx_phy_example_gtwiz_reset.v"]"\
+ "[file normalize "$card_src/xilinx/encrypted_buffer_bypass/dlx_phy_wrap.v"]"\
+ "[file normalize "$card_src/xilinx/encrypted_buffer_bypass/tx_mod_da_fsm.v"]"\
+ "[file normalize "$card_src/xilinx/encrypted_buffer_bypass/drp_read_modify_write.v"]"\
+ "[file normalize "$card_src/xilinx/encrypted_buffer_bypass/DLx_phy_example_reset_inv_sync.v"]"\
 ]
 set verilog_elastic [list \
  "[file normalize "$card_src/xilinx/elastic_buffer/DLx_phy_example_bit_sync.v"]"\
