@@ -748,6 +748,13 @@ module top (
                 sys_clk_p = !sys_clk_p; #(3.332ns / 2.0); // a line can not start with "#", because SNAP is unsing the C preprocessor
             end
         `endif
+        `ifdef BW250SOC
+            // 200.MHz DDR4 system clock
+            always begin
+                sys_clk_p = !sys_clk_p; #(5.0ns / 2.0); // a line can not start with "#", because SNAP is unsing the C preprocessor
+            end
+        `endif
+
     `endif
 
     reg sys_reset_n_q;
@@ -1148,6 +1155,25 @@ module top (
 
         `ifdef ENABLE_DDR
           `ifdef AD9V3
+            // DDR4
+            .c0_sys_clk_p           (sys_clk_p),
+            .c0_sys_clk_n           (~sys_clk_p),
+            .c0_ddr4_act_n          (c0_ddr4_act_n),
+            .c0_ddr4_adr            (c0_ddr4_adr),
+            .c0_ddr4_ba             (c0_ddr4_ba),
+            .c0_ddr4_bg             (c0_ddr4_bg),
+            .c0_ddr4_cke            (c0_ddr4_cke),
+            .c0_ddr4_odt            (c0_ddr4_odt),
+            .c0_ddr4_cs_n           (c0_ddr4_cs_n),
+            .c0_ddr4_ck_t           (c0_ddr4_ck_t),
+            .c0_ddr4_ck_c           (c0_ddr4_ck_c),
+            .c0_ddr4_reset_n        (c0_ddr4_reset_n),
+            .c0_ddr4_dm_dbi_n       (c0_ddr4_dm_dbi_n),
+            .c0_ddr4_dq             (c0_ddr4_dq),
+            .c0_ddr4_dqs_c          (c0_ddr4_dqs_c),
+            .c0_ddr4_dqs_t          (c0_ddr4_dqs_t),
+          `endif
+          `ifdef BW250SOC
             // DDR4
             .c0_sys_clk_p           (sys_clk_p),
             .c0_sys_clk_n           (~sys_clk_p),
@@ -1577,6 +1603,27 @@ module top (
     `ifdef AD9V3
         `ifdef ENABLE_DDR
             ddr4_dimm_ad9v3 ddr4_dimm_ad9v3 (
+                .sys_reset              (~sys_reset_n_q),
+                .c0_ddr4_act_n          (c0_ddr4_act_n),
+                .c0_ddr4_adr            (c0_ddr4_adr),
+                .c0_ddr4_ba             (c0_ddr4_ba),
+                .c0_ddr4_bg             (c0_ddr4_bg),
+                .c0_ddr4_cke            (c0_ddr4_cke),
+                .c0_ddr4_odt            (c0_ddr4_odt),
+                .c0_ddr4_cs_n           (c0_ddr4_cs_n),
+                .c0_ddr4_ck_t           (c0_ddr4_ck_t),
+                .c0_ddr4_ck_c           (c0_ddr4_ck_c),
+                .c0_ddr4_reset_n        (c0_ddr4_reset_n),
+                .c0_ddr4_dm_dbi_n       (c0_ddr4_dm_dbi_n),
+                .c0_ddr4_dq             (c0_ddr4_dq),
+                .c0_ddr4_dqs_c          (c0_ddr4_dqs_c),
+                .c0_ddr4_dqs_t          (c0_ddr4_dqs_t)
+            );
+        `endif
+    `endif
+    `ifdef BW250SOC
+        `ifdef ENABLE_DDR
+            ddr4_dimm_250soc ddr4_dimm_250soc (
                 .sys_reset              (~sys_reset_n_q),
                 .c0_ddr4_act_n          (c0_ddr4_act_n),
                 .c0_ddr4_adr            (c0_ddr4_adr),
