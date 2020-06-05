@@ -88,7 +88,7 @@ module cfg_tieoffs (
       assign f0_ro_otl0_tl_minor_vers_capbl       =                     8'h00;
       // Card Specific                        
       // -------------------------------------
-      assign f0_ro_csh_subsystem_id               =                  16'h060D;
+      assign f0_ro_csh_subsystem_id               =                  16'h066A;
       assign f0_ro_csh_subsystem_vendor_id        =                  16'h1014;
       assign f0_ro_dsn_serial_number              =   64'hDEAD_DEAD_DEAD_DEAD;
                                         
@@ -100,7 +100,7 @@ module cfg_tieoffs (
       assign f1_ro_csh_expansion_rom_bar          =              32'hFFFF_F800;     
       // Card Specific                        
       // -------------------------------------
-      assign f1_ro_csh_subsystem_id               =                   16'h060D;
+      assign f1_ro_csh_subsystem_id               =                   16'h066A;
       assign f1_ro_csh_subsystem_vendor_id        =                   16'h1014;
       // AFU Specific                         
       // ------------------------------------- 
