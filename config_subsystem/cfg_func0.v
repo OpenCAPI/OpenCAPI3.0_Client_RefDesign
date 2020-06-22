@@ -332,6 +332,7 @@ module cfg_func0
   , output         cfg_flsh_expand_dir    // When 0, expand bytes [3:0] in order 0,1,2,3 . When 1, expand in order 3,2,1,0 .
    // Image reload enable
   , output         cfg_icap_reload_en
+  , output         cfg_xfer_done_interrupt
 
 ) ;
 
@@ -2962,5 +2963,6 @@ assign cfg_flsh_wdata         = reg_ovsec_034_q;
 //Enable/disable of image reload through oc-reset
 
 assign cfg_icap_reload_en     = reg_ovsec_038_q[0];
+assign cfg_xfer_done_interrupt = reg_ovsec_038_q[1];
 
 endmodule 

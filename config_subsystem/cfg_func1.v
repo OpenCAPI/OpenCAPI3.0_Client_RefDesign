@@ -169,7 +169,7 @@
 //       and just use _ovsec_ since the location of them in cfg_func0 and cfg_func uniquely identify them.
 //       Keeping _ovsec_ the same makes it easier to copy/paste common logic between the function instances.
 //
-`define OVSEC1_BASE  12'h600
+`define OVSEC1_BASE  12'h000
 `define OVSEC1_LAST  12'h60B
  
  
@@ -606,9 +606,9 @@ wire sel_ovsec_000;
 wire sel_ovsec_004;
 wire sel_ovsec_008;
 
-assign sel_ovsec_000 = (addr_q >= (`OVSEC1_BASE + 12'h000) && addr_q < (`OVSEC1_BASE + 12'h004)) ? 1'b1 : 1'b0;
+/*assign sel_ovsec_000 = (addr_q >= (`OVSEC1_BASE + 12'h000) && addr_q < (`OVSEC1_BASE + 12'h004)) ? 1'b1 : 1'b0;
 assign sel_ovsec_004 = (addr_q >= (`OVSEC1_BASE + 12'h004) && addr_q < (`OVSEC1_BASE + 12'h008)) ? 1'b1 : 1'b0;
-assign sel_ovsec_008 = (addr_q >= (`OVSEC1_BASE + 12'h008) && addr_q < (`OVSEC1_BASE + 12'h00C)) ? 1'b1 : 1'b0;
+assign sel_ovsec_008 = (addr_q >= (`OVSEC1_BASE + 12'h008) && addr_q < (`OVSEC1_BASE + 12'h00C)) ? 1'b1 : 1'b0;*/
 
 
 // Check for the condition 'access to un-implemented address in architected range'.
@@ -638,7 +638,8 @@ assign sel_addr_not_implemented = ( ( (addr_q >= {4'b0,`CSH_BASE}       && addr_
 `ifdef ADD_AFU_CTRL03
                                       (addr_q >= `OCTRL03_BASE          && addr_q <= `OCTRL03_LAST      ) ||
 `endif
-                                      (addr_q >= `OVSEC1_BASE           && addr_q <= `OVSEC1_LAST       ) 
+                                      //(addr_q >= `OVSEC1_BASE           && addr_q <= `OVSEC1_LAST       )
+				      (1'b0)
                                     ) && (function_q == cfg_ro_function) 
                                   ) ? 1'b0 : 1'b1;   // Check is for implemented range, invert assignment values to make 'not implemented'
 
@@ -2192,7 +2193,7 @@ wire [31:0] reg_ovsec_004_rdata;
 wire [31:0] reg_ovsec_008_rdata;
 
 
-assign reg_ovsec_000_q[31:20] = 12'h000;     // Last Extended Capability
+/*assign reg_ovsec_000_q[31:20] = 12'h000;     // Last Extended Capability
 assign reg_ovsec_000_q[19:16] = 4'h1;     
 assign reg_ovsec_000_q[15: 0] = 16'h0023;
 assign reg_ovsec_000_rdata = (sel_ovsec_000 == 1'b1 && do_read == 1'b1) ? reg_ovsec_000_q : 32'h00000000;
@@ -2215,7 +2216,7 @@ always @(posedge(clock))
       end
     else                 reg_ovsec_008_q <= reg_ovsec_008_q;       // Hold value when register is not selected
   end
-assign reg_ovsec_008_rdata = (sel_ovsec_008 == 1'b1 && do_read == 1'b1) ? reg_ovsec_008_q : 32'h00000000;
+assign reg_ovsec_008_rdata = (sel_ovsec_008 == 1'b1 && do_read == 1'b1) ? reg_ovsec_008_q : 32'h00000000;*/
 
 
 // ----------------------------------
@@ -2248,7 +2249,8 @@ assign final_rdata_d = reg_csh_000_rdata     | reg_csh_004_rdata     | reg_csh_0
                        reg_octrl03_000_rdata | reg_octrl03_004_rdata | reg_octrl03_008_rdata | reg_octrl03_00C_rdata |
                        reg_octrl03_010_rdata | reg_octrl03_014_rdata | reg_octrl03_018_rdata | reg_octrl03_01C_rdata |
 `endif
-                       reg_ovsec_000_rdata   | reg_ovsec_004_rdata   | reg_ovsec_008_rdata 
+                       //reg_ovsec_000_rdata   | reg_ovsec_004_rdata   | reg_ovsec_008_rdata 
+		       ( 32'b0)
                        ;                      
 
 always @(posedge(clock))
