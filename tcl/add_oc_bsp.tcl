@@ -28,6 +28,7 @@ set card_src         $fpga_card_dir/verilog
 set use_flash        $::env(FLASH_USED)
 set transceiver_type   "bypass"
 set transceiver_speed  $::env(PHY_SPEED)
+set fpga_card          $::env(FPGACARD)
 
 
 ############################################################################
@@ -216,9 +217,11 @@ set_property verilog_define "$synth_verilog_defines" [get_filesets sim_1]
 #
 source $card_dir/ip/create_vio_DLx_phy_vio_0.tcl
 source $card_dir/ip/create_vio_reset_n.tcl
-source $card_dir/ip/create_clk_wiz.tcl
-source $card_dir/ip/create_flash_ip.tcl
 
+if { $fpga_card == "BW250SOC"  } {
+  source $card_dir/ip/create_clk_wiz.tcl
+  source $card_dir/ip/create_flash_ip.tcl
+}
 puts " sourcing $card_dir/ip/create_DLx_PHY_${transceiver_type}_${transceiver_speed}g.tcl"
 source $card_dir/ip/create_DLx_PHY_${transceiver_type}_${transceiver_speed}g.tcl
 
