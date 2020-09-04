@@ -18,6 +18,7 @@
 ############################################################################
 ############################################################################
 
-set_false_path -from [get_clocks dbg_hub_APB_0_PCLK] -to [get_clocks txoutclk_out[0]_1]
-set_false_path -from [get_clocks hbm_ctrl_apb_pclk] -to [get_clocks txoutclk_out[0]_1]
-set_false_path -from [get_clocks txoutclk_out[0]_1] -to [get_clocks hbm_ctrl_apb_pclk]
+#set_false_path -from [get_clocks dbg_hub_APB_0_PCLK] -to [get_clocks txoutclk_out[0]_1]
+set_false_path -from [get_clocks refclk_bufg_apb_clk_BUFGCE_O] -to [get_clocks txoutclk_out[0]_1]
+set_false_path -from [get_clocks txoutclk_out[0]_1] -to [get_clocks refclk_bufg_apb_clk_BUFGCE_O]
+#set_false_path -from [get_clocks refclk_bufg_apb_clk_BUFGCE_0] -to [get_clocks refclk_bufg_apb_clk_BUFGCE_0]
