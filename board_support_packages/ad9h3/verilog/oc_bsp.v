@@ -320,39 +320,48 @@ module oc_bsp (
        dlx_tlx_link_up_q <= dlx_tlx_link_up_din;
   end
 
-  vio_reset_n vio_reset_n_inst_tlx
-    (
-      .clk        ( clock_tlx ),       // -- input
-      .probe_in0  ( dlx_tlx_link_up ), // -- input wire [0 : 0] probe_in0
-      .probe_in1  ( tlx_afu_ready ),   // -- input wire [0 : 0] probe_in1
-      .probe_out0 ( unused[2] )        // -- output
-    );
+//  vio_reset_n vio_reset_n_inst_tlx
+//    (
+//      .clk        ( clock_tlx ),       // -- input
+//      .probe_in0  ( dlx_tlx_link_up ), // -- input wire [0 : 0] probe_in0
+//      .probe_in1  ( tlx_afu_ready ),   // -- input wire [0 : 0] probe_in1
+//      .probe_out0 ( unused[2] )        // -- output
+//    );
+assign unused[2] = 1'b0;
 
 assign reset_n = reset_afu_q;
 
-DLx_phy_vio_0 DLx_phy_vio_0_inst (
-   .clk        (clock_156_25)                               // -- [0:0] < input
-  ,.probe_in0  (ocde)                                       // -- [0:0] < input
-  ,.probe_in1  (1'b0)                                       // -- [0:0] < input
-  ,.probe_in2  (init_done_int)                              // -- [0:0] < input
-  ,.probe_in3  (init_retry_ctr_int)                         // -- [3:0] < input
-  ,.probe_in4  (8'b0)                                       // -- [7:0] < input
-  ,.probe_in5  (8'b0)                                       // -- [7:0] < input
-  ,.probe_in6  (8'b0)                                       // -- [7:0] < input
-  ,.probe_in7  (gtwiz_reset_tx_done_vio_sync)               // -- [0:0] < input
-  ,.probe_in8  (gtwiz_reset_rx_done_vio_sync)               // -- [0:0] < input
-  ,.probe_in9  (gtwiz_buffbypass_tx_done_vio_sync)          // -- [0:0] < input
-  ,.probe_in10 (gtwiz_buffbypass_rx_done_vio_sync)          // -- [0:0] < input
-  ,.probe_in11 (gtwiz_buffbypass_tx_error_vio_sync)         // -- [0:0] < input
-  ,.probe_in12 (gtwiz_buffbypass_rx_error_vio_sync)         // -- [0:0] < input
-  ,.probe_out0 (hb_gtwiz_reset_all_vio_int)                 // -- [0:0] > output
-  ,.probe_out1 (unused[0])                                  // -- [0:0] > output
-  ,.probe_out2 (hb0_gtwiz_reset_tx_pll_and_datapath_int)    // -- [0:0] > output
-  ,.probe_out3 (hb0_gtwiz_reset_tx_datapath_int)            // -- [0:0] > output
-  ,.probe_out4 (hb_gtwiz_reset_rx_pll_and_datapath_vio_int) // -- [0:0] > output
-  ,.probe_out5 (hb_gtwiz_reset_rx_datapath_vio_int)         // -- [0:0] > output
-  ,.probe_out6 (unused[1])                                  // -- [0:0] > output
-);
+//DLx_phy_vio_0 DLx_phy_vio_0_inst (
+//   .clk        (clock_156_25)                               // -- [0:0] < input
+//  ,.probe_in0  (ocde)                                       // -- [0:0] < input
+//  ,.probe_in1  (1'b0)                                       // -- [0:0] < input
+//  ,.probe_in2  (init_done_int)                              // -- [0:0] < input
+//  ,.probe_in3  (init_retry_ctr_int)                         // -- [3:0] < input
+//  ,.probe_in4  (8'b0)                                       // -- [7:0] < input
+//  ,.probe_in5  (8'b0)                                       // -- [7:0] < input
+//  ,.probe_in6  (8'b0)                                       // -- [7:0] < input
+//  ,.probe_in7  (gtwiz_reset_tx_done_vio_sync)               // -- [0:0] < input
+//  ,.probe_in8  (gtwiz_reset_rx_done_vio_sync)               // -- [0:0] < input
+//  ,.probe_in9  (gtwiz_buffbypass_tx_done_vio_sync)          // -- [0:0] < input
+//  ,.probe_in10 (gtwiz_buffbypass_rx_done_vio_sync)          // -- [0:0] < input
+//  ,.probe_in11 (gtwiz_buffbypass_tx_error_vio_sync)         // -- [0:0] < input
+//  ,.probe_in12 (gtwiz_buffbypass_rx_error_vio_sync)         // -- [0:0] < input
+//  ,.probe_out0 (hb_gtwiz_reset_all_vio_int)                 // -- [0:0] > output
+//  ,.probe_out1 (unused[0])                                  // -- [0:0] > output
+//  ,.probe_out2 (hb0_gtwiz_reset_tx_pll_and_datapath_int)    // -- [0:0] > output
+//  ,.probe_out3 (hb0_gtwiz_reset_tx_datapath_int)            // -- [0:0] > output
+//  ,.probe_out4 (hb_gtwiz_reset_rx_pll_and_datapath_vio_int) // -- [0:0] > output
+//  ,.probe_out5 (hb_gtwiz_reset_rx_datapath_vio_int)         // -- [0:0] > output
+//  ,.probe_out6 (unused[1])                                  // -- [0:0] > output
+//);
+assign hb_gtwiz_reset_all_vio_int = 1'b0;
+assign unused[0] = 1'b0;
+assign hb0_gtwiz_reset_tx_pll_and_datapath_int = 1'b0;
+assign hb0_gtwiz_reset_tx_datapath_int = 1'b0;
+assign hb_gtwiz_reset_rx_pll_and_datapath_vio_int = 1'b0;
+assign hb_gtwiz_reset_rx_datapath_vio_int = 1'b0;
+assign unused[1] = 1'b0;
+
 
   // -- ********************************************************************************************************************************
   // -- ICAP for image reload
