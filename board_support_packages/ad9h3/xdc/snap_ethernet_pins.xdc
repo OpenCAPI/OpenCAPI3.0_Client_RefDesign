@@ -54,5 +54,6 @@ set_property PACKAGE_PIN AD42 [get_ports {gt_tx_gt_port_3_p}]    ; #QSFP0_TX3_P
 #set_property PACKAGE_PIN Y42  [get_ports {gt_tx_gt_port_7_p}]    ; #QSFP0_TX7_P
 
 ## FL: Using QSFP-DD clock at 161.1328125 MHz
+create_clock -period 6.206 -name gt_ref_clk_p [get_ports gt_ref_clk_p]
 set_property PACKAGE_PIN AD39   [get_ports {gt_ref_clk_n}]         ; #QSFP_CLK_PIN_N
 set_property PACKAGE_PIN AD38   [get_ports {gt_ref_clk_p}]         ; #QSFP_CLK_PIN_P

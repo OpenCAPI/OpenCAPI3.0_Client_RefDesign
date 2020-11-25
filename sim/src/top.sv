@@ -769,6 +769,18 @@ module top (
         `endif
 
     `endif
+    `ifdef AD9H3
+    `ifdef ENABLE_ETHERNET
+      `ifndef ENABLE_ETH_LOOP_BACK
+        reg       gt_ref_clk_p;
+        initial   gt_ref_clk_p <= 0;
+        // 161.1132812MHz Ethernet system clock
+        always begin
+            gt_ref_clk_p = !gt_ref_clk_p; #(6.206 / 2.0); 
+        end
+      `endif
+    `endif
+    `endif
 
     reg sys_reset_n_q;
     initial begin
@@ -1168,8 +1180,8 @@ module top (
 
 `ifdef ENABLE_ETHERNET
 `ifndef ENABLE_ETH_LOOP_BACK
-    .gt_ref_clk_n      ( ~sys_clk_p      )
-   ,.gt_ref_clk_p      ( sys_clk_p       )
+    .gt_ref_clk_n      ( ~gt_ref_clk_p       )
+   ,.gt_ref_clk_p      ( gt_ref_clk_p        )
    ,.gt_rx_gt_port_0_n ( gt_trx_gt_port_0_n  )
    ,.gt_rx_gt_port_0_p ( gt_trx_gt_port_0_p  )
    ,.gt_rx_gt_port_1_n ( gt_trx_gt_port_1_n  )
