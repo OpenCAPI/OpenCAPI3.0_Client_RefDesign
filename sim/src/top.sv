@@ -613,7 +613,20 @@ module top (
     wire   [4:0] f1_octrl00_pasid_len_supported;
     wire         f1_octrl00_metadata_supported;
     wire  [11:0] f1_octrl00_actag_len_supported;
-    
+  
+    // we define ethernet wires only if in simulation and emac requested (no loopback before emac)
+    `ifdef ENABLE_ETHERNET
+    `ifndef ENABLE_ETH_LOOP_BACK
+    wire  gt_trx_gt_port_0_p;
+    wire  gt_trx_gt_port_1_n;
+    wire  gt_trx_gt_port_1_p;
+    wire  gt_trx_gt_port_2_n;
+    wire  gt_trx_gt_port_2_p;
+    wire  gt_trx_gt_port_3_n;
+    wire  gt_trx_gt_port_3_p;
+    `endif
+    `endif
+ 
     `ifdef ENABLE_DDR
         wire          c0_ddr4_act_n;
         wire  [16:0]  c0_ddr4_adr;
@@ -755,6 +768,18 @@ module top (
             end
         `endif
 
+    `endif
+    `ifdef AD9H3
+    `ifdef ENABLE_ETHERNET
+      `ifndef ENABLE_ETH_LOOP_BACK
+        reg       gt_ref_clk_p;
+        initial   gt_ref_clk_p <= 0;
+        // 161.1132812MHz Ethernet system clock
+        always begin
+            gt_ref_clk_p = !gt_ref_clk_p; #(6.206 / 2.0); 
+        end
+      `endif
+    `endif
     `endif
 
     reg sys_reset_n_q;
@@ -1152,6 +1177,33 @@ module top (
 
         .afu_tlx_resp_credit                ( fen_afu_tlx_resp_credit                       ),
         .afu_tlx_resp_initial_credit        ( fen_afu_tlx_resp_initial_credit[6:0]          ),
+
+`ifdef ENABLE_ETHERNET
+`ifndef ENABLE_ETH_LOOP_BACK
+    .gt_ref_clk_n      ( ~gt_ref_clk_p       )
+   ,.gt_ref_clk_p      ( gt_ref_clk_p        )
+   ,.gt_rx_gt_port_0_n ( gt_trx_gt_port_0_n  )
+   ,.gt_rx_gt_port_0_p ( gt_trx_gt_port_0_p  )
+   ,.gt_rx_gt_port_1_n ( gt_trx_gt_port_1_n  )
+   ,.gt_rx_gt_port_1_p ( gt_trx_gt_port_1_p  )
+   ,.gt_rx_gt_port_2_n ( gt_trx_gt_port_2_n  )
+   ,.gt_rx_gt_port_2_p ( gt_trx_gt_port_2_p  )
+   ,.gt_rx_gt_port_3_n ( gt_trx_gt_port_3_n  )
+   ,.gt_rx_gt_port_3_p ( gt_trx_gt_port_3_p  )
+   ,.gt_tx_gt_port_0_n ( gt_trx_gt_port_0_n  )
+   ,.gt_tx_gt_port_0_p ( gt_trx_gt_port_0_p  )
+   ,.gt_tx_gt_port_1_n ( gt_trx_gt_port_1_n  )
+   ,.gt_tx_gt_port_1_p ( gt_trx_gt_port_1_p  )
+   ,.gt_tx_gt_port_2_n ( gt_trx_gt_port_2_n  )
+   ,.gt_tx_gt_port_2_p ( gt_trx_gt_port_2_p  )
+   ,.gt_tx_gt_port_3_n ( gt_trx_gt_port_3_n  )
+   ,.gt_tx_gt_port_3_p ( gt_trx_gt_port_3_p  ),
+`endif
+`endif
+
+
+
+
 
         `ifdef ENABLE_DDR
           `ifdef AD9V3
