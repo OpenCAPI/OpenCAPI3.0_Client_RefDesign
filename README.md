@@ -11,15 +11,15 @@ It can be used to prepare the code of an FPGA:
 * or as a submodule of OpenCAPI Acceleration Framework (OC-Accel).
 In the latter, OC-Accel offer a way to program the FPGA without pain, using HDL langages or HLS (high level Synthesis).
 
-OC-Accel doc can be found [here:] (https://opencapi.github.io/oc-accel-doc/)
+OC-Accel doc can be found [here:](https://opencapi.github.io/oc-accel-doc/)
 
 
 # Supported Cards
 1. [Alphadata 9V3](https://www.alpha-data.com/dcp/products.php?product=adm-pcie-9v3)
-2. [Alphadata 9H3 with default XCVU33P]: (https://www.alpha-data.com/dcp/products.php?product=adm-pcie-9h3)
-3. [Alphadata 9H3 with XCVU35P]: (https://www.alpha-data.com/dcp/products.php?product=adm-pcie-9h3)
-4. [Alphadata 9H7]: (https://www.alpha-data.com/dcp/products.php?product=adm-pcie-9h7)
-5. [Bittware 250-SoC]: (https://www.bittware.com/fpga/250-soc/)
+2. [Alphadata 9H3 with default XCVU33P](https://www.alpha-data.com/dcp/products.php?product=adm-pcie-9h3)
+3. [Alphadata 9H3 with XCVU35P](https://www.alpha-data.com/dcp/products.php?product=adm-pcie-9h3)
+4. [Alphadata 9H7](https://www.alpha-data.com/dcp/products.php?product=adm-pcie-9h7)
+5. [Bittware 250-SoC](https://www.bittware.com/fpga/250-soc/)
 
 # Supported AFUs
 * AFP
