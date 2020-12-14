@@ -9,7 +9,8 @@ It contains the TLx and DLx blocs, require to connect to the TL/DL of Power9
 It can be used to prepare the code of an FPGA:
 * either in standalone mode, to basically attach a card containing an FPGA to the Power9 OC link
 * or as a submodule of OpenCAPI Acceleration Framework (OC-Accel).
-In the latter, OC-Accel offer a way to program the FPGA without pain, using HDL langages or HLS (high level Synthesis).
+
+In the latter, OC-Accel offers a way to program the FPGA without pain, using HDL langages or HLS (high level Synthesis).
 
 OC-Accel doc can be found [here:](https://opencapi.github.io/oc-accel-doc/)
 
