@@ -91,6 +91,18 @@ module oc_fpga_top (
 `endif
 `endif
 
+`ifdef ENABLE_9H3_LED
+    , output                 user_led_a0
+    , output                 user_led_a1
+    , output                 user_led_g0
+    , output                 user_led_g1
+`endif
+`ifdef ENABLE_9H3_EEPROM
+    , inout                  eeprom_scl
+    , inout                  eeprom_sda
+    , inout                  eeprom_wp
+`endif 
+
 `ifdef FLASH
    ,inout  FPGA_FLASH_CE2_L       // To/From FLASH of flash_sub_system.v
    ,inout  FPGA_FLASH_DQ4         // To/From FLASH of flash_sub_system.v
@@ -1106,6 +1118,18 @@ oc_function oc_func(
    ,.gt_tx_gt_port_3_p ( gt_tx_gt_port_3_p  )
 `endif
 `endif
+
+`ifdef ENABLE_9H3_LED
+    , .user_led_a0     ( user_led_a0        )
+    , .user_led_a1     ( user_led_a1        )
+    , .user_led_g0     ( user_led_g0        )
+    , .user_led_g1     ( user_led_g1        )
+`endif
+`ifdef ENABLE_9H3_EEPROM
+    , .eeprom_scl      (eeprom_scl          )
+    , .eeprom_sda      (eeprom_sda          )
+    , .eeprom_wp       (eeprom_wp           )
+`endif 
 
 );
 
