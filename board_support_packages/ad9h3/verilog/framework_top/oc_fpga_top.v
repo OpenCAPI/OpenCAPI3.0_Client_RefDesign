@@ -100,7 +100,7 @@ module oc_fpga_top (
 `ifdef ENABLE_9H3_EEPROM
     , inout                  eeprom_scl
     , inout                  eeprom_sda
-    , inout                  eeprom_wp
+    , output                 eeprom_wp
 `endif 
 
 `ifdef FLASH
