@@ -47,3 +47,26 @@ set_property EXTRACT_RESET NO [get_cells {bsp?/tlx/OCX_TLX_PARSER/TLX_RCV_FIFO/C
 set_property EXTRACT_RESET NO [get_cells {bsp?/dlx_phy/ocx_dlx_top_inst/tx/flt/pre_crc_data_q_reg[*]}]
 set_property EXTRACT_RESET NO [get_cells {bsp?/tlx/OCX_TLX_PARSER/TLX_RCV_FIFO/RESP_FIFO_MAC/RESP_INFO_CTL/data_wr_cnt_dout_reg[*]}]
 set_property EXTRACT_RESET NO [get_cells {bsp?/tlx/OCX_TLX_PARSER/TLX_RCV_FIFO/CMD_FIFO_MAC/CMD_INFO_CTL/data_wr_cnt_dout_reg[*]}]
+
+# set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
+# set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
+# set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
+# connect_debug_port dbg_hub/clk [get_nets clock_tlx]
+
+# following worked well in PR except for HBM
+ create_pblock pblock_static_BSP
+ resize_pblock pblock_static_BSP -add CLOCKREGION_X0Y4:CLOCKREGION_X1Y5
+ add_cells_to_pblock pblock_static_BSP [get_cells [list bsp?/dlx_phy bsp?/DLx_phy_vio_0_inst bsp?/vio_reset_n_inst_tlx bsp?/tlx]]
+ create_pblock pblock_static_OCA
+ resize_pblock pblock_static_OCA -add CLOCKREGION_X2Y3:CLOCKREGION_X3Y5
+ add_cells_to_pblock pblock_static_OCA [get_cells [list cfg? oc_func?]]
+ remove_cells_from_pblock pblock_static_OCA [get_cells [list oc_func?/fw_afu/action_core_i]]
+
+# Trying the following in PR => did not succeed yet with HBM
+#create_pblock pblock_static_OCA
+#resize_pblock pblock_static_OCA -add CLOCKREGION_X2Y2:CLOCKREGION_X3Y5
+#resize_pblock pblock_static_OCA -add CLOCKREGION_X0Y4:CLOCKREGION_X1Y5
+#add_cells_to_pblock pblock_static_OCA [get_cells [list bsp0]]
+#add_cells_to_pblock pblock_static_OCA [get_cells [list cfg0 oc_func0]]
+#remove_cells_from_pblock pblock_static_OCA [get_cells [list oc_func0/fw_afu/action_core_i]]
+

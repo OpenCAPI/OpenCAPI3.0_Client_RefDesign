@@ -23,7 +23,8 @@
 module oc_fpga_top (
 
   // -- Reset
-    input                 oc0_ocde
+  // Add this io_buffer_type feature to connect the oc0_ocde in dynamic area for PR
+    (* io_buffer_type = "none" *) input oc0_ocde
    ,input                 freerun_clk_p
    ,input                 freerun_clk_n
 
@@ -125,6 +126,9 @@ module oc_fpga_top (
 wire           oc0_clock_afu; //-- Frequency = clock_tlx/2
 wire           oc0_clock_tlx;
 wire           oc0_reset_n;
+wire           decouple;
+wire           oc0_ocde_i; // decoupled ocde signal
+wire           oc0_ocde_for_bsp;
 wire   [4:0]   oc0_ro_device;
 wire   [31:0]  oc0_ro_dlx0_version;
 wire   [31:0]  oc0_ro_tlx0_version;
@@ -627,12 +631,13 @@ IBUFDS_freerun (
    .IB (freerun_clk_n)  // 1-bit input: Diff_n buffer input (connect directly to top-level port)
 );
 
+assign oc0_ocde_i           = (~decouple) & oc0_ocde_for_bsp         ;
 
 oc_bsp bsp0(
 //-------------
 //-- FPGA I/O
 //-------------
-  .ocde                                        (oc0_ocde                             ) //-- oc_bsp0:  input
+  .ocde                                        (oc0_ocde_i                           ) //-- oc_bsp0:  input
  ,.freerun_clk                                 (freerun_clk                          ) //-- oc_bsp0:  input
  ,.ch0_gtytxn_out                              (oc0_ch0_gtytxn_out                   ) //-- oc_bsp0:  output
  ,.ch0_gtytxp_out                              (oc0_ch0_gtytxp_out                   ) //-- oc_bsp0:  output
@@ -1058,6 +1063,9 @@ oc_function oc_func0(
    .clock_tlx                              (oc0_clock_tlx                          ) // -- oc_function0:   input  
   ,.clock_afu                              (oc0_clock_afu                          ) // -- oc_function0:   input  
   ,.reset                                  (oc0_reset                              ) // -- oc_function0:   input  
+  ,.oc0_ocde                               (oc0_ocde                               ) // -- oc_function0:   input
+  ,.oc0_ocde_for_bsp                       (oc0_ocde_for_bsp                       ) // -- oc_function0:   output
+  ,.decouple                               (decouple                               ) // -- oc_function0:   output
     // Bus number comes from CFG_SEQ
   ,.cfg_bus                                (oc0_cfg0_bus_num                       ) // -- oc_function0:   input  [7:0]
     // Hardcoded configuration inputs
