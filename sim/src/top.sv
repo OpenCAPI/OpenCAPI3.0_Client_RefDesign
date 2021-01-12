@@ -15,7 +15,7 @@
 //
 
 // This is the top file for simulation.
-// It's different to hardware/oc-bip/board_support_packages/${FPGA_CARD}/verilog/oc_fpga_top.v
+// It's different to hardware/oc-bip/board_support_packages/${FPGA_CARD}/verilog/framework_top/oc_fpga_top.v
 //  1) Please pay attention to the name of clocks: tlx_clock and afu_clock
 //     They are named as clock_tlx/afu in oc_fpga_top.v
 //     But here they come from ocse afu_driver
@@ -152,7 +152,7 @@ module top (
         input      [31:0] cfg0_tlx_rdata_bus_top ,
         input             cfg0_tlx_rdata_bdi_top,
         inout       [4:0] ro_device_top
-    );
+       );
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 
@@ -161,6 +161,15 @@ module top (
     reg              tlx_clock;
     reg              afu_clock;
     reg              reset;
+
+ `ifdef ENABLE_9H3_EEPROM
+    wire             eeprom_scl;
+    wire             eeprom_sda;
+ `endif
+ `ifdef ENABLE_9H3_AVR
+    reg              avr_rx;
+    reg              avr_ck;
+ `endif
 
     // Table 1: TLX to AFU Response Interface
     reg              tlx_afu_resp_valid_top;
@@ -617,6 +626,7 @@ module top (
     // we define ethernet wires only if in simulation and emac requested (no loopback before emac)
     `ifdef ENABLE_ETHERNET
     `ifndef ENABLE_ETH_LOOP_BACK
+    wire  gt_trx_gt_port_0_n;
     wire  gt_trx_gt_port_0_p;
     wire  gt_trx_gt_port_1_n;
     wire  gt_trx_gt_port_1_p;
@@ -644,13 +654,21 @@ module top (
         wire  [8:0]   c0_ddr4_dqs_t;
     `endif
 
-
     initial begin
         resetCnt = 0;
         i = 0;
         tlx_clock    <= 0;
         afu_clock    <= 0;
-        reset       <= 1;
+        reset        <= 1;
+
+    `ifdef ENABLE_9H3_EEPROM
+//        eeprom_scl   <= 0; // User can define this clk here
+//        eeprom_sda   <= 0;
+    `endif
+    `ifdef ENABLE_9H3_AVR
+        avr_rx       <= 0;
+        avr_ck       <= 0;  // User can define this clk here
+    `endif
 
         // Table 1: TLX to AFU Response Interface
         tlx_afu_resp_valid_top   <= 0;
@@ -1201,8 +1219,25 @@ module top (
 `endif
 `endif
 
+// EXTRA_IO 
+`ifdef ENABLE_9H3_LED
+    .user_led_a0     ()        // These outputs can be user defined
+   ,.user_led_a1     ()
+   ,.user_led_g0     ()
+   ,.user_led_g1     (),
+`endif
 
+`ifdef ENABLE_9H3_EEPROM
+    .eeprom_scl       (eeprom_scl)
+   ,.eeprom_sda       (eeprom_sda)
+   ,.eeprom_wp        (),      // This output can be user defined
+`endif
 
+`ifdef ENABLE_9H3_AVR
+    .avr_rx          (avr_rx)
+   ,.avr_tx          ()        // This output can be user defined
+   ,.avr_ck          (avr_ck),
+ `endif
 
 
         `ifdef ENABLE_DDR
