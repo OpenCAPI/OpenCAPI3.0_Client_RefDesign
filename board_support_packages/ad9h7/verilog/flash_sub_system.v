@@ -52,7 +52,8 @@ module flash_sub_system (
                                           //   the quad SPI core on .ext_spi_clk immediately after initial configuration is over.
                                           //   The quad SPI core divides this in half and drives it to the STARTUPE3 core on .USRCCLKO
                                           //   See ug570-ultrascale-configuration.pdf and ug470_7Series_Config.pdf page 92 for more details.
- // , output         spi_clk_div_2          // Make half freq spi_clk available for wrapping back in as 'icap_clk' if desired
+// sck_o should only connect to STARTUP IP so remove spi_clk_div_2 output
+// , output         spi_clk_div_2          // Make half freq spi_clk available for wrapping back in as 'icap_clk' if desired
   , input          icap_clk               // This is a 100 MHz (max freq) clock into the ICAP block 
   , input          reset_n                // (active low) Hardware reset
 

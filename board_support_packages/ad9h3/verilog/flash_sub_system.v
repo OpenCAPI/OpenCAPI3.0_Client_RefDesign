@@ -52,8 +52,8 @@ module flash_sub_system (
                                           //   the quad SPI core on .ext_spi_clk immediately after initial configuration is over.
                                           //   The quad SPI core divides this in half and drives it to the STARTUPE3 core on .USRCCLKO
                                           //   See ug570-ultrascale-configuration.pdf and ug470_7Series_Config.pdf page 92 for more details.
-// sck_o should only connect to STARTUP IP so remove spi_clk_div_2 output                         
-//  , output         spi_clk_div_2          // Make half freq spi_clk available for wrapping back in as 'icap_clk' if desired
+// sck_o should only connect to STARTUP IP so remove spi_clk_div_2 output
+// , output         spi_clk_div_2          // Make half freq spi_clk available for wrapping back in as 'icap_clk' if desired
   , input          icap_clk               // This is a 100 MHz (max freq) clock into the ICAP block 
   , input          reset_n                // (active low) Hardware reset
 
@@ -293,14 +293,14 @@ axi_hwicap_0 ICAP (
   , .s_axi_rvalid   ( g_axi_rvalid[1]    ) // output
   , .s_axi_rready   ( s_axi_rready       ) // input
   , .ip2intc_irpt   ( icap_interrupt     ) // output
-  , .icap_avail     (1'b0)
-  , .icap_csib      ()
-  , .icap_o         ()
-  , .icap_i         (32'b0)
-  , .icap_rdwrb     ()
-  , .cap_gnt        (1'b0)
-  , .cap_rel        (1'b0)
-  , .cap_req        ()
+//PR  , .icap_avail     (1'b0)
+//PR  , .icap_csib      ()
+//PR  , .icap_o         ()
+//PR  , .icap_i         (32'b0)
+//PR  , .icap_rdwrb     ()
+//PR  , .cap_gnt        (1'b0)
+//PR  , .cap_rel        (1'b0)
+//PR  , .cap_req        ()
 );
 
    
@@ -371,7 +371,7 @@ axi_quad_spi_0 QSPI (
      // Misc
   , .ip2intc_irpt   ( qspi_interrupt     )  // output
 );
-// assign spi_clk_div_2 = spi_sck_o;           // Pass clock going to STARTUP upwards so it can be used as ICAP clock
+//assign spi_clk_div_2 = spi_sck_o;           // Pass clock going to STARTUP upwards so it can be used as ICAP clock
 
 // --------------------------------------------------------------------------------------------
 // STARTUP for Virtex Ultrascale+, found in Language Templates

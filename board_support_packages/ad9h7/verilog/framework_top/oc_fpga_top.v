@@ -1063,8 +1063,8 @@ oc_function oc_func0(
    .clock_tlx                              (oc0_clock_tlx                          ) // -- oc_function0:   input  
   ,.clock_afu                              (oc0_clock_afu                          ) // -- oc_function0:   input  
   ,.reset                                  (oc0_reset                              ) // -- oc_function0:   input  
-  ,.oc0_ocde                               (oc0_ocde                               ) // -- oc_function0:   input
-  ,.oc0_ocde_for_bsp                       (oc0_ocde_for_bsp                       ) // -- oc_function0:   output
+  ,.ocde                                   (oc0_ocde                               ) // -- oc_function0:   input
+  ,.ocde_for_bsp                           (oc0_ocde_for_bsp                       ) // -- oc_function0:   output
   ,.decouple                               (decouple                               ) // -- oc_function0:   output
     // Bus number comes from CFG_SEQ
   ,.cfg_bus                                (oc0_cfg0_bus_num                       ) // -- oc_function0:   input  [7:0]
