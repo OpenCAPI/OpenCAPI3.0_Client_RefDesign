@@ -27,11 +27,11 @@ set_false_path -from [get_clocks oc0_clock_afu] -to [get_clocks refclk_bufg_apb_
 set_false_path -from [get_clocks txoutclk_out[0]_1] -to [get_clocks refclk_bufg_apb_clk_BUFGCE_O]
 
 # Pblock for placing all logic in SLR1 except for HBM controller
-create_pblock pblock_1
-resize_pblock pblock_1 -add CLOCKREGION_X0Y4:CLOCKREGION_X1Y7
-add_cells_to_pblock pblock_1 [get_cells [list dbg_hub bsp?/dlx_phy bsp?/DLx_phy_vio_0_inst bsp?/vio_reset_n_inst_tlx bsp?/tlx]]
+#create_pblock pblock_1
+#resize_pblock pblock_1 -add CLOCKREGION_X0Y4:CLOCKREGION_X1Y7
+#add_cells_to_pblock pblock_1 [get_cells [list dbg_hub bsp?/dlx_phy bsp?/DLx_phy_vio_0_inst bsp?/vio_reset_n_inst_tlx bsp?/tlx]]
 
-remove_cells_from_pblock pblock_1 [get_cells bsp?/dlx_phy/BUFGCE_DIV_inst]
+#remove_cells_from_pblock pblock_1 [get_cells bsp?/dlx_phy/BUFGCE_DIV_inst]
 
 create_pblock pblock_2
 resize_pblock pblock_2 -add CLOCKREGION_X2Y4:CLOCKREGION_X7Y7
