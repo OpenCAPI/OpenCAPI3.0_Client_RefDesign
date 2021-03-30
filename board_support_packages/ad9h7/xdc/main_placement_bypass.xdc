@@ -55,10 +55,15 @@ set_property EXTRACT_RESET NO [get_cells {bsp?/tlx/OCX_TLX_PARSER/TLX_RCV_FIFO/C
 
 # following worked well in PR except for HBM
  create_pblock pblock_static_BSP
- resize_pblock pblock_static_BSP -add CLOCKREGION_X0Y4:CLOCKREGION_X1Y5
+ #600resize_pblock pblock_static_BSP -add CLOCKREGION_X0Y4:CLOCKREGION_X1Y5
+ #600resize_pblock pblock_static_BSP -add CLOCKREGION_X2Y4:CLOCKREGION_X3Y4
+ resize_pblock pblock_static_BSP -add CLOCKREGION_X0Y4:CLOCKREGION_X3Y4
+ resize_pblock pblock_static_BSP -add CLOCKREGION_X0Y4:CLOCKREGION_X0Y5
  add_cells_to_pblock pblock_static_BSP [get_cells [list bsp?/dlx_phy bsp?/DLx_phy_vio_0_inst bsp?/vio_reset_n_inst_tlx bsp?/tlx]]
  create_pblock pblock_static_OCA
- resize_pblock pblock_static_OCA -add CLOCKREGION_X2Y3:CLOCKREGION_X3Y5
+ #600resize_pblock pblock_static_OCA -add CLOCKREGION_X2Y5:CLOCKREGION_X3Y6
+ resize_pblock pblock_static_OCA -add CLOCKREGION_X1Y5:CLOCKREGION_X3Y5
+ resize_pblock pblock_static_OCA -add CLOCKREGION_X1Y6:CLOCKREGION_X2Y6
  add_cells_to_pblock pblock_static_OCA [get_cells [list cfg? oc_func?]]
  remove_cells_from_pblock pblock_static_OCA [get_cells [list oc_func?/fw_afu/action_core_i]]
 
