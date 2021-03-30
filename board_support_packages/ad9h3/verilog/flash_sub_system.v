@@ -81,17 +81,17 @@ module flash_sub_system (
 );
 
 // AXI4-Lite signals between Master and Slave(s)
-wire  [13:0] s_axi_awaddr; 
+(* mark_debug = "TRUE" *)  wire  [13:0] s_axi_awaddr; 
 wire         s_axi_awvalid;
 reg          s_axi_awready; 
-wire  [31:0] s_axi_wdata;
+(* mark_debug = "TRUE" *)  wire  [31:0] s_axi_wdata;
 wire   [3:0] s_axi_wstrb; 
 wire         s_axi_wvalid; 
 reg          s_axi_wready;
 reg    [1:0] s_axi_bresp;
 reg          s_axi_bvalid; 
 wire         s_axi_bready; 
-wire  [13:0] s_axi_araddr; 
+(* mark_debug = "TRUE" *)  wire  [13:0] s_axi_araddr; 
 wire         s_axi_arvalid; 
 reg          s_axi_arready;
 reg   [31:0] s_axi_rdata; 
@@ -104,7 +104,7 @@ wire [4:0] unused;
 wire       icap_interrupt;
 wire       qspi_interrupt;
 wire       preq;
-wire       eos;
+(* mark_debug = "TRUE" *)  wire       eos;
 
 // External FPGA I/O to FLASH, as dictated by 9V3 card wiring in Alpha Data user manual
 //wire EMCCLK_B;            // AJ28 (100 MHz drives SPI FLASH, redrive of REFCLK100M on ping AJ28)
@@ -200,21 +200,21 @@ cfg_reg_to_axi4lite CFG2AXI4L (
 //    (this allows consistency in the naming whether the signal is a bit or a vector)
 
 //re [15:0] g_axi_awaddr  [1:0];    // broadcast
-wire        g_axi_awvalid [1:0];    // gated
+(* mark_debug = "TRUE" *) wire        g_axi_awvalid [1:0];    // gated
 wire        g_axi_awready [1:0];    // muxed
 //re [31:0] g_axi_wdata   [1:0];    // broadcast
 //re  [3:0] g_axi_wstrb   [1:0];    // broadcast
-wire        g_axi_wvalid  [1:0];    // gated
+(* mark_debug = "TRUE" *) wire        g_axi_wvalid  [1:0];    // gated
 wire        g_axi_wready  [1:0];    // muxed
 wire  [1:0] g_axi_bresp   [1:0];    // muxed
 wire        g_axi_bvalid  [1:0];    // muxed
 //re        g_axi_bready  [1:0];    // broadcast
 //re [15:0] g_axi_araddr  [1:0];    // broadcast
-wire        g_axi_arvalid [1:0];    // gated
+(* mark_debug = "TRUE" *) wire        g_axi_arvalid [1:0];    // gated
 wire        g_axi_arready [1:0];    // muxed
-wire [31:0] g_axi_rdata   [1:0];    // muxed
+(* mark_debug = "TRUE" *) wire [31:0] g_axi_rdata   [1:0];    // muxed
 wire  [1:0] g_axi_rresp   [1:0];    // muxed
-wire        g_axi_rvalid  [1:0];    // muxed
+(* mark_debug = "TRUE" *) wire        g_axi_rvalid  [1:0];    // muxed
 //re        g_axi_rready  [1:0];    // broadcast
 
 assign g_axi_awvalid[0] = (cfg_axi_devsel == 2'b00) ? s_axi_awvalid : 1'b0;
@@ -303,7 +303,7 @@ axi_hwicap_0 ICAP (
 //PR  , .cap_req        ()
 );
 
-   
+
 // ------------------------------------------------------------------
 // Xilinx IP: axi_qu s_axi_rresp  ad_spi (FLASH controller, pg153-axi-quad-spi.pdf)
 // (Per configuration register definition, this is devsel=2'b00 )

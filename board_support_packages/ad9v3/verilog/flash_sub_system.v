@@ -294,7 +294,7 @@ axi_hwicap_0 ICAP (
 // Xilinx IP note: You must compile the wrapper file axi_quad_spi_0.v when simulating
 // the core, axi_quad_spi_0. When compiling the wrapper file, be sure to
 // reference the Verilog simulation library.
-axi_quad_spi_0 QSPI (
+/*axi_quad_spi_0 QSPI (
     .ext_spi_clk    ( spi_clk            ) // input 
   , .s_axi_aclk     ( axi_clk            ) // input 
   , .s_axi_aresetn  ( reset_n            ) // input (active low)
@@ -353,7 +353,7 @@ axi_quad_spi_0 QSPI (
   , .ss_1_t         ( spi_ce2_t          )  // output 
      // Misc
   , .ip2intc_irpt   ( qspi_interrupt     )  // output
-);
+);*/
 //assign spi_clk_div_2 = spi_sck_o;           // Pass clock going to STARTUP upwards so it can be used as ICAP clock
 
 // In synthesis and implementation (when CFG_FLASH_SIM is NOT defined, thus ifndef vs ifdef), use the real

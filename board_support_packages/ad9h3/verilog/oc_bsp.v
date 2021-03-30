@@ -319,6 +319,18 @@ module oc_bsp (
        reset_tlx_q       <= reset_tlx_din;
        dlx_tlx_link_up_q <= dlx_tlx_link_up_din;
   end
+  
+    //BM to divide the clock by 2 and be below 100MHz
+  //reg   icap_clk;
+  //always@(posedge clock_156_25) begin
+  //begin
+  //    if (reset_n)
+  //         icap_clk = 1'b0;
+  //    else
+  //         icap_clk = ~icap_clk;
+  //    end
+  //end
+
 
 //  vio_reset_n vio_reset_n_inst_tlx
 //    (
@@ -367,10 +379,10 @@ assign unused[1] = 1'b0;
   // -- ICAP for image reload
   // -- ********************************************************************************************************************************
 
-    iprog_icap ICAP (
-        .go(iprog_go_or)
-        ,.clk(clock_156_25)
-    );
+    //iprog_icap ICAP (
+    //    .go(iprog_go_or)
+    //    ,.clk(clock_156_25)
+    //);
     
     assign ocde_din[7:0] = {ocde, ocde_q[7:1]};
     assign reset_all_out = ((ocde_q[4:0] == 5'b11111) &  reset_all_out_q) ? 1'b0 :

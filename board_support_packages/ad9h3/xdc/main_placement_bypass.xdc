@@ -53,7 +53,21 @@ set_property BITSTREAM.CONFIG.OVERTEMPSHUTDOWN Enable [current_design]
 #set_property EXTRACT_RESET NO [get_cells {bsp/tlx/OCX_TLX_PARSER/TLX_RCV_FIFO/RESP_FIFO_MAC/RESP_INFO_CTL/data_wr_cnt_dout_reg[*]}]
 #set_property EXTRACT_RESET NO [get_cells {bsp/tlx/OCX_TLX_PARSER/TLX_RCV_FIFO/CMD_FIFO_MAC/CMD_INFO_CTL/data_wr_cnt_dout_reg[*]}]
 
-set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
-set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
-set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
-connect_debug_port dbg_hub/clk [get_nets clock_tlx]
+#set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores u_ila_0]
+#set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores u_ila_0]
+#set_property C_USER_SCAN_CHAIN 1 [get_debug_cores u_ila_0]
+#connect_debug_port u_ila_0/clk [get_nets clock_tlx]
+#add ila for PR
+
+##connect_debug_port ila_p4_icap/clk [get_nets icap_clk]
+#recovered from logs
+create_pblock pblock_static_BSP
+add_cells_to_pblock [get_pblocks pblock_static_BSP] [get_cells -quiet [list bsp/dlx_phy bsp/tlx cfg oc_func/cfg_f1 oc_func/fw_afu/GND oc_func/fw_afu/VCC oc_func/fw_afu/desc oc_func/fw_afu/input_reset_q_reg oc_func/fw_afu/reset_snap_q_reg oc_func/fw_afu/snap_core_i]]
+resize_pblock [get_pblocks pblock_static_BSP] -add {CONFIG_SITE_X0Y0:CONFIG_SITE_X0Y0}
+resize_pblock [get_pblocks pblock_static_BSP] -add {IOB_X0Y0:IOB_X0Y155}
+resize_pblock [get_pblocks pblock_static_BSP] -add {CLOCKREGION_X0Y1:CLOCKREGION_X0Y1 CLOCKREGION_X0Y0:CLOCKREGION_X3Y0}
+
+#useful for ILA debugging - BMDBGBM
+#connect_debug_port dbg_hub/clk [get_nets clock_afu]
+#connect_debug_port u_ila_0/clk [get_nets clock_afu]
+

@@ -933,6 +933,9 @@ oc_function oc_func(
     .clock_tlx                              ( clock_tlx                          )
   , .clock_afu                              ( clock_afu                          )
   , .reset                                  ( reset                              )  // (positive active)
+  , .decouple                               ( decouple                           )
+  //, .ocde                                   ( ocde                               )
+  //, .ocde_for_bsp                           ( ocde_for_bsp                       ) 
     // Bus number comes from CFG_SEQ
   , .cfg_bus                                ( cfg0_bus_num                       )  // Attached to TLX Port 0, so use cfg0_ instance
     // Hardcoded configuration inputs
