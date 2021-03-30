@@ -302,8 +302,8 @@ axi_hwicap_0 ICAP (
 //PR  , .cap_rel        (1'b0)
 //PR  , .cap_req        ()
 );
-
-
+ 
+ 
 // ------------------------------------------------------------------
 // Xilinx IP: axi_qu s_axi_rresp  ad_spi (FLASH controller, pg153-axi-quad-spi.pdf)
 // (Per configuration register definition, this is devsel=2'b00 )
