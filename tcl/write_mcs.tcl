@@ -1,10 +1,10 @@
 #!/bin/sh
 # Creates MCS files for the following OpenCAPI cards
 # Usage: ./write_mcs card_name
-# card_name can be one of the following options: ad9v3, ad9h7, ad9h3
+# card_name can be one of the following options: ad9v3, ad9h7, ad9h3, ad9h335
 
 # tcl wrapper - next line treated as comment by vivado \
-if [ "$#" -ne 1 ]; then echo "Need to pass 1 command line argument (card eg: ad9v3, ad9h7, ad9h3)"; exit 3; else exec vivado -notrace -nojournal -nolog -source "$0" -mode batch -tclargs "$1"; fi
+if [ "$#" -ne 1 ]; then echo "Need to pass 1 command line argument (card eg: ad9v3, ad9h7, ad9h3, ad9h335)"; exit 3; else exec vivado -notrace -nojournal -nolog -source "$0" -mode batch -tclargs "$1"; fi
 
 set card ""
 
@@ -24,6 +24,8 @@ if {$card eq "ad9v3"} {
     set mysize 128
 } elseif {$card eq "ad9h3"} {
     set mysize 64
+} elseif {$card eq "ad9h335"} {
+    set mysize 128
 } else {
     puts "Card not recognized"
     exit;
