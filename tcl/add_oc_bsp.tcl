@@ -29,6 +29,7 @@ set use_flash        $::env(FLASH_USED)
 set transceiver_type   "bypass"
 set transceiver_speed  $::env(PHY_SPEED)
 set fpga_card          $::env(FPGACARD)
+set ila_debug          [string toupper $::env(ILA_DEBUG)]
 
 
 ############################################################################
@@ -176,9 +177,13 @@ set_property -name "file_type" -value "Verilog Header" -objects $file_obj
 set xdc_files [list \
                        "[file normalize "$oc_bsp_xdc/main_pinout.xdc"]" \
                        "[file normalize "$oc_bsp_xdc/main_timing.xdc"]" \
-                       "[file normalize "$oc_bsp_xdc/extra.xdc"]" \
                    ]
 
+if {$ila_debug eq "TRUE" } {
+    set xdc_files [list {*}$xdc_files \
+                       "[file normalize "$oc_bsp_xdc/extra.xdc"]" \
+                   ]
+}
 if {$transceiver_type eq "bypass" } {
     set xdc_files [list {*}$xdc_files \
                          "[file normalize "$oc_bsp_xdc/main_placement_bypass.xdc"]" \
@@ -200,7 +205,9 @@ if {$use_flash ne "FALSE"} {
 puts "	                Adding constraints to oc_bsp project"
 set obj [get_filesets constrs_1]
 add_files -fileset constrs_1 -norecurse $xdc_files >> $log_file
-set_property -name "target_constrs_file" -value "[file normalize "$oc_bsp_xdc/extra.xdc"]" -objects $obj
+if {$ila_debug eq "TRUE" } {
+   set_property -name "target_constrs_file" -value "[file normalize "$oc_bsp_xdc/extra.xdc"]" -objects $obj
+}
 
 ############################################################################
 set synth_verilog_defines ""

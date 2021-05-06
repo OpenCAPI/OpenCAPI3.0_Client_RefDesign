@@ -73,11 +73,11 @@ module flash_sub_system (
   , input          data_expand_enable     // When 1, expand/collapse 4 bytes of data into four, 1 byte AXI operations
   , input          data_expand_dir        // When 0, expand bytes [3:0] in order 0,1,2,3 . When 1, expand in order 3,2,1,0 .  
 
-  , inout          FPGA_FLASH_CE2_L       // jda 3/2 Interface to SPI flash
-  , inout          FPGA_FLASH_DQ4         // jda 3/2 Interface to SPI flash
-  , inout          FPGA_FLASH_DQ5         // jda 3/2 Interface to SPI flash
-  , inout          FPGA_FLASH_DQ6         // jda 3/2 Interface to SPI flash
-  , inout          FPGA_FLASH_DQ7         // jda 3/2 Interface to SPI flash
+  , inout          FPGA_FLASH_CE2_L       //         Interface to SPI flash
+  , inout          FPGA_FLASH_DQ4         //         Interface to SPI flash
+  , inout          FPGA_FLASH_DQ5         //         Interface to SPI flash
+  , inout          FPGA_FLASH_DQ6         //         Interface to SPI flash
+  , inout          FPGA_FLASH_DQ7         //         Interface to SPI flash
 );
 
 // AXI4-Lite signals between Master and Slave(s)
@@ -117,11 +117,6 @@ wire       preq;
   wire FPGA_FLASH_DQ3;      // AC8  (9v3 signal name = FPGA_FLASH_DQ3)
   wire FPGA_FLASH_CCLK;     // AB10 (9v3 signal name = CCLK)
 `endif
-// jda 3/2 wire FPGA_FLASH_CE2_L;    // AV30 (9v3 signal name = FPGA_FLASH_CE2_L)
-// jda 3/2 wire FPGA_FLASH_DQ4;      // AF30 (9v3 signal name = FPGA_FLASH_DQ4)
-// jda 3/2 wire FPGA_FLASH_DQ5;      // AG30 (9v3 signal name = FPGA_FLASH_DQ5)
-// jda 3/2 wire FPGA_FLASH_DQ6;      // AF28 (9v3 signal name = FPGA_FLASH_DQ6)
-// jda 3/2 wire FPGA_FLASH_DQ7;      // AG28 (9v3 signal name = FPGA_FLASH_DQ7)
 
 // Combine signals into vectors
 wire [7:0] spi_dq_i;   
@@ -217,10 +212,11 @@ wire  [1:0] g_axi_rresp   [1:0];    // muxed
 (* mark_debug = "TRUE" *) wire        g_axi_rvalid  [1:0];    // muxed
 //re        g_axi_rready  [1:0];    // broadcast
 
+//FLASH
 assign g_axi_awvalid[0] = (cfg_axi_devsel == 2'b00) ? s_axi_awvalid : 1'b0;
 assign g_axi_wvalid[0]  = (cfg_axi_devsel == 2'b00) ? s_axi_wvalid  : 1'b0;
 assign g_axi_arvalid[0] = (cfg_axi_devsel == 2'b00) ? s_axi_arvalid : 1'b0;
-
+//ICAP
 assign g_axi_awvalid[1] = (cfg_axi_devsel == 2'b01) ? s_axi_awvalid : 1'b0;
 assign g_axi_wvalid[1]  = (cfg_axi_devsel == 2'b01) ? s_axi_wvalid  : 1'b0;
 assign g_axi_arvalid[1] = (cfg_axi_devsel == 2'b01) ? s_axi_arvalid : 1'b0;
@@ -231,24 +227,20 @@ always @(*)  // Combinational
              s_axi_awready = g_axi_awready[0];
              s_axi_wready  = g_axi_wready[0];
              s_axi_bresp   = {2{g_axi_bresp[0]}};
-//-- jda 3/5             s_axi_bresp   = g_axi_bresp[0];
              s_axi_bvalid  = g_axi_bvalid[0];
              s_axi_arready = g_axi_arready[0];
              s_axi_rdata   = g_axi_rdata[0];
              s_axi_rresp   = {2{g_axi_rresp[0]}};
-//-- jda 3/5             s_axi_rresp   = g_axi_rresp[0];
              s_axi_rvalid  = g_axi_rvalid[0];
            end
     2'b01: begin
              s_axi_awready = g_axi_awready[1];
              s_axi_wready  = g_axi_wready[1];
              s_axi_bresp   = {2{g_axi_bresp[1]}};
-//-- jda 3/5             s_axi_bresp   = g_axi_bresp[1];
              s_axi_bvalid  = g_axi_bvalid[1];
              s_axi_arready = g_axi_arready[1];
              s_axi_rdata   = g_axi_rdata[1];
              s_axi_rresp   = {2{g_axi_rresp[1]}};
-//-- jda 3/5             s_axi_rresp   = g_axi_rresp[1];
              s_axi_rvalid  = g_axi_rvalid[1];
            end
     default: begin
@@ -293,6 +285,7 @@ axi_hwicap_0 ICAP (
   , .s_axi_rvalid   ( g_axi_rvalid[1]    ) // output
   , .s_axi_rready   ( s_axi_rready       ) // input
   , .ip2intc_irpt   ( icap_interrupt     ) // output
+//PR removing following unused interface to enable Partial Reconfiguration
 //PR  , .icap_avail     (1'b0)
 //PR  , .icap_csib      ()
 //PR  , .icap_o         ()
@@ -415,7 +408,7 @@ STARTUPE3 #(
 // indicates this block won't simulate correctly. Instead use IOBUFs to connect the Quad SPI signals directly to 
 // the 1st FLASH just like the 2nd FLASH is connected.
 //
-// From Sai Krishna Marella, 12/7/17, on why STARTUP shouldn't be part of simulation:
+// why STARTUP shouldn't be part of simulation:
 // "The Startup model is not supposed to be used as a replacment for the entire configuration block. All this represents
 // is the STARTUP so all you will see are the Global signals on it. Now the way the silicon works is that there are no
 // physical connections for this that the customer connects up. In order to mimic this behavior we have decided to use the
@@ -476,7 +469,6 @@ IOBUF IOBUF_CE1 (
 
 
 // Second SPI interface
-// 10/31/17 Mark Paluszkiewicz
 // Because the I/O that connects the SPI_0 is dedicated configuration only I/O (are not accessible via normal routing 
 // and do not have visible I/O blocks) they are accessed via the STARTUPE3 block.  So Yes the SPI_0 is connected to 
 // the STARTUPE3 block.  But because the pins dedicated to the 2nd SPI device of a dual quad SPI interface go specific 
@@ -486,7 +478,7 @@ IOBUF IOBUF_CE1 (
 // 
 // So the SPI_0 device interface ports connect to the STARTUPE3 block, and the SP_1 device interface ports goes to 
 // regular I/O but constrained to these specific pins below.
-//
+// On AD9V3
 // AV30  IO_L2N_T0L_N3_FWE_FCS2_B_65
 // AG30  IO_L22N_T3U_N7_DBC_AD0N_D05_65
 // AF30  IO_L22P_T3U_N6_DBC_AD0P_D04_65

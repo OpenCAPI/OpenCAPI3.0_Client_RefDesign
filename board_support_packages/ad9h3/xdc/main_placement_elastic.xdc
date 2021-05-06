@@ -1,10 +1,13 @@
 ###############################################################
-## FPGA: xcvu3p-ffvc1517-2-i
+## FPGA: xcvu33p-fsvh2104-2-e
 ###############################################################
 
 ## Settings to generate MSC file
 # Configuration from SPI Flash as per XAPP1233
 set_property BITSTREAM.GENERAL.COMPRESS {TRUE} [ current_design ]
+#for debug purpose, 2 following lines can be useful
+#set_property BITSTREAM.GENERAL.COMPRESS FALSE [current_design]
+#set_property BITSTREAM.GENERAL.perFrameCRC YES [current_design]
 set_property BITSTREAM.CONFIG.EXTMASTERCCLK_EN {DIV-1} [current_design]
 set_property BITSTREAM.CONFIG.SPI_32BIT_ADDR YES [current_design]
 set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 8 [current_design]

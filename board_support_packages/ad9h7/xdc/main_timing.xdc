@@ -28,3 +28,5 @@ set_false_path -from [get_clocks -of_objects [get_pins {bsp?/dlx_phy/example_wra
 # ocde signal can be treated as a static signal
 set_input_delay -clock [get_clocks  clock_156_25] 0.0 [get_ports -filter { NAME =~ "*ocde*" && DIRECTION == "IN" }]
 set_false_path -from [get_ports -filter { NAME =~ "*ocde*" && DIRECTION == "IN" }]
+set_false_path -from [get_cells -hierarchical -filter {NAME =~ *decouple*}]
+set_false_path -from [get_cells -hierarchical -filter {NAME =~ *monitor*}]

@@ -49,6 +49,9 @@ set_input_delay -clock clk_sck -max [expr $tco_max + $tdata_trace_delay_max + $t
 #set_input_delay -clock clk_sck -min [expr $tco_min + $tdata_trace_delay_min + $tclk_trace_delay_min] [get_pins -hierarchical *STARTUP*/DATA_IN[*]] -clock_fall;
 set_multicycle_path 2 -setup     -from clk_sck -to [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]]
 #set_multicycle_path 1 -hold -end -from clk_sck -to [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]]
+#NEW from BM
+set_multicycle_path -from [get_pins {bsp/FLASH/STARTUP/DATA_IN[*]}] -to [get_pins bsp/FLASH/QSPI/U0/DUAL_QUAD_MODE.QSPI_DUAL_QUAD/IO*_I_REG/D] 3
+
 
 # Data is captured into SPI on the following rising edge of SCK
 # Data is driven by the IP on alternate rising_edge of the ext_spi_clk

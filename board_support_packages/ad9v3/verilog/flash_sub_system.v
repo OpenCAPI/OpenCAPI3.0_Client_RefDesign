@@ -212,10 +212,11 @@ wire  [1:0] g_axi_rresp   [1:0];    // muxed
 wire        g_axi_rvalid  [1:0];    // muxed
 //re        g_axi_rready  [1:0];    // broadcast
 
+//FLASH
 assign g_axi_awvalid[0] = (cfg_axi_devsel == 2'b00) ? s_axi_awvalid : 1'b0;
 assign g_axi_wvalid[0]  = (cfg_axi_devsel == 2'b00) ? s_axi_wvalid  : 1'b0;
 assign g_axi_arvalid[0] = (cfg_axi_devsel == 2'b00) ? s_axi_arvalid : 1'b0;
-
+//ICAP
 assign g_axi_awvalid[1] = (cfg_axi_devsel == 2'b01) ? s_axi_awvalid : 1'b0;
 assign g_axi_wvalid[1]  = (cfg_axi_devsel == 2'b01) ? s_axi_wvalid  : 1'b0;
 assign g_axi_arvalid[1] = (cfg_axi_devsel == 2'b01) ? s_axi_arvalid : 1'b0;
@@ -294,7 +295,7 @@ axi_hwicap_0 ICAP (
 // Xilinx IP note: You must compile the wrapper file axi_quad_spi_0.v when simulating
 // the core, axi_quad_spi_0. When compiling the wrapper file, be sure to
 // reference the Verilog simulation library.
-/*axi_quad_spi_0 QSPI (
+axi_quad_spi_0 QSPI (
     .ext_spi_clk    ( spi_clk            ) // input 
   , .s_axi_aclk     ( axi_clk            ) // input 
   , .s_axi_aresetn  ( reset_n            ) // input (active low)
@@ -353,7 +354,7 @@ axi_hwicap_0 ICAP (
   , .ss_1_t         ( spi_ce2_t          )  // output 
      // Misc
   , .ip2intc_irpt   ( qspi_interrupt     )  // output
-);*/
+);
 //assign spi_clk_div_2 = spi_sck_o;           // Pass clock going to STARTUP upwards so it can be used as ICAP clock
 
 // In synthesis and implementation (when CFG_FLASH_SIM is NOT defined, thus ifndef vs ifdef), use the real
@@ -390,6 +391,7 @@ STARTUPE3 #(
 // indicates this block won't simulate correctly. Instead use IOBUFs to connect the Quad SPI signals directly to 
 // the 1st FLASH just like the 2nd FLASH is connected.
 //
+// why STARTUP shouldn't be part of simulation:
 // "The Startup model is not supposed to be used as a replacment for the entire configuration block. All this represents
 // is the STARTUP so all you will see are the Global signals on it. Now the way the silicon works is that there are no
 // physical connections for this that the customer connects up. In order to mimic this behavior we have decided to use the
@@ -459,7 +461,7 @@ IOBUF IOBUF_CE1 (
 // 
 // So the SPI_0 device interface ports connect to the STARTUPE3 block, and the SP_1 device interface ports goes to 
 // regular I/O but constrained to these specific pins below.
-//
+// On AD9V3
 // AV30  IO_L2N_T0L_N3_FWE_FCS2_B_65
 // AG30  IO_L22N_T3U_N7_DBC_AD0N_D05_65
 // AF30  IO_L22P_T3U_N6_DBC_AD0P_D04_65

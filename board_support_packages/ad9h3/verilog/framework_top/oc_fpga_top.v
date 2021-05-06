@@ -65,9 +65,6 @@ module oc_fpga_top (
 
    ,input                 mgtrefclk1_x0y0_p  // -- XLX PHY transcieve clocks 156.25 MHz
    ,input                 mgtrefclk1_x0y0_n  // -- XLX PHY transcieve clocks 156.25 MHz
-`ifdef ENABLE_HBM
-   //placeholder
-`endif
 
 `ifdef ENABLE_ETHERNET
 `ifndef ENABLE_ETH_LOOP_BACK
@@ -109,11 +106,11 @@ module oc_fpga_top (
     , input                  avr_ck
 `endif
 `ifdef FLASH
-   ,inout  FPGA_FLASH_CE2_L       // To/From FLASH of flash_sub_system.v
-   ,inout  FPGA_FLASH_DQ4         // To/From FLASH of flash_sub_system.v
-   ,inout  FPGA_FLASH_DQ5         // To/From FLASH of flash_sub_system.v
-   ,inout  FPGA_FLASH_DQ6         // To/From FLASH of flash_sub_system.v
-   ,inout  FPGA_FLASH_DQ7         // To/From FLASH of flash_sub_system.v
+   ,inout                    FPGA_FLASH_CE2_L       // To/From FLASH of flash_sub_system.v
+   ,inout                    FPGA_FLASH_DQ4         // To/From FLASH of flash_sub_system.v
+   ,inout                    FPGA_FLASH_DQ5         // To/From FLASH of flash_sub_system.v
+   ,inout                    FPGA_FLASH_DQ6         // To/From FLASH of flash_sub_system.v
+   ,inout                    FPGA_FLASH_DQ7         // To/From FLASH of flash_sub_system.v
 `endif
   // -- Interface between VPD Stub to external VPD EEPROM
 
@@ -124,9 +121,7 @@ module oc_fpga_top (
 wire           clock_afu; //-- Frequency = clock_tlx/2
 wire           clock_tlx;
 wire           reset_n;
-wire           decouple;
-wire           ocde_i; // decoupled ocde signal
-wire           ocde_for_bsp;
+wire           ocde_to_bsp_dcpl;  // decoupled ocde signal
 wire   [4:0]   ro_device;
 wire   [31:0]  ro_dlx0_version;
 wire   [31:0]  ro_tlx0_version;
@@ -475,14 +470,16 @@ always @(posedge(clock_tlx))
 // ==============================================================================================================================
 // @@@ FENCE: Fence logic between TLX and AFU
 // ==============================================================================================================================
-// When decouple is enabled then, ocde should stat at 1
-assign ocde_i           = decouple | ocde_for_bsp         ;
+
 
 oc_bsp bsp(
 //-------------
 //-- FPGA I/O
 //-------------
-  .ocde                                        (ocde_i                           ) //-- oc_bsp:  input  
+// In AD9H3, ocde has the same pad than the HBM clk.
+// With Partial Reconfiguration, HBM is placed in dynamic area and thus forces ocde to be in same area
+// Therefore we need to decouple this ocde IO so that this signal is stable during dynamic PR.
+  .ocde                                        (ocde_to_bsp_dcpl                 ) //-- oc_bsp:  input  
  ,.freerun_clk_p                               (freerun_clk_p                    ) //-- oc_bsp:  input  
  ,.freerun_clk_n                               (freerun_clk_n                    ) //-- oc_bsp:  input  
  ,.ch0_gtytxn_out                              (ch0_gtytxn_out                   ) //-- oc_bsp:  output 
@@ -947,16 +944,24 @@ oc_cfg cfg (
  ,.cfg_icap_reload_en                 (cfg_icap_reload_en               )
 );
 
-
+// When accessing ICAP, then decouple the dynamic code
+reg decouple;
+always @(posedge(clock_tlx))
+  if (reset == 1'b1)                  decouple <= 1'b0;
+  // decouple is enabled at the first access to FA_ICAP
+  else if (cfg_flsh_devsel == 2'b01)  decouple <= 1'b1;
+  // decouple is disabled at the first access to FA_QSPI
+  else if (cfg_flsh_devsel == 2'b00)  decouple <= 1'b0;
+  else                                decouple <= decouple;
 
 
 oc_function oc_func(
     .clock_tlx                              ( clock_tlx                          )
   , .clock_afu                              ( clock_afu                          )
   , .reset                                  ( reset                              ) // (positive active)
-  ,.ocde                                    ( ocde                               ) // -- oc_function:   input
-  ,.ocde_for_bsp                            ( ocde_for_bsp                       ) // -- oc_function:   output
-  ,.decouple                                ( decouple                           ) // -- oc_function:   output
+  , .decouple                               ( decouple                           ) // -- oc_function:   input
+  , .ocde                                   ( ocde                               ) // -- oc_function:   input
+  , .ocde_to_bsp_dcpl                       ( ocde_to_bsp_dcpl                   ) // -- oc_function:   output
     // Bus number comes from CFG_SEQ
   , .cfg_bus                                ( cfg0_bus_num                       )  // Attached to TLX Port 0, so use cfg0_ instance
     // Hardcoded configuration inputs
@@ -1102,12 +1107,9 @@ oc_function oc_func(
   ,.f1_octrl00_actag_len_supported           (f1_ro_octrl00_actag_len_supported)
 
     // ------------------------------------------------------------- 
-    // HBM Interface
+    // ETHERNET Interface
     // -------------------------------------------------------------
-`ifdef ENABLE_HBM
-    // HBM Interface
-    // place holder
-`endif
+
 `ifdef ENABLE_ETHERNET
 `ifndef ENABLE_ETH_LOOP_BACK
    ,.gt_ref_clk_n      ( gt_ref_clk_n       )
@@ -1130,6 +1132,10 @@ oc_function oc_func(
    ,.gt_tx_gt_port_3_p ( gt_tx_gt_port_3_p  )
 `endif
 `endif
+
+    // ------------------------------------------------------------- 
+    // OTHER SIGNALS
+    // -------------------------------------------------------------
 
 `ifdef ENABLE_9H3_LED
     , .user_led_a0     ( user_led_a0        )

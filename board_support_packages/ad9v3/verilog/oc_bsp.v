@@ -286,7 +286,7 @@ module oc_bsp (
   // choose a clock source for icap that is a global clock.  
   // ICAP IP allows this to be async to axi clock
   wire   icap_clk;
-  assign icap_clk = clock_156_25;  
+  assign icap_clk = clock_156_25;   //should be 100MHz or less : spi_clk?
   
   //reg             iprog_go; //MRF
   wire            iprog_go_or;
@@ -357,6 +357,7 @@ DLx_phy_vio_0 DLx_phy_vio_0_inst (
   // -- ICAP for image reload
   // -- ********************************************************************************************************************************
 
+    // This ICAP IP is no longer necessary since the oc-reload now uses the regular hwicap
     //iprog_icap ICAP (
     //    .go(iprog_go_or)
     //    ,.clk(clock_156_25)

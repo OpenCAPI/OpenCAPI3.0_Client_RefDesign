@@ -637,7 +637,7 @@ oc_bsp bsp(
  ,.flsh_cfg_rresp                              (flsh_cfg_rresp                   )  // -- oc_bsp:  output  [1:0]         
  ,.cfg_flsh_expand_enable                      (cfg_flsh_expand_enable           )  // -- oc_bsp:  input
  ,.cfg_flsh_expand_dir                         (cfg_flsh_expand_dir              )  // -- oc_bsp:  input            
-,.cfg_icap_reload_en                           (cfg_icap_reload_en               )  // -- oc_bsp:  input 
+ ,.cfg_icap_reload_en                          (cfg_icap_reload_en               )  // -- oc_bsp:  input            
 );
 
 //-- Future hierarchy implementation
@@ -922,20 +922,27 @@ oc_cfg cfg (
  ,.f1_octrl00_actag_len_supported     (f1_ro_octrl00_actag_len_supported)
  
  ,.cfg_icap_reload_en                 (cfg_icap_reload_en               )
-
-
 );
 
-
+// When accessing ICAP, then decouple the dynamic code
+reg decouple;
+always @(posedge(clock_tlx))
+  if (reset == 1'b1)                  decouple <= 1'b0;
+  // decouple is enabled at the first access to FA_ICAP
+  else if (cfg_flsh_devsel == 2'b01)  decouple <= 1'b1;
+  // decouple is disabled at the first access to FA_QSPI
+  else if (cfg_flsh_devsel == 2'b00)  decouple <= 1'b0;
+  else                                decouple <= decouple;
 
 
 oc_function oc_func(
     .clock_tlx                              ( clock_tlx                          )
   , .clock_afu                              ( clock_afu                          )
-  , .reset                                  ( reset                              )  // (positive active)
-  , .decouple                               ( decouple                           )
-  //, .ocde                                   ( ocde                               )
-  //, .ocde_for_bsp                           ( ocde_for_bsp                       ) 
+  , .reset                                  ( reset                              ) // (positive active)
+  ,.decouple                                ( decouple                           ) // -- oc_function:   input
+  // For AD9V3 card, there is no need to decouple the ocde IO (since there is no pad share with HBM clock)
+  , .ocde                                   ( 1'b1                               ) // -- oc_function:   input
+  , .ocde_to_bsp_dcpl                       (                                    ) // -- oc_function:   output
     // Bus number comes from CFG_SEQ
   , .cfg_bus                                ( cfg0_bus_num                       )  // Attached to TLX Port 0, so use cfg0_ instance
     // Hardcoded configuration inputs
