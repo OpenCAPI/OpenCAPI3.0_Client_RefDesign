@@ -1,30 +1,9 @@
-// *!***************************************************************************
-// *! Copyright 2019 International Business Machines
-// *!
-// *! Licensed under the Apache License, Version 2.0 (the "License");
-// *! you may not use this file except in compliance with the License.
-// *! You may obtain a copy of the License at
-// *! http://www.apache.org/licenses/LICENSE-2.0 
-// *!
-// *! The patent license granted to you in Section 3 of the License, as applied
-// *! to the "Work," hereby includes implementations of the Work in physical form.  
-// *!
-// *! Unless required by applicable law or agreed to in writing, the reference design
-// *! distributed under the License is distributed on an "AS IS" BASIS,
-// *! WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// *! See the License for the specific language governing permissions and
-// *! limitations under the License.
-// *! 
-// *! The background Specification upon which this is based is managed by and available from
-// *! the OpenCAPI Consortium.  More information can be found at https://opencapi.org. 
-// *!***************************************************************************
+`timescale 1ns / 1ps
 
-`include "snap_global_vars.v"
 module oc_fpga_top (
 
   // -- Reset
-  // Add this io_buffer_type feature to connect the ocde in dynamic area for PR
-    (* io_buffer_type = "none" *) input ocde
+    input                 ocde
    ,input                 freerun_clk_p
    ,input                 freerun_clk_n
 
@@ -65,49 +44,7 @@ module oc_fpga_top (
 
    ,input                 mgtrefclk1_x0y0_p  // -- XLX PHY transcieve clocks 156.25 MHz
    ,input                 mgtrefclk1_x0y0_n  // -- XLX PHY transcieve clocks 156.25 MHz
-`ifdef ENABLE_HBM
-   //placeholder
-`endif
 
-`ifdef ENABLE_ETHERNET
-`ifndef ENABLE_ETH_LOOP_BACK
-    , input                  gt_ref_clk_n
-    , input                  gt_ref_clk_p
-    , input                  gt_rx_gt_port_0_n
-    , input                  gt_rx_gt_port_0_p
-    , input                  gt_rx_gt_port_1_n
-    , input                  gt_rx_gt_port_1_p
-    , input                  gt_rx_gt_port_2_n
-    , input                  gt_rx_gt_port_2_p
-    , input                  gt_rx_gt_port_3_n
-    , input                  gt_rx_gt_port_3_p
-    , output                 gt_tx_gt_port_0_n
-    , output                 gt_tx_gt_port_0_p
-    , output                 gt_tx_gt_port_1_n
-    , output                 gt_tx_gt_port_1_p
-    , output                 gt_tx_gt_port_2_n
-    , output                 gt_tx_gt_port_2_p
-    , output                 gt_tx_gt_port_3_n
-    , output                 gt_tx_gt_port_3_p
-`endif
-`endif
-
-`ifdef ENABLE_9H3_LED
-    , output                 user_led_a0
-    , output                 user_led_a1
-    , output                 user_led_g0
-    , output                 user_led_g1
-`endif
-`ifdef ENABLE_9H3_EEPROM
-    , inout                  eeprom_scl
-    , inout                  eeprom_sda
-    , output                 eeprom_wp
-`endif 
-`ifdef ENABLE_9H3_AVR
-    , input                  avr_rx
-    , output                 avr_tx
-    , input                  avr_ck
-`endif
 `ifdef FLASH
    ,inout  FPGA_FLASH_CE2_L       // To/From FLASH of flash_sub_system.v
    ,inout  FPGA_FLASH_DQ4         // To/From FLASH of flash_sub_system.v
@@ -124,9 +61,6 @@ module oc_fpga_top (
 wire           clock_afu; //-- Frequency = clock_tlx/2
 wire           clock_tlx;
 wire           reset_n;
-wire           decouple;
-wire           ocde_i; // decoupled ocde signal
-wire           ocde_for_bsp;
 wire   [4:0]   ro_device;
 wire   [31:0]  ro_dlx0_version;
 wire   [31:0]  ro_tlx0_version;
@@ -254,7 +188,6 @@ wire   [1:0]   flsh_cfg_bresp;
 wire   [1:0]   flsh_cfg_rresp;
 wire           cfg_flsh_expand_enable;
 wire           cfg_flsh_expand_dir;
-wire           cfg_icap_reload_en;
 
 //oc_function wires
 
@@ -475,14 +408,13 @@ always @(posedge(clock_tlx))
 // ==============================================================================================================================
 // @@@ FENCE: Fence logic between TLX and AFU
 // ==============================================================================================================================
-// When decouple is enabled then, ocde should stat at 1
-assign ocde_i           = decouple | ocde_for_bsp         ;
+
 
 oc_bsp bsp(
 //-------------
 //-- FPGA I/O
 //-------------
-  .ocde                                        (ocde_i                           ) //-- oc_bsp:  input  
+  .ocde                                        (ocde                             ) //-- oc_bsp:  input  
  ,.freerun_clk_p                               (freerun_clk_p                    ) //-- oc_bsp:  input  
  ,.freerun_clk_n                               (freerun_clk_n                    ) //-- oc_bsp:  input  
  ,.ch0_gtytxn_out                              (ch0_gtytxn_out                   ) //-- oc_bsp:  output 
@@ -660,7 +592,6 @@ oc_bsp bsp(
  ,.flsh_cfg_rresp                              (flsh_cfg_rresp                   )  // -- oc_bsp:  output  [1:0]         
  ,.cfg_flsh_expand_enable                      (cfg_flsh_expand_enable           )  // -- oc_bsp:  input
  ,.cfg_flsh_expand_dir                         (cfg_flsh_expand_dir              )  // -- oc_bsp:  input            
- ,.cfg_icap_reload_en                          (cfg_icap_reload_en               )  // -- oc_bsp:  input            
 );
 
 //-- Future hierarchy implementation
@@ -922,9 +853,6 @@ oc_cfg cfg (
  ,.cfg_errvec                        (cfg_errvec             )
  ,.cfg_errvec_valid                  (cfg_errvec_valid       )
  
- ,.cfg_f0_otl0_long_backoff_timer    (cfg_f0_otl0_long_backoff_timer    )
- ,.cfg_f0_otl0_short_backoff_timer   (cfg_f0_otl0_short_backoff_timer   )
-
  ,.f1_csh_expansion_rom_bar           (f1_ro_csh_expansion_rom_bar      )
  ,.f1_csh_subsystem_id                (f1_ro_csh_subsystem_id           )
  ,.f1_csh_subsystem_vendor_id         (f1_ro_csh_subsystem_vendor_id    )
@@ -944,7 +872,7 @@ oc_cfg cfg (
  ,.f1_octrl00_metadata_supported      (f1_ro_octrl00_metadata_supported )
  ,.f1_octrl00_actag_len_supported     (f1_ro_octrl00_actag_len_supported)
  
- ,.cfg_icap_reload_en                 (cfg_icap_reload_en               )
+
 );
 
 
@@ -953,10 +881,7 @@ oc_cfg cfg (
 oc_function oc_func(
     .clock_tlx                              ( clock_tlx                          )
   , .clock_afu                              ( clock_afu                          )
-  , .reset                                  ( reset                              ) // (positive active)
-  ,.ocde                                    ( ocde                               ) // -- oc_function:   input
-  ,.ocde_for_bsp                            ( ocde_for_bsp                       ) // -- oc_function:   output
-  ,.decouple                                ( decouple                           ) // -- oc_function:   output
+  , .reset                                  ( reset                              )  // (positive active)
     // Bus number comes from CFG_SEQ
   , .cfg_bus                                ( cfg0_bus_num                       )  // Attached to TLX Port 0, so use cfg0_ instance
     // Hardcoded configuration inputs
@@ -1101,52 +1026,6 @@ oc_function oc_func(
   ,.f1_octrl00_metadata_supported            (f1_ro_octrl00_metadata_supported )
   ,.f1_octrl00_actag_len_supported           (f1_ro_octrl00_actag_len_supported)
 
-    // ------------------------------------------------------------- 
-    // HBM Interface
-    // -------------------------------------------------------------
-`ifdef ENABLE_HBM
-    // HBM Interface
-    // place holder
-`endif
-`ifdef ENABLE_ETHERNET
-`ifndef ENABLE_ETH_LOOP_BACK
-   ,.gt_ref_clk_n      ( gt_ref_clk_n       )
-   ,.gt_ref_clk_p      ( gt_ref_clk_p       )
-   ,.gt_rx_gt_port_0_n ( gt_rx_gt_port_0_n  )
-   ,.gt_rx_gt_port_0_p ( gt_rx_gt_port_0_p  )
-   ,.gt_rx_gt_port_1_n ( gt_rx_gt_port_1_n  )
-   ,.gt_rx_gt_port_1_p ( gt_rx_gt_port_1_p  )
-   ,.gt_rx_gt_port_2_n ( gt_rx_gt_port_2_n  )
-   ,.gt_rx_gt_port_2_p ( gt_rx_gt_port_2_p  )
-   ,.gt_rx_gt_port_3_n ( gt_rx_gt_port_3_n  )
-   ,.gt_rx_gt_port_3_p ( gt_rx_gt_port_3_p  )
-   ,.gt_tx_gt_port_0_n ( gt_tx_gt_port_0_n  )
-   ,.gt_tx_gt_port_0_p ( gt_tx_gt_port_0_p  )
-   ,.gt_tx_gt_port_1_n ( gt_tx_gt_port_1_n  )
-   ,.gt_tx_gt_port_1_p ( gt_tx_gt_port_1_p  )
-   ,.gt_tx_gt_port_2_n ( gt_tx_gt_port_2_n  )
-   ,.gt_tx_gt_port_2_p ( gt_tx_gt_port_2_p  )
-   ,.gt_tx_gt_port_3_n ( gt_tx_gt_port_3_n  )
-   ,.gt_tx_gt_port_3_p ( gt_tx_gt_port_3_p  )
-`endif
-`endif
-
-`ifdef ENABLE_9H3_LED
-    , .user_led_a0     ( user_led_a0        )
-    , .user_led_a1     ( user_led_a1        )
-    , .user_led_g0     ( user_led_g0        )
-    , .user_led_g1     ( user_led_g1        )
-`endif
-`ifdef ENABLE_9H3_EEPROM
-    , .eeprom_scl      (eeprom_scl          )
-    , .eeprom_sda      (eeprom_sda          )
-    , .eeprom_wp       (eeprom_wp           )
-`endif 
-`ifdef ENABLE_9H3_AVR
-    , .avr_rx          (avr_rx              )
-    , .avr_tx          (avr_tx              )
-    , .avr_ck          (avr_ck              )
-`endif
 );
 
 

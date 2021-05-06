@@ -16,7 +16,7 @@ create_clock -period 3.333 -name freerun_clk_p [get_ports freerun_clk_p]
 
 
 # False path constraints
-# --------------------------
+# -------------------------
 set_false_path -to [get_cells -hierarchical -filter {NAME =~ *bit_synchronizer*inst/i_in_meta_reg}]
 set_false_path -to [get_cells -hierarchical -filter {NAME =~ *bit_synchronizer*inst/i_in_meta_reg}]
 set_false_path -to [get_cells -hierarchical -filter {NAME =~ *reset_synchronizer*inst/rst_in_*_reg}]

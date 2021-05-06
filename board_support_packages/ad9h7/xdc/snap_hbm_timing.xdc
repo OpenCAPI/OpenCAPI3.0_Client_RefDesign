@@ -19,14 +19,14 @@
 ############################################################################
 
 #set_false_path -from [get_clocks dbg_hub_APB_0_PCLK] -to [get_clocks txoutclk_out[0]_1]
-
 set_false_path -from [get_clocks oc0_clock_afu] -to [get_clocks txoutclk_out[0]_1]
 set_false_path -from [get_clocks refclk_bufg_apb_clk_BUFGCE_O] -to [get_clocks oc0_clock_afu]
 set_false_path -from [get_clocks refclk_bufg_apb_clk_BUFGCE_O] -to [get_clocks txoutclk_out[0]_1]
+
 set_false_path -from [get_clocks oc0_clock_afu] -to [get_clocks refclk_bufg_apb_clk_BUFGCE_O]
 set_false_path -from [get_clocks txoutclk_out[0]_1] -to [get_clocks refclk_bufg_apb_clk_BUFGCE_O]
 
-#--START--emoved temporarily for PR 
+#--START--removed temporarily for PR 
 ## Pblock for placing all logic in SLR1 except for HBM controller
 #create_pblock pblock_1
 #resize_pblock pblock_1 -add CLOCKREGION_X0Y4:CLOCKREGION_X1Y7

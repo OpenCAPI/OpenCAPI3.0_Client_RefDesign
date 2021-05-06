@@ -23,8 +23,7 @@
 module oc_fpga_top (
 
   // -- Reset
-  // Add this io_buffer_type feature to connect the ocde in dynamic area for PR
-    (* io_buffer_type = "none" *) input ocde
+    input                 ocde
    ,input                 freerun_clk_p
    ,input                 freerun_clk_n
 
@@ -124,9 +123,6 @@ module oc_fpga_top (
 wire           clock_afu; //-- Frequency = clock_tlx/2
 wire           clock_tlx;
 wire           reset_n;
-wire           decouple;
-wire           ocde_i; // decoupled ocde signal
-wire           ocde_for_bsp;
 wire   [4:0]   ro_device;
 wire   [31:0]  ro_dlx0_version;
 wire   [31:0]  ro_tlx0_version;
@@ -475,14 +471,13 @@ always @(posedge(clock_tlx))
 // ==============================================================================================================================
 // @@@ FENCE: Fence logic between TLX and AFU
 // ==============================================================================================================================
-// When decouple is enabled then, ocde should stat at 1
-assign ocde_i           = decouple | ocde_for_bsp         ;
+
 
 oc_bsp bsp(
 //-------------
 //-- FPGA I/O
 //-------------
-  .ocde                                        (ocde_i                           ) //-- oc_bsp:  input  
+  .ocde                                        (ocde                             ) //-- oc_bsp:  input  
  ,.freerun_clk_p                               (freerun_clk_p                    ) //-- oc_bsp:  input  
  ,.freerun_clk_n                               (freerun_clk_n                    ) //-- oc_bsp:  input  
  ,.ch0_gtytxn_out                              (ch0_gtytxn_out                   ) //-- oc_bsp:  output 
@@ -953,10 +948,7 @@ oc_cfg cfg (
 oc_function oc_func(
     .clock_tlx                              ( clock_tlx                          )
   , .clock_afu                              ( clock_afu                          )
-  , .reset                                  ( reset                              ) // (positive active)
-  ,.ocde                                    ( ocde                               ) // -- oc_function:   input
-  ,.ocde_for_bsp                            ( ocde_for_bsp                       ) // -- oc_function:   output
-  ,.decouple                                ( decouple                           ) // -- oc_function:   output
+  , .reset                                  ( reset                              )  // (positive active)
     // Bus number comes from CFG_SEQ
   , .cfg_bus                                ( cfg0_bus_num                       )  // Attached to TLX Port 0, so use cfg0_ instance
     // Hardcoded configuration inputs
