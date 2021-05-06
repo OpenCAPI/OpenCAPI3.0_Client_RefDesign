@@ -24,6 +24,7 @@ module oc_fpga_top (
 
   // -- Reset
   // Add this io_buffer_type feature to connect the oc0_ocde in dynamic area for PR
+  //decoupling of oc1_ocde is not managed for oc_func1
     (* io_buffer_type = "none" *) input oc0_ocde
    ,input                 freerun_clk_p
    ,input                 freerun_clk_n
@@ -67,6 +68,7 @@ module oc_fpga_top (
    ,input                 oc0_mgtrefclk1_x0y0_n  // -- XLX PHY transcieve clocks 156.25 MHz
 
 `ifdef DUAL_AFU
+//decoupling of oc1_ocde is not managed for oc_func1
    ,input                 oc1_ocde
 
    ,output                oc1_ch0_gtytxn_out     // -- XLX PHY transmit channels
@@ -107,9 +109,6 @@ module oc_fpga_top (
    ,input                 oc1_mgtrefclk1_x0y0_n  // -- XLX PHY transcieve clocks 156.25 MHz
 `endif
 
-`ifdef ENABLE_HBM
-   //placeholder
-`endif
 
 // -- IMPORTANT: FLASH logic hasn't been hooked up for the Alphadata 9H7 card
 `ifdef FLASH
@@ -126,9 +125,7 @@ module oc_fpga_top (
 wire           oc0_clock_afu; //-- Frequency = clock_tlx/2
 wire           oc0_clock_tlx;
 wire           oc0_reset_n;
-wire           decouple;
-wire           oc0_ocde_i; // decoupled ocde signal
-wire           oc0_ocde_for_bsp;
+wire           oc0_ocde_to_bsp_dcpl; // decoupled ocde signal
 wire   [4:0]   oc0_ro_device;
 wire   [31:0]  oc0_ro_dlx0_version;
 wire   [31:0]  oc0_ro_tlx0_version;
@@ -631,13 +628,13 @@ IBUFDS_freerun (
    .IB (freerun_clk_n)  // 1-bit input: Diff_n buffer input (connect directly to top-level port)
 );
 
-assign oc0_ocde_i           = (~decouple) & oc0_ocde_for_bsp         ;
+
 
 oc_bsp bsp0(
 //-------------
 //-- FPGA I/O
 //-------------
-  .ocde                                        (oc0_ocde_i                           ) //-- oc_bsp0:  input
+  .ocde                                        (oc0_ocde_to_bsp_dcpl                  ) //-- oc_bsp0:  input
  ,.freerun_clk                                 (freerun_clk                          ) //-- oc_bsp0:  input
  ,.ch0_gtytxn_out                              (oc0_ch0_gtytxn_out                   ) //-- oc_bsp0:  output
  ,.ch0_gtytxp_out                              (oc0_ch0_gtytxp_out                   ) //-- oc_bsp0:  output
@@ -1059,12 +1056,22 @@ oc_cfg cfg0 (
  ,.cfg_icap_reload_en                (oc0_cfg_icap_reload_en               ) // -- oc_cfg0:         
 );
 
+// When accessing ICAP, then decouple the dynamic code
+reg decouple;
+always @(posedge(oc0_clock_tlx))
+  if (oc0_reset == 1'b1)              decouple <= 1'b0;
+  // decouple is enabled at the first access to FA_ICAP
+  else if (oc0_cfg_flsh_devsel == 2'b01)  decouple <= 1'b1;
+  // decouple is disabled at the first access to FA_QSPI
+  else if (oc0_cfg_flsh_devsel == 2'b00)  decouple <= 1'b0;
+  else                                decouple <= decouple;
+
 oc_function oc_func0(
    .clock_tlx                              (oc0_clock_tlx                          ) // -- oc_function0:   input  
   ,.clock_afu                              (oc0_clock_afu                          ) // -- oc_function0:   input  
   ,.reset                                  (oc0_reset                              ) // -- oc_function0:   input  
   ,.ocde                                   (oc0_ocde                               ) // -- oc_function0:   input
-  ,.ocde_for_bsp                           (oc0_ocde_for_bsp                       ) // -- oc_function0:   output
+  ,.ocde_to_bsp_dcpl                       (oc0_ocde_to_bsp_dcpl                   ) // -- oc_function0:   output
   ,.decouple                               (decouple                               ) // -- oc_function0:   output
     // Bus number comes from CFG_SEQ
   ,.cfg_bus                                (oc0_cfg0_bus_num                       ) // -- oc_function0:   input  [7:0]
@@ -1645,10 +1652,14 @@ oc_cfg cfg1 (
  ,.cfg_icap_reload_en                (oc1_cfg_icap_reload_en               ) // -- oc_cfg0:         
 );
 
+//decoupling of oc1_ocde is not managed for oc_func1
 oc_function oc_func1(
    .clock_tlx                              (oc1_clock_tlx                          ) // -- oc_function1:   input  
   ,.clock_afu                              (oc1_clock_afu                          ) // -- oc_function1:   input  
-  ,.reset                                  (oc1_reset                              ) // -- oc_function1:   input  
+  ,.reset                                  (oc1_reset                              ) // -- oc_function0:   input  
+  ,.ocde                                   (1'b1                                   ) // -- oc_function0:   input
+  ,.ocde_to_bsp_dcpl                       (                                       ) // -- oc_function0:   output
+  ,.decouple                               (                                       ) // -- oc_function0:   output
     // Bus number comes from CFG_SEQ
   ,.cfg_bus                                (oc1_cfg0_bus_num                       ) // -- oc_function1:   input  [7:0]
     // Hardcoded configuration inputs
