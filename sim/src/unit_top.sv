@@ -34,7 +34,7 @@ module unit_top (
 //**********************************************
 // CLOCK & RESET
 //**********************************************
-parameter        RESET_CYCLES = 9;
+parameter        RESET_CYCLES = 25;
 integer          resetCnt;
 reg              clock_400m;
 reg              clock_200m;
