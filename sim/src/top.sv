@@ -157,7 +157,7 @@ module top (
 ///////////////////////////////////////////////////////////////////
 
 
-    parameter RESET_CYCLES = 9;
+    parameter RESET_CYCLES = 25;
     reg              tlx_clock;
     reg              afu_clock;
     reg              reset;
