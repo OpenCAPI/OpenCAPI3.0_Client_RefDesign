@@ -67,6 +67,6 @@ add_cells_to_pblock [get_pblocks pblock_static_BSP] [get_cells -quiet [list bsp/
 ##resize_pblock [get_pblocks pblock_static_BSP] -add {IOB_X0Y2}
 
 ## Settings for a maximal dynamic area
+resize_pblock [get_pblocks pblock_static_BSP] -add {CLOCKREGION_X0Y1:CLOCKREGION_X0Y1 CLOCKREGION_X0Y0:CLOCKREGION_X3Y0}
 resize_pblock [get_pblocks pblock_static_BSP] -add {CONFIG_SITE_X0Y0:CONFIG_SITE_X0Y0}
 resize_pblock [get_pblocks pblock_static_BSP] -add {IOB_X0Y0:IOB_X0Y155}
-resize_pblock [get_pblocks pblock_static_BSP] -add {CLOCKREGION_X0Y1:CLOCKREGION_X0Y1 CLOCKREGION_X0Y0:CLOCKREGION_X3Y0}
