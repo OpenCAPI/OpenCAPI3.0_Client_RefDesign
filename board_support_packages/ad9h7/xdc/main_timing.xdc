@@ -30,3 +30,9 @@ set_input_delay -clock [get_clocks  clock_156_25] 0.0 [get_ports -filter { NAME 
 set_false_path -from [get_ports -filter { NAME =~ "*ocde*" && DIRECTION == "IN" }]
 set_false_path -from [get_cells -hierarchical -filter {NAME =~ *decouple*}]
 set_false_path -from [get_cells -hierarchical -filter {NAME =~ *monitor*}]
+
+#======================================================================================
+set_false_path -from oc_func/fw_afu/reset_snap_q_reg_replica_*
+set_false_path -from oc_func/fw_afu/snap_core_i/mmio/mmmio/soft_reset_brdg_odma_reg_replica*
+
+
