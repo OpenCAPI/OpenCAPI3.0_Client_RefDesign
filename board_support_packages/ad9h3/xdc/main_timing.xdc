@@ -32,16 +32,6 @@ set_false_path -from [get_cells -hierarchical -filter {NAME =~ *decouple*}]
 set_false_path -from [get_cells -hierarchical -filter {NAME =~ *monitor*}]
 
 #======================================================================================
-#Following lines are added to try and finalize the timing closure of the PR design
-#create_generated_clock -name oc_func/fw_afu/action_core_i/clock_afu -source bsp/dlx_phy/example_wrapper_inst/gtwiz_userclk_tx_inst/gen_gtwiz_userclk_tx_main.bufg_gt_clk_201MHz/O -multiply_by 1 bsp/dlx_phy/example_wrapper_inst/gtwiz_userclk_tx_inst/gen_gtwiz_userclk_tx_main.bufg_gt_clk_201MHz/O
-
-#create_generated_clock -source [get_pins bsp/dlx_phy/example_wrapper_inst/gtwiz_userclk_tx_inst/gen_gtwiz_userclk_tx_main.bufg_gt_clk_201MHz/I] -master_clock [get_clocks txoutclk_out[0]_1] [get_pins bsp/dlx_phy/example_wrapper_inst/gtwiz_userclk_tx_inst/gen_gtwiz_userclk_tx_main.bufg_gt_clk_201MHz/O]
-
-#create_generated_clock -name clock_afu_201MHz -source [get_pins bsp/dlx_phy/example_wrapper_inst/gtwiz_userclk_tx_inst/gen_gtwiz_userclk_tx_main.bufg_gt_clk_201MHz/I] -master_clock [get_clocks txoutclk_out[0]_1] [get_pins bsp/dlx_phy/example_wrapper_inst/gtwiz_userclk_tx_inst/gen_gtwiz_userclk_tx_main.bufg_gt_clk_201MHz/O]
-#set_clock_groups -name clock_afu_201MHz -asynchronous -group [get_clocks  "*afu*"] -group [get_clocks  "*txoutclk*"]
-
-create_clock -period 4.965 -name clock_afu -waveform {0.000 2.482} -add [get_nets [list clock_afu oc_func/fw_afu/action_core_i/action_w/clock_afu ]]
-
 set_false_path -from oc_func/fw_afu/reset_snap_q_reg_replica_*
 set_false_path -from oc_func/fw_afu/snap_core_i/mmio/mmmio/soft_reset_brdg_odma_reg_replica*
 
