@@ -81,4 +81,3 @@ connect_debug_port dbg_hub/clk [get_nets oc0_clock_tlx]
 #add_cells_to_pblock pblock_static_OCA [get_cells [list bsp0]]
 #add_cells_to_pblock pblock_static_OCA [get_cells [list cfg0 oc_func0]]
 #remove_cells_from_pblock pblock_static_OCA [get_cells [list oc_func0/fw_afu/action_core_i]]
-

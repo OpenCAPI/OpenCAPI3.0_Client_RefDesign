@@ -514,6 +514,8 @@ if {$afu eq "dual_afp"} {
 } else {
     set synth_verilog_defines [concat $synth_verilog_defines "[string toupper $afu]"]
 }
+#add ethernet simulation boost
+set synth_verilog_defines [concat $synth_verilog_defines "SIM_SPEED_UP"]
 
 set obj [get_runs synth_1]
 set_property -name "part" -value "$fpga" -objects $obj
