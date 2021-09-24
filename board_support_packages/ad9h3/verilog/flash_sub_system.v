@@ -81,17 +81,17 @@ module flash_sub_system (
 );
 
 // AXI4-Lite signals between Master and Slave(s)
-(* mark_debug = "TRUE" *)  wire  [13:0] s_axi_awaddr; 
+wire  [13:0] s_axi_awaddr; 
 wire         s_axi_awvalid;
 reg          s_axi_awready; 
-(* mark_debug = "TRUE" *)  wire  [31:0] s_axi_wdata;
+wire  [31:0] s_axi_wdata;
 wire   [3:0] s_axi_wstrb; 
 wire         s_axi_wvalid; 
 reg          s_axi_wready;
 reg    [1:0] s_axi_bresp;
 reg          s_axi_bvalid; 
 wire         s_axi_bready; 
-(* mark_debug = "TRUE" *)  wire  [13:0] s_axi_araddr; 
+wire  [13:0] s_axi_araddr; 
 wire         s_axi_arvalid; 
 reg          s_axi_arready;
 reg   [31:0] s_axi_rdata; 
@@ -104,7 +104,7 @@ wire [4:0] unused;
 wire       icap_interrupt;
 wire       qspi_interrupt;
 wire       preq;
-(* mark_debug = "TRUE" *)  wire       eos;
+wire       eos;
 
 // External FPGA I/O to FLASH, as dictated by 9V3 card wiring in Alpha Data user manual
 //wire EMCCLK_B;            // AJ28 (100 MHz drives SPI FLASH, redrive of REFCLK100M on ping AJ28)

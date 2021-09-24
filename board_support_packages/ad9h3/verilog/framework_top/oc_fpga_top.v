@@ -24,6 +24,7 @@ module oc_fpga_top (
 
   // -- Reset
   // Add this io_buffer_type feature to connect the ocde in dynamic area for PR
+  // This allows this input_ocde to not be placed at the top of the hierarchy
     (* io_buffer_type = "none" *) input ocde
    ,input                 freerun_clk_p
    ,input                 freerun_clk_n
