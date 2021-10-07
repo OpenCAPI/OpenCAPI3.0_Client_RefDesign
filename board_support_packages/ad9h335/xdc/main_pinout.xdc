@@ -1,5 +1,5 @@
 ###############################################################
-## Placement Constraints: xcvu33p-fsvh2104-2-e-es1
+## Placement Constraints: xcvu35p-fsvh2104-2-e
 ###############################################################
 
 set_property PACKAGE_PIN BF19 [get_ports ocde]
