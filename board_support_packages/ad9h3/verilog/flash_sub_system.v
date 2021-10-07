@@ -195,21 +195,21 @@ cfg_reg_to_axi4lite CFG2AXI4L (
 //    (this allows consistency in the naming whether the signal is a bit or a vector)
 
 //re [15:0] g_axi_awaddr  [1:0];    // broadcast
-(* mark_debug = "TRUE" *) wire        g_axi_awvalid [1:0];    // gated
+wire        g_axi_awvalid [1:0];    // gated
 wire        g_axi_awready [1:0];    // muxed
 //re [31:0] g_axi_wdata   [1:0];    // broadcast
 //re  [3:0] g_axi_wstrb   [1:0];    // broadcast
-(* mark_debug = "TRUE" *) wire        g_axi_wvalid  [1:0];    // gated
+wire        g_axi_wvalid  [1:0];    // gated
 wire        g_axi_wready  [1:0];    // muxed
 wire  [1:0] g_axi_bresp   [1:0];    // muxed
 wire        g_axi_bvalid  [1:0];    // muxed
 //re        g_axi_bready  [1:0];    // broadcast
 //re [15:0] g_axi_araddr  [1:0];    // broadcast
-(* mark_debug = "TRUE" *) wire        g_axi_arvalid [1:0];    // gated
+wire        g_axi_arvalid [1:0];    // gated
 wire        g_axi_arready [1:0];    // muxed
-(* mark_debug = "TRUE" *) wire [31:0] g_axi_rdata   [1:0];    // muxed
+wire [31:0] g_axi_rdata   [1:0];    // muxed
 wire  [1:0] g_axi_rresp   [1:0];    // muxed
-(* mark_debug = "TRUE" *) wire        g_axi_rvalid  [1:0];    // muxed
+wire        g_axi_rvalid  [1:0];    // muxed
 //re        g_axi_rready  [1:0];    // broadcast
 
 //FLASH

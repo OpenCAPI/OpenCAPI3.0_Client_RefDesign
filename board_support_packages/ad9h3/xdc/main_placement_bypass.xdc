@@ -56,17 +56,4 @@ set_property BITSTREAM.CONFIG.OVERTEMPSHUTDOWN Enable [current_design]
 #set_property EXTRACT_RESET NO [get_cells {bsp/tlx/OCX_TLX_PARSER/TLX_RCV_FIFO/RESP_FIFO_MAC/RESP_INFO_CTL/data_wr_cnt_dout_reg[*]}]
 #set_property EXTRACT_RESET NO [get_cells {bsp/tlx/OCX_TLX_PARSER/TLX_RCV_FIFO/CMD_FIFO_MAC/CMD_INFO_CTL/data_wr_cnt_dout_reg[*]}]
 
-#Static pblock is mainly used for Partial reconfiguration but can be left for general purpose
-create_pblock pblock_static_BSP
-add_cells_to_pblock [get_pblocks pblock_static_BSP] [get_cells -quiet [list bsp/dlx_phy bsp/tlx cfg oc_func/cfg_f1 oc_func/fw_afu/GND oc_func/fw_afu/VCC oc_func/fw_afu/desc oc_func/fw_afu/input_reset_q_reg oc_func/fw_afu/reset_snap_q_reg oc_func/fw_afu/snap_core_i]]
 
-## Settings for a minimal dynamic area
-##resize_pblock [get_pblocks pblock_static_BSP] -add {CLOCKREGION_X0Y0:CLOCKREGION_X3Y3}
-##resize_pblock [get_pblocks pblock_static_BSP] -add {CONFIG_SITE_X0Y0:CONFIG_SITE_X0Y0}
-###remove IOB_X0Y2 in X4Y0 used by ocse IBUF
-##resize_pblock [get_pblocks pblock_static_BSP] -add {IOB_X0Y2}
-
-## Settings for a maximal dynamic area
-resize_pblock [get_pblocks pblock_static_BSP] -add {CLOCKREGION_X0Y1:CLOCKREGION_X0Y1 CLOCKREGION_X0Y0:CLOCKREGION_X3Y0}
-resize_pblock [get_pblocks pblock_static_BSP] -add {CONFIG_SITE_X0Y0:CONFIG_SITE_X0Y0}
-resize_pblock [get_pblocks pblock_static_BSP] -add {IOB_X0Y0:IOB_X0Y155}
