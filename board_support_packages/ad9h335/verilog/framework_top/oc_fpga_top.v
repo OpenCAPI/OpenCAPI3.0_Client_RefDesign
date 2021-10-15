@@ -69,24 +69,26 @@ module oc_fpga_top (
 
 `ifdef ENABLE_ETHERNET
 `ifndef ENABLE_ETH_LOOP_BACK
-    , input                  gt_ref_clk_n
-    , input                  gt_ref_clk_p
-    , input                  gt_rx_gt_port_0_n
-    , input                  gt_rx_gt_port_0_p
-    , input                  gt_rx_gt_port_1_n
-    , input                  gt_rx_gt_port_1_p
-    , input                  gt_rx_gt_port_2_n
-    , input                  gt_rx_gt_port_2_p
-    , input                  gt_rx_gt_port_3_n
-    , input                  gt_rx_gt_port_3_p
-    , output                 gt_tx_gt_port_0_n
-    , output                 gt_tx_gt_port_0_p
-    , output                 gt_tx_gt_port_1_n
-    , output                 gt_tx_gt_port_1_p
-    , output                 gt_tx_gt_port_2_n
-    , output                 gt_tx_gt_port_2_p
-    , output                 gt_tx_gt_port_3_n
-    , output                 gt_tx_gt_port_3_p
+  // Add this io_buffer_type feature to connect the signals in dynamic area for PR
+  // This allows these signals to not be placed at the top of the hierarchy
+    , (* io_buffer_type = "none" *) input                  gt_ref_clk_n
+    , (* io_buffer_type = "none" *) input                  gt_ref_clk_p
+    , (* io_buffer_type = "none" *) input                  gt_rx_gt_port_0_n
+    , (* io_buffer_type = "none" *) input                  gt_rx_gt_port_0_p
+    , (* io_buffer_type = "none" *) input                  gt_rx_gt_port_1_n
+    , (* io_buffer_type = "none" *) input                  gt_rx_gt_port_1_p
+    , (* io_buffer_type = "none" *) input                  gt_rx_gt_port_2_n
+    , (* io_buffer_type = "none" *) input                  gt_rx_gt_port_2_p
+    , (* io_buffer_type = "none" *) input                  gt_rx_gt_port_3_n
+    , (* io_buffer_type = "none" *) input                  gt_rx_gt_port_3_p
+    , (* io_buffer_type = "none" *) output                 gt_tx_gt_port_0_n
+    , (* io_buffer_type = "none" *) output                 gt_tx_gt_port_0_p
+    , (* io_buffer_type = "none" *) output                 gt_tx_gt_port_1_n
+    , (* io_buffer_type = "none" *) output                 gt_tx_gt_port_1_p
+    , (* io_buffer_type = "none" *) output                 gt_tx_gt_port_2_n
+    , (* io_buffer_type = "none" *) output                 gt_tx_gt_port_2_p
+    , (* io_buffer_type = "none" *) output                 gt_tx_gt_port_3_n
+    , (* io_buffer_type = "none" *) output                 gt_tx_gt_port_3_p
 `endif
 `endif
 
@@ -477,7 +479,7 @@ oc_bsp bsp(
 //-------------
 //-- FPGA I/O
 //-------------
-// In AD9H335, ocde has the same pad than the HBM clk.
+// In AD9H3, ocde has the same pad than the HBM clk. Same for AD9H335?
 // With Partial Reconfiguration, HBM is placed in dynamic area and thus forces ocde to be in same area
 // Therefore we need to decouple this ocde IO so that this signal is stable during dynamic PR.
   .ocde                                        (ocde_to_bsp_dcpl                 ) //-- oc_bsp:  input  
