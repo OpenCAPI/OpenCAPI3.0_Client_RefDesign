@@ -52,21 +52,3 @@ set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
 set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
 connect_debug_port dbg_hub/clk [get_nets oc0_clock_tlx]
-
-# following worked well in PR except for HBM
- create_pblock pblock_static_BSP
- add_cells_to_pblock pblock_static_BSP [get_cells [list bsp?/dlx_phy bsp?/DLx_phy_vio_0_inst bsp?/vio_reset_n_inst_tlx bsp?/tlx]]
- resize_pblock pblock_static_BSP -add CLOCKREGION_X0Y4:CLOCKREGION_X3Y4
- resize_pblock pblock_static_BSP -add CLOCKREGION_X0Y4:CLOCKREGION_X0Y5
-
-  #create_pblock pblock_static_OCA
- add_cells_to_pblock pblock_static_BSP [get_cells [list cfg? oc_func?]]
- remove_cells_from_pblock pblock_static_BSP [get_cells [list oc_func?/fw_afu/action_core_i]]
- resize_pblock pblock_static_BSP -add CLOCKREGION_X1Y5:CLOCKREGION_X3Y5
- #resize_pblock pblock_static_BSP -add CLOCKREGION_X1Y6:CLOCKREGION_X2Y6
-
- resize_pblock [get_pblocks pblock_static_BSP] -add {IOB_X0Y52:IOB_X0Y155}
- #IBUFDS_freerun + bsp0/FLASH is located in X4Y12
- resize_pblock [get_pblocks pblock_static_BSP] -add {HPIOBDIFFINBUF_X0Y60}
- #remove CONFIG_SITE in X7Y1 for ICAPE3
- resize_pblock [get_pblocks pblock_static_BSP] -add {CONFIG_SITE_X0Y0:CONFIG_SITE_X0Y0}
