@@ -212,10 +212,11 @@ wire  [1:0] g_axi_rresp   [1:0];    // muxed
 wire        g_axi_rvalid  [1:0];    // muxed
 //re        g_axi_rready  [1:0];    // broadcast
 
+//FLASH
 assign g_axi_awvalid[0] = (cfg_axi_devsel == 2'b00) ? s_axi_awvalid : 1'b0;
 assign g_axi_wvalid[0]  = (cfg_axi_devsel == 2'b00) ? s_axi_wvalid  : 1'b0;
 assign g_axi_arvalid[0] = (cfg_axi_devsel == 2'b00) ? s_axi_arvalid : 1'b0;
-
+//ICAP
 assign g_axi_awvalid[1] = (cfg_axi_devsel == 2'b01) ? s_axi_awvalid : 1'b0;
 assign g_axi_wvalid[1]  = (cfg_axi_devsel == 2'b01) ? s_axi_wvalid  : 1'b0;
 assign g_axi_arvalid[1] = (cfg_axi_devsel == 2'b01) ? s_axi_arvalid : 1'b0;
@@ -390,6 +391,7 @@ STARTUPE3 #(
 // indicates this block won't simulate correctly. Instead use IOBUFs to connect the Quad SPI signals directly to 
 // the 1st FLASH just like the 2nd FLASH is connected.
 //
+// why STARTUP shouldn't be part of simulation:
 // "The Startup model is not supposed to be used as a replacment for the entire configuration block. All this represents
 // is the STARTUP so all you will see are the Global signals on it. Now the way the silicon works is that there are no
 // physical connections for this that the customer connects up. In order to mimic this behavior we have decided to use the
@@ -459,7 +461,7 @@ IOBUF IOBUF_CE1 (
 // 
 // So the SPI_0 device interface ports connect to the STARTUPE3 block, and the SP_1 device interface ports goes to 
 // regular I/O but constrained to these specific pins below.
-//
+// On AD9V3
 // AV30  IO_L2N_T0L_N3_FWE_FCS2_B_65
 // AG30  IO_L22N_T3U_N7_DBC_AD0N_D05_65
 // AF30  IO_L22P_T3U_N6_DBC_AD0P_D04_65

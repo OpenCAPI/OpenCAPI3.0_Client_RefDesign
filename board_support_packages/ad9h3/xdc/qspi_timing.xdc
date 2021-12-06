@@ -50,6 +50,7 @@ set_input_delay -clock clk_sck -max [expr $tco_max + $tdata_trace_delay_max + $t
 set_multicycle_path 3 -setup     -from clk_sck -to [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]]
 #set_multicycle_path 1 -hold -end -from clk_sck -to [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]]
 
+
 # Data is captured into SPI on the following rising edge of SCK
 # Data is driven by the IP on alternate rising_edge of the ext_spi_clk
 

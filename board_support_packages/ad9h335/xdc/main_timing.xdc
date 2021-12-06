@@ -1,5 +1,5 @@
 ###############################################################
-## FPGA: xcvu3p-ffvc1517-2-i
+## FPGA: xcvu35p-fsvh2104-2-e
 ###############################################################
 
 ###############################################################
@@ -16,7 +16,7 @@ create_clock -period 3.333 -name freerun_clk_p [get_ports freerun_clk_p]
 
 
 # False path constraints
-# -------------------------
+# --------------------------
 set_false_path -to [get_cells -hierarchical -filter {NAME =~ *bit_synchronizer*inst/i_in_meta_reg}]
 set_false_path -to [get_cells -hierarchical -filter {NAME =~ *bit_synchronizer*inst/i_in_meta_reg}]
 set_false_path -to [get_cells -hierarchical -filter {NAME =~ *reset_synchronizer*inst/rst_in_*_reg}]
@@ -28,3 +28,11 @@ set_false_path -from [get_clocks -of_objects [get_pins {bsp/dlx_phy/example_wrap
 # ocde signal can be treated as a static signal
 set_input_delay -clock [get_clocks  clock_156_25] 0.0 [get_ports -filter { NAME =~ "*ocde*" && DIRECTION == "IN" }]
 set_false_path -from [get_ports -filter { NAME =~ "*ocde*" && DIRECTION == "IN" }]
+set_false_path -from [get_cells -hierarchical -filter {NAME =~ *decouple*}]
+set_false_path -from [get_cells -hierarchical -filter {NAME =~ *monitor*}]
+
+#======================================================================================
+set_false_path -from oc_func/fw_afu/reset_snap_q_reg_replica_*
+set_false_path -from oc_func/fw_afu/snap_core_i/mmio/mmmio/soft_reset_brdg_odma_reg_replica*
+
+

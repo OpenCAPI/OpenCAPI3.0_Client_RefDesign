@@ -285,7 +285,7 @@ module oc_bsp (
   // choose a clock source for icap that is a global clock.  
   // ICAP IP allows this to be async to axi clock
   wire   icap_clk;
-  assign icap_clk = clock_156_25;  
+  assign icap_clk = clock_156_25; //should be 100MHz or less : spi_clk?
 
   wire            spi_clk_div_2;
   
@@ -367,10 +367,11 @@ assign unused[1] = 1'b0;
   // -- ICAP for image reload
   // -- ********************************************************************************************************************************
 
-    iprog_icap ICAP (
-        .go(iprog_go_or)
-        ,.clk(clock_156_25)
-    );
+    // This interface is now removed since the oc-reload uses the regular hwicap IP
+    //iprog_icap ICAP (
+    //    .go(iprog_go_or)
+    //    ,.clk(clock_156_25)
+    //);
     
     assign ocde_din[7:0] = {ocde, ocde_q[7:1]};
     assign reset_all_out = ((ocde_q[4:0] == 5'b11111) &  reset_all_out_q) ? 1'b0 :
@@ -664,9 +665,9 @@ assign unused[1] = 1'b0;
       .FPGA_FLASH_DQ6                        ( FPGA_FLASH_DQ6 ),         // -- inout
       .FPGA_FLASH_DQ7                        ( FPGA_FLASH_DQ7 ),         // -- inout
       // -- Inputs
-      .axi_clk                               ( clock_tlx ),              // -- input
-      .spi_clk                               ( spi_clk ),                // -- input
-      .icap_clk                              ( icap_clk ),               // -- input
+      .axi_clk                               ( clock_tlx ),              // -- input 402MHz
+      .spi_clk                               ( spi_clk ),                // -- input 100MHz
+      .icap_clk                              ( icap_clk ),               // -- input 156MHz
       .reset_n                               ( reset_afu_q ),            // -- input
       .cfg_axi_devsel                        ( cfg_flsh_devsel[1:0] ),   // -- input
       .cfg_axi_addr                          ( cfg_flsh_addr[13:0] ),    // -- input

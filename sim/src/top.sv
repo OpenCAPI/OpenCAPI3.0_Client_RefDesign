@@ -1098,7 +1098,11 @@ module top (
         // -- Clocks & Reset
         .clock_tlx                          ( tlx_clock                                 ),
         .clock_afu                          ( afu_clock                                 ),
-        .reset                          ( ~reset_n                                  ),
+        .reset                              ( ~reset_n                                  ),
+        .decouple                           ( 1'b0                                      ),  //in - no decoupling needed in simulation
+        .ocde                               ( 1'b0                                      ),  //in - no ocde used in simulation
+        .ocde_to_bsp_dcpl                   (                                           ),  //out
+
 
         // -- Bus number comes from CFG_SEQ
         .cfg_bus                        ( cfg_bus_num                               ),  // -- Attached to TLX Port 0, so use cfg0_ instance

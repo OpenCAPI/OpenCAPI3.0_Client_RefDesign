@@ -4,6 +4,11 @@
 
 set_property PACKAGE_PIN BN31 [get_ports oc0_ocde]
 set_property IOSTANDARD LVCMOS18 [get_ports oc0_ocde]
+# duplicating the 2 following lines with ocde name for PR purpose
+# there is no issue to keep it assigned if PR is not used
+# ocde is the name of the IO entering the IBUF in the dynamic action_core code
+set_property PACKAGE_PIN BN31 [get_ports ocde]
+set_property IOSTANDARD LVCMOS18 [get_ports ocde]
 
 
 # CAPI0 Clocks - MGTREFCLK0P_128.  I/O bank 129 shares 128 clock
