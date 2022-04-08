@@ -78,6 +78,31 @@ module flash_sub_system (
   , inout          FPGA_FLASH_DQ5         //         Interface to SPI flash
   , inout          FPGA_FLASH_DQ6         //         Interface to SPI flash
   , inout          FPGA_FLASH_DQ7         //         Interface to SPI flash
+  // in Cloud mode / PRFLOW we need to give access to ICAP to the user (w/o sudo) 
+`ifndef ENABLE_ODMA
+`ifdef ENABLE_PRFLOW
+  , input [31:0]               mmio2icap_awaddr
+  , input [2:0]                mmio2icap_awprot
+  , input                      mmio2icap_awvalid
+  , input [31:0]               mmio2icap_wdata
+  , input [3:0]                mmio2icap_wstrb
+  , input                      mmio2icap_wvalid
+  , input                      mmio2icap_bready
+  , input [31:0]               mmio2icap_araddr
+  , input [2:0]                mmio2icap_arprot
+  , input                      mmio2icap_arvalid
+  , input                      mmio2icap_rready
+
+  , output                     icap2mmio_awready
+  , output                     icap2mmio_wready
+  , output  [1:0]              icap2mmio_bresp
+  , output                     icap2mmio_bvalid
+  , output                     icap2mmio_arready
+  , output [31:0]              icap2mmio_rdata
+  , output [1:0]               icap2mmio_rresp
+  , output                     icap2mmio_rvalid
+`endif
+`endif
 );
 
 // AXI4-Lite signals between Master and Slave(s)
@@ -98,6 +123,25 @@ reg   [31:0] s_axi_rdata;
 reg    [1:0] s_axi_rresp; 
 reg          s_axi_rvalid;
 wire         s_axi_rready;
+
+
+wire  [13:0]  s_axi_icap_awaddr; 
+wire          s_axi_icap_awvalid;
+wire          s_axi_icap_awready; 
+wire  [31:0]  s_axi_icap_wdata;
+wire   [3:0]  s_axi_icap_wstrb; 
+wire          s_axi_icap_wvalid; 
+wire          s_axi_icap_wready;
+wire    [1:0] s_axi_icap_bresp;
+wire          s_axi_icap_bvalid; 
+wire          s_axi_icap_bready; 
+wire  [13:0]  s_axi_icap_araddr; 
+wire          s_axi_icap_arvalid; 
+wire          s_axi_icap_arready;
+wire   [31:0] s_axi_icap_rdata; 
+wire    [1:0] s_axi_icap_rresp; 
+wire          s_axi_icap_rvalid;
+wire          s_axi_icap_rready;
 
 // Internal signals
 wire [4:0] unused;
@@ -223,7 +267,7 @@ assign g_axi_arvalid[1] = (cfg_axi_devsel == 2'b01) ? s_axi_arvalid : 1'b0;
 
 always @(*)  // Combinational
   case (cfg_axi_devsel)
-    2'b00: begin
+    2'b00: begin    //FLASH
              s_axi_awready = g_axi_awready[0];
              s_axi_wready  = g_axi_wready[0];
              s_axi_bresp   = {2{g_axi_bresp[0]}};
@@ -233,7 +277,7 @@ always @(*)  // Combinational
              s_axi_rresp   = {2{g_axi_rresp[0]}};
              s_axi_rvalid  = g_axi_rvalid[0];
            end
-    2'b01: begin
+    2'b01: begin    //ICAP
              s_axi_awready = g_axi_awready[1];
              s_axi_wready  = g_axi_wready[1];
              s_axi_bresp   = {2{g_axi_bresp[1]}};
@@ -267,24 +311,24 @@ axi_hwicap_0 ICAP (
   , .eos_in         ( eos                ) // input
   , .s_axi_aclk     ( axi_clk            ) // input
   , .s_axi_aresetn  ( reset_n            ) // input (active low)
-  , .s_axi_awaddr   ( s_axi_awaddr[8:0]  ) // input [8:0]
-  , .s_axi_awvalid  ( g_axi_awvalid[1]   ) // input 
-  , .s_axi_awready  ( g_axi_awready[1]   ) // output 
-  , .s_axi_wdata    ( s_axi_wdata        ) // input 
-  , .s_axi_wstrb    ( s_axi_wstrb        ) // input [3:0]
-  , .s_axi_wvalid   ( g_axi_wvalid[1]    ) // input
-  , .s_axi_wready   ( g_axi_wready[1]    ) // output
-  , .s_axi_bresp    ( g_axi_bresp[1]     ) // output [1:0]
-  , .s_axi_bvalid   ( g_axi_bvalid[1]    ) // output
-  , .s_axi_bready   ( s_axi_bready       ) // input
-  , .s_axi_araddr   ( s_axi_araddr[8:0]  ) // input [8:0]
-  , .s_axi_arvalid  ( g_axi_arvalid[1]   ) // input
-  , .s_axi_arready  ( g_axi_arready[1]   ) // output 
-  , .s_axi_rdata    ( g_axi_rdata[1]     ) // output [31:0]
-  , .s_axi_rresp    ( g_axi_rresp[1]     ) // output [1:0]
-  , .s_axi_rvalid   ( g_axi_rvalid[1]    ) // output
-  , .s_axi_rready   ( s_axi_rready       ) // input
-  , .ip2intc_irpt   ( icap_interrupt     ) // output
+  , .s_axi_awaddr   ( s_axi_icap_awaddr[8:0]  ) // input [8:0]
+  , .s_axi_awvalid  ( s_axi_icap_awvalid      ) // input 
+  , .s_axi_wdata    ( s_axi_icap_wdata        ) // input 
+  , .s_axi_wstrb    ( s_axi_icap_wstrb        ) // input [3:0]
+  , .s_axi_wvalid   ( s_axi_icap_wvalid       ) // input
+  , .s_axi_bready   ( s_axi_icap_bready       ) // input
+  , .s_axi_araddr   ( s_axi_icap_araddr[8:0]  ) // input [8:0]
+  , .s_axi_arvalid  ( s_axi_icap_arvalid      ) // input
+  , .s_axi_rready   ( s_axi_icap_rready       ) // input
+  , .s_axi_awready  ( s_axi_icap_awready      ) // output 
+  , .s_axi_wready   ( s_axi_icap_wready       ) // output
+  , .s_axi_bresp    ( s_axi_icap_bresp        ) // output [1:0]
+  , .s_axi_bvalid   ( s_axi_icap_bvalid       ) // output
+  , .s_axi_arready  ( s_axi_icap_arready      ) // output 
+  , .s_axi_rdata    ( s_axi_icap_rdata        ) // output [31:0]
+  , .s_axi_rresp    ( s_axi_icap_rresp        ) // output [1:0]
+  , .s_axi_rvalid   ( s_axi_icap_rvalid       ) // output
+  , .ip2intc_irpt   ( icap_interrupt          ) // output
 //PR removing following unused interface to enable Partial Reconfiguration
 //PR  , .icap_avail     (1'b0)
 //PR  , .icap_csib      ()
@@ -295,7 +339,74 @@ axi_hwicap_0 ICAP (
 //PR  , .cap_rel        (1'b0)
 //PR  , .cap_req        ()
 );
- 
+
+// Adding the ability for a user (with no sudo rights) to access ICAP for dynamic reprogramming
+`ifndef ENABLE_ODMA
+`ifdef ENABLE_PRFLOW
+(* mark_debug = "TRUE" *)   reg        select_mmio2icap;
+
+always @(posedge(axi_clk))
+  if (reset_n == 1'b0)                  
+      select_mmio2icap <= 1'b0;
+  // decouple is enabled at the first access to FA_ICAP or MMIO user address 0000_0Exx
+  else if ((mmio2icap_awaddr[11:9] == 3'b111) && (mmio2icap_awvalid == 1'b1))
+      select_mmio2icap <= 1'b1;
+  else if ((mmio2icap_araddr[11:9] == 3'b111) && (mmio2icap_arvalid == 1'b1))
+      select_mmio2icap <= 1'b1;
+  else if ((mmio2icap_awaddr[11:9] == 3'b000) && (mmio2icap_awvalid == 1'b1))
+      select_mmio2icap <= 1'b0;
+  else if ((mmio2icap_araddr[11:9] == 3'b000) && (mmio2icap_arvalid == 1'b1))
+      select_mmio2icap <= 1'b0;
+  // decouple is disabled at the first access to FA_QSPI
+  else if (cfg_axi_devsel == 2'b00)  
+      select_mmio2icap <= 1'b0;
+  else                                
+      select_mmio2icap <= select_mmio2icap;
+
+assign s_axi_icap_awaddr[8:0] = (select_mmio2icap == 1'b1) ? mmio2icap_awaddr[8:0] : s_axi_awaddr[8:0];
+assign s_axi_icap_awvalid     = (select_mmio2icap == 1'b1) ? mmio2icap_awvalid     : g_axi_awvalid[1] ;
+assign s_axi_icap_wdata[31:0] = (select_mmio2icap == 1'b1) ? mmio2icap_wdata[31:0] : s_axi_wdata[31:0];
+assign s_axi_icap_wstrb[3:0]  = (select_mmio2icap == 1'b1) ? mmio2icap_wstrb[3:0]  : s_axi_wstrb[3:0] ;
+assign s_axi_icap_wvalid      = (select_mmio2icap == 1'b1) ? mmio2icap_wvalid      : g_axi_wvalid[1]  ;
+assign s_axi_icap_bready      = (select_mmio2icap == 1'b1) ? mmio2icap_bready      : s_axi_bready     ;
+assign s_axi_icap_araddr[8:0] = (select_mmio2icap == 1'b1) ? mmio2icap_araddr[8:0] : s_axi_araddr[8:0];
+assign s_axi_icap_arvalid     = (select_mmio2icap == 1'b1) ? mmio2icap_arvalid     : g_axi_arvalid[1] ;
+assign s_axi_icap_rready      = (select_mmio2icap == 1'b1) ? mmio2icap_rready      : s_axi_rready     ;
+
+//ICAP outputs to MMIO user space
+assign icap2mmio_awready     = s_axi_icap_awready;
+assign icap2mmio_wready      = s_axi_icap_wready ;
+assign icap2mmio_bresp[1:0]  = s_axi_icap_bresp[1:0]  ;
+assign icap2mmio_bvalid      = s_axi_icap_bvalid ;
+assign icap2mmio_arready     = s_axi_icap_arready;
+assign icap2mmio_rdata[31:0] = s_axi_icap_rdata[31:0]  ;
+assign icap2mmio_rresp       = s_axi_icap_rresp  ;
+assign icap2mmio_rvalid      = s_axi_icap_rvalid ;
+
+`else
+assign s_axi_icap_awaddr[8:0] = s_axi_awaddr[8:0];
+assign s_axi_icap_awvalid     = g_axi_awvalid[1] ;
+assign s_axi_icap_wdata[31:0] = s_axi_wdata[31:0];
+assign s_axi_icap_wstrb[3:0]  = s_axi_wstrb[3:0] ;
+assign s_axi_icap_wvalid      = g_axi_wvalid[1]  ;
+assign s_axi_icap_bready      = s_axi_bready     ;
+assign s_axi_icap_araddr[8:0] = s_axi_araddr[8:0];
+assign s_axi_icap_arvalid     = g_axi_arvalid[1] ;
+assign s_axi_icap_rready      = s_axi_rready     ;
+
+`endif
+`endif
+
+//ICAP outputs to PCI config space
+assign g_axi_awready[1]  = s_axi_icap_awready; 
+assign g_axi_wready[1]   = s_axi_icap_wready ;
+assign g_axi_bresp[1]    = s_axi_icap_bresp ;
+assign g_axi_bvalid[1]   = s_axi_icap_bvalid ;
+assign g_axi_arready[1]  = s_axi_icap_arready ; 
+assign g_axi_rdata[1]    = s_axi_icap_rdata ;
+assign g_axi_rresp[1]    = s_axi_icap_rresp ;
+assign g_axi_rvalid[1]   = s_axi_icap_rvalid ;
+
  
 // ------------------------------------------------------------------
 // Xilinx IP: axi_qu s_axi_rresp  ad_spi (FLASH controller, pg153-axi-quad-spi.pdf)

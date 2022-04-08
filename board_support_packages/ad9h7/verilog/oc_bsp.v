@@ -207,7 +207,31 @@ module oc_bsp (
    ,input            cfg_flsh_expand_enable
    ,input            cfg_flsh_expand_dir
    ,input            cfg_icap_reload_en
+// in Cloud mode / PRFLOW we need to give access to ICAP to the user (w/o sudo) 
+`ifndef ENABLE_ODMA
+`ifdef ENABLE_PRFLOW
+  , input [31:0]               mmio2icap_awaddr
+  , input [2:0]                mmio2icap_awprot
+  , input                      mmio2icap_awvalid
+  , input [31:0]               mmio2icap_wdata
+  , input [3:0]                mmio2icap_wstrb
+  , input                      mmio2icap_wvalid
+  , input                      mmio2icap_bready
+  , input [31:0]               mmio2icap_araddr
+  , input [2:0]                mmio2icap_arprot
+  , input                      mmio2icap_arvalid
+  , input                      mmio2icap_rready
 
+  , output                     icap2mmio_awready
+  , output                     icap2mmio_wready
+  , output  [1:0]              icap2mmio_bresp
+  , output                     icap2mmio_bvalid
+  , output                     icap2mmio_arready
+  , output [31:0]              icap2mmio_rdata
+  , output [1:0]               icap2mmio_rresp
+  , output                     icap2mmio_rvalid
+`endif
+`endif
   );
 
   assign ro_device[4:0] = 5'b0; 
@@ -279,6 +303,7 @@ module oc_bsp (
   assign flsh_cfg_bresp  = { 2{1'b0}};
   assign flsh_cfg_rresp  = { 2{1'b0}};
 `endif
+
 
   // choose a clock source for icap that is a global clock.  
   // ICAP IP allows this to be async to axi clock
@@ -673,6 +698,32 @@ assign unused[1] = 1'b0;
       .cfg_axi_rden                          ( cfg_flsh_rden ),          // -- input
       .data_expand_enable                    ( cfg_flsh_expand_enable ), // -- input
       .data_expand_dir                       ( cfg_flsh_expand_dir )     // -- input
+      
+`ifndef ENABLE_ODMA
+`ifdef ENABLE_PRFLOW
+      ,.mmio2icap_awaddr            (mmio2icap_awaddr            ) // input
+      ,.mmio2icap_awprot            (mmio2icap_awprot            )
+      ,.mmio2icap_awvalid           (mmio2icap_awvalid           )
+      ,.mmio2icap_wdata             (mmio2icap_wdata             )
+      ,.mmio2icap_wstrb             (mmio2icap_wstrb             )
+      ,.mmio2icap_wvalid            (mmio2icap_wvalid            )
+      ,.mmio2icap_bready            (mmio2icap_bready            )
+      ,.mmio2icap_araddr            (mmio2icap_araddr            )
+      ,.mmio2icap_arprot            (mmio2icap_arprot            )
+      ,.mmio2icap_arvalid           (mmio2icap_arvalid           )
+      ,.mmio2icap_rready            (mmio2icap_rready            )
+
+
+      ,.icap2mmio_awready           (icap2mmio_awready           ) // ouput
+      ,.icap2mmio_wready            (icap2mmio_wready            )
+      ,.icap2mmio_bresp             (icap2mmio_bresp             )
+      ,.icap2mmio_bvalid            (icap2mmio_bvalid            )
+      ,.icap2mmio_arready           (icap2mmio_arready           )
+      ,.icap2mmio_rdata             (icap2mmio_rdata             )
+      ,.icap2mmio_rresp             (icap2mmio_rresp             )
+      ,.icap2mmio_rvalid            (icap2mmio_rvalid            )
+`endif
+`endif  
     );
 `endif
 

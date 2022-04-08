@@ -254,6 +254,32 @@ wire           cfg_flsh_expand_enable;
 wire           cfg_flsh_expand_dir;
 wire           cfg_icap_reload_en;
 
+// in Cloud mode / PRFLOW we need to give access to ICAP to the user (w/o sudo) 
+`ifndef ENABLE_ODMA
+`ifdef ENABLE_PRFLOW
+wire [31:0]               mmio2icap_awaddr;
+wire [2:0]                mmio2icap_awprot;
+wire                      mmio2icap_awvalid;
+wire [31:0]               mmio2icap_wdata;
+wire [3:0]                mmio2icap_wstrb;
+wire                      mmio2icap_wvalid;
+wire                      mmio2icap_bready;
+wire [31:0]               mmio2icap_araddr;
+wire [2:0]                mmio2icap_arprot;
+wire                      mmio2icap_arvalid;
+wire                      mmio2icap_rready;
+
+wire                      icap2mmio_awready;
+wire                      icap2mmio_wready;
+wire [1:0]                icap2mmio_bresp;
+wire                      icap2mmio_bvalid;
+wire                      icap2mmio_arready;
+wire [31:0]               icap2mmio_rdata;
+wire [1:0]                icap2mmio_rresp;
+wire                      icap2mmio_rvalid;
+`endif
+`endif
+
 //oc_function wires
 
 // ==============================================================================================================================
@@ -660,7 +686,34 @@ oc_bsp bsp(
  ,.flsh_cfg_rresp                              (flsh_cfg_rresp                   )  // -- oc_bsp:  output  [1:0]         
  ,.cfg_flsh_expand_enable                      (cfg_flsh_expand_enable           )  // -- oc_bsp:  input
  ,.cfg_flsh_expand_dir                         (cfg_flsh_expand_dir              )  // -- oc_bsp:  input            
- ,.cfg_icap_reload_en                          (cfg_icap_reload_en               )  // -- oc_bsp:  input            
+ ,.cfg_icap_reload_en                          (cfg_icap_reload_en               )  // -- oc_bsp:  input
+
+
+ // in Cloud mode / PRFLOW we need to give access to ICAP to the user (w/o sudo) 
+`ifndef ENABLE_ODMA
+`ifdef ENABLE_PRFLOW
+  ,.mmio2icap_awaddr            (mmio2icap_awaddr            ) // input
+  ,.mmio2icap_awprot            (mmio2icap_awprot            )
+  ,.mmio2icap_awvalid           (mmio2icap_awvalid           )
+  ,.mmio2icap_wdata             (mmio2icap_wdata             )
+  ,.mmio2icap_wstrb             (mmio2icap_wstrb             )
+  ,.mmio2icap_wvalid            (mmio2icap_wvalid            )
+  ,.mmio2icap_bready            (mmio2icap_bready            )
+  ,.mmio2icap_araddr            (mmio2icap_araddr            )
+  ,.mmio2icap_arprot            (mmio2icap_arprot            )
+  ,.mmio2icap_arvalid           (mmio2icap_arvalid           )
+  ,.mmio2icap_rready            (mmio2icap_rready            )
+
+  ,.icap2mmio_awready           (icap2mmio_awready           ) // ouput
+  ,.icap2mmio_wready            (icap2mmio_wready            )
+  ,.icap2mmio_bresp             (icap2mmio_bresp             )
+  ,.icap2mmio_bvalid            (icap2mmio_bvalid            )
+  ,.icap2mmio_arready           (icap2mmio_arready           )
+  ,.icap2mmio_rdata             (icap2mmio_rdata             )
+  ,.icap2mmio_rresp             (icap2mmio_rresp             )
+  ,.icap2mmio_rvalid            (icap2mmio_rvalid            )
+`endif
+`endif            
 );
 
 //-- Future hierarchy implementation
@@ -948,7 +1001,9 @@ oc_cfg cfg (
 );
 
 // When accessing ICAP, then decouple the dynamic code
-reg decouple;
+(* mark_debug = "TRUE" *) reg decouple;
+
+
 always @(posedge(clock_tlx))
   if (reset == 1'b1)                  decouple <= 1'b0;
   // decouple is enabled at the first access to FA_ICAP
@@ -956,7 +1011,6 @@ always @(posedge(clock_tlx))
   // decouple is disabled at the first access to FA_QSPI
   else if (cfg_flsh_devsel == 2'b00)  decouple <= 1'b0;
   else                                decouple <= decouple;
-
 
 oc_function oc_func(
     .clock_tlx                              ( clock_tlx                          )
@@ -1135,7 +1189,32 @@ oc_function oc_func(
    ,.gt_tx_gt_port_3_p ( gt_tx_gt_port_3_p  )
 `endif
 `endif
+// in Cloud mode / PRFLOW we need to give access to ICAP to the user (w/o sudo) 
+`ifndef ENABLE_ODMA
+`ifdef ENABLE_PRFLOW
+      ,.mmio2icap_awaddr            (mmio2icap_awaddr            ) // output
+      ,.mmio2icap_awprot            (mmio2icap_awprot            )
+      ,.mmio2icap_awvalid           (mmio2icap_awvalid           )
+      ,.mmio2icap_wdata             (mmio2icap_wdata             )
+      ,.mmio2icap_wstrb             (mmio2icap_wstrb             )
+      ,.mmio2icap_wvalid            (mmio2icap_wvalid            )
+      ,.mmio2icap_bready            (mmio2icap_bready            )
+      ,.mmio2icap_araddr            (mmio2icap_araddr            )
+      ,.mmio2icap_arprot            (mmio2icap_arprot            )
+      ,.mmio2icap_arvalid           (mmio2icap_arvalid           )
+      ,.mmio2icap_rready            (mmio2icap_rready            )
 
+
+      ,.icap2mmio_awready           (icap2mmio_awready           ) // input
+      ,.icap2mmio_wready            (icap2mmio_wready            )
+      ,.icap2mmio_bresp             (icap2mmio_bresp             )
+      ,.icap2mmio_bvalid            (icap2mmio_bvalid            )
+      ,.icap2mmio_arready           (icap2mmio_arready           )
+      ,.icap2mmio_rdata             (icap2mmio_rdata             )
+      ,.icap2mmio_rresp             (icap2mmio_rresp             )
+      ,.icap2mmio_rvalid            (icap2mmio_rvalid            )
+`endif
+`endif
     // ------------------------------------------------------------- 
     // OTHER SIGNALS
     // -------------------------------------------------------------

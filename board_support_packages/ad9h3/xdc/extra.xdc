@@ -1,25 +1,55 @@
-set_property PACKAGE_PIN BE30 [get_ports {eeprom_scl}]    ; #SPARE_SCL
-set_property PACKAGE_PIN BC30 [get_ports {eeprom_sda}]    ; #SPARE_SDA
-set_property PACKAGE_PIN BD30 [get_ports {eeprom_wp}]     ; #SPARE_WP
 
-set_property PACKAGE_PIN AV32 [get_ports {user_led_a0}]   ; #USER_LED_A0_1V8
-set_property PACKAGE_PIN AW32 [get_ports {user_led_a1}]   ; #USER_LED_A1_1V8
-set_property PACKAGE_PIN AY30 [get_ports {user_led_g0}]   ; #USER_LED_G0_1V8
-set_property PACKAGE_PIN AV31 [get_ports {user_led_g1}]   ; #USER_LED_G1_1V8
+create_debug_core u_ila_0 ila
+connect_debug_port u_ila_0/clk [get_nets clock_tlx]
 
-set_property PACKAGE_PIN BA33    [get_ports {avr_ck}] ; AVR_MON_CLK_1V8
-set_property PACKAGE_PIN BF34    [get_ports {avr_rx}] ; AVR_U2B_1V8
-set_property PACKAGE_PIN BF33    [get_ports {avr_tx}] ; AVR_B2U_1V8
-
-set_property IOSTANDARD LVCMOS18 [get_ports {eeprom_scl}]
-set_property IOSTANDARD LVCMOS18 [get_ports {eeprom_sda}]
-set_property IOSTANDARD LVCMOS18 [get_ports {eeprom_wp}]
-
-set_property IOSTANDARD LVCMOS18 [get_ports {user_led_a0}]
-set_property IOSTANDARD LVCMOS18 [get_ports {user_led_a1}]
-set_property IOSTANDARD LVCMOS18 [get_ports {user_led_g0}]
-set_property IOSTANDARD LVCMOS18 [get_ports {user_led_g1}]
-
-set_property IOSTANDARD LVCMOS18 [get_ports {avr_ck}]
-set_property IOSTANDARD LVCMOS18 [get_ports {avr_rx}]
-set_property IOSTANDARD LVCMOS18 [get_ports {avr_tx}]
+set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
+set_property ALL_PROBE_SAME_MU_CNT 4 [get_debug_cores u_ila_0]
+set_property C_ADV_TRIGGER true [get_debug_cores u_ila_0]
+set_property C_DATA_DEPTH 16384 [get_debug_cores u_ila_0]
+set_property C_EN_STRG_QUAL true [get_debug_cores u_ila_0]
+set_property C_INPUT_PIPE_STAGES 1 [get_debug_cores u_ila_0]
+set_property C_TRIGIN_EN false [get_debug_cores u_ila_0]
+set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
+set_property port_width 1 [get_debug_ports u_ila_0/probe0]
+connect_debug_port u_ila_0/probe0 [get_nets [list decouple]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
+set_property port_width 1 [get_debug_ports u_ila_0/probe1]
+connect_debug_port u_ila_0/probe1 [get_nets [list mmio2icap_arvalid]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
+set_property port_width 1 [get_debug_ports u_ila_0/probe2]
+connect_debug_port u_ila_0/probe2 [get_nets [list oc_func/fw_afu/new_decouple]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
+set_property port_width 1 [get_debug_ports u_ila_0/probe3]
+connect_debug_port u_ila_0/probe3 [get_nets [list bsp/FLASH/s_axi_icap_arvalid]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe4]
+set_property port_width 1 [get_debug_ports u_ila_0/probe4]
+connect_debug_port u_ila_0/probe4 [get_nets [list bsp/FLASH/s_axi_icap_awvalid]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe5]
+set_property port_width 1 [get_debug_ports u_ila_0/probe5]
+connect_debug_port u_ila_0/probe5 [get_nets [list bsp/FLASH/s_axi_icap_bvalid]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe6]
+set_property port_width 1 [get_debug_ports u_ila_0/probe6]
+connect_debug_port u_ila_0/probe6 [get_nets [list bsp/FLASH/s_axi_icap_rvalid]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe7]
+set_property port_width 1 [get_debug_ports u_ila_0/probe7]
+connect_debug_port u_ila_0/probe7 [get_nets [list bsp/FLASH/s_axi_icap_wvalid]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe8]
+set_property port_width 1 [get_debug_ports u_ila_0/probe8]
+connect_debug_port u_ila_0/probe8 [get_nets [list oc_func/fw_afu/select_icap]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe9]
+set_property port_width 1 [get_debug_ports u_ila_0/probe9]
+connect_debug_port u_ila_0/probe9 [get_nets [list bsp/FLASH/select_mmio2icap]]
+set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
+set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
+set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
+connect_debug_port dbg_hub/clk [get_nets clock_afu]

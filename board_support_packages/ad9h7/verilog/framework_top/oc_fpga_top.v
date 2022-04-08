@@ -612,6 +612,31 @@ wire  [4:0]    oc1_f1_ro_octrl00_pasid_len_supported;
 wire           oc1_f1_ro_octrl00_metadata_supported;
 wire [11:0]    oc1_f1_ro_octrl00_actag_len_supported;
 `endif
+// in Cloud mode / PRFLOW we need to give access to ICAP to the user (w/o sudo) 
+`ifndef ENABLE_ODMA
+`ifdef ENABLE_PRFLOW
+wire [31:0]               mmio2icap_awaddr;
+wire [2:0]                mmio2icap_awprot;
+wire                      mmio2icap_awvalid;
+wire [31:0]               mmio2icap_wdata;
+wire [3:0]                mmio2icap_wstrb;
+wire                      mmio2icap_wvalid;
+wire                      mmio2icap_bready;
+wire [31:0]               mmio2icap_araddr;
+wire [2:0]                mmio2icap_arprot;
+wire                      mmio2icap_arvalid;
+wire                      mmio2icap_rready;
+
+wire                      icap2mmio_awready;
+wire                      icap2mmio_wready;
+wire [1:0]                icap2mmio_bresp;
+wire                      icap2mmio_bvalid;
+wire                      icap2mmio_arready;
+wire [31:0]               icap2mmio_rdata;
+wire [1:0]                icap2mmio_rresp;
+wire                      icap2mmio_rvalid;
+`endif
+`endif
 
 // ==============================================================================================================================
 // @@@ Miscellaneous Signals
@@ -813,6 +838,32 @@ oc_bsp bsp0(
  ,.cfg_flsh_expand_enable                      (oc0_cfg_flsh_expand_enable           ) // -- oc_bsp0:  input
  ,.cfg_flsh_expand_dir                         (oc0_cfg_flsh_expand_dir              ) // -- oc_bsp0:  input
  ,.cfg_icap_reload_en                          (oc0_cfg_icap_reload_en               ) // -- oc_bsp0:  input
+
+ // in Cloud mode / PRFLOW we need to give access to ICAP to the user (w/o sudo) 
+`ifndef ENABLE_ODMA
+`ifdef ENABLE_PRFLOW
+  ,.mmio2icap_awaddr            (mmio2icap_awaddr            ) // input
+  ,.mmio2icap_awprot            (mmio2icap_awprot            )
+  ,.mmio2icap_awvalid           (mmio2icap_awvalid           )
+  ,.mmio2icap_wdata             (mmio2icap_wdata             )
+  ,.mmio2icap_wstrb             (mmio2icap_wstrb             )
+  ,.mmio2icap_wvalid            (mmio2icap_wvalid            )
+  ,.mmio2icap_bready            (mmio2icap_bready            )
+  ,.mmio2icap_araddr            (mmio2icap_araddr            )
+  ,.mmio2icap_arprot            (mmio2icap_arprot            )
+  ,.mmio2icap_arvalid           (mmio2icap_arvalid           )
+  ,.mmio2icap_rready            (mmio2icap_rready            )
+
+  ,.icap2mmio_awready           (icap2mmio_awready           ) // ouput
+  ,.icap2mmio_wready            (icap2mmio_wready            )
+  ,.icap2mmio_bresp             (icap2mmio_bresp             )
+  ,.icap2mmio_bvalid            (icap2mmio_bvalid            )
+  ,.icap2mmio_arready           (icap2mmio_arready           )
+  ,.icap2mmio_rdata             (icap2mmio_rdata             )
+  ,.icap2mmio_rresp             (icap2mmio_rresp             )
+  ,.icap2mmio_rvalid            (icap2mmio_rvalid            )
+`endif
+`endif            
 );
 
 oc_cfg cfg0 (
@@ -1216,14 +1267,32 @@ oc_function oc_func0(
   ,.f1_octrl00_pasid_len_supported         (oc0_f1_ro_octrl00_pasid_len_supported  ) // -- oc_function0:   input  [4:0]
   ,.f1_octrl00_metadata_supported          (oc0_f1_ro_octrl00_metadata_supported   ) // -- oc_function0:   input  
   ,.f1_octrl00_actag_len_supported         (oc0_f1_ro_octrl00_actag_len_supported  ) // -- oc_function0:   input  [11:0]
-    // ------------------------------------------------------------- 
-    // HBM Interface
-    // -------------------------------------------------------------
-`ifdef ENABLE_HBM
-    // HBM Interface
-    // place holder
-`endif
+// in Cloud mode / PRFLOW we need to give access to ICAP to the user (w/o sudo) 
+`ifndef ENABLE_ODMA
+`ifdef ENABLE_PRFLOW
+      ,.mmio2icap_awaddr            (mmio2icap_awaddr            ) // output
+      ,.mmio2icap_awprot            (mmio2icap_awprot            )
+      ,.mmio2icap_awvalid           (mmio2icap_awvalid           )
+      ,.mmio2icap_wdata             (mmio2icap_wdata             )
+      ,.mmio2icap_wstrb             (mmio2icap_wstrb             )
+      ,.mmio2icap_wvalid            (mmio2icap_wvalid            )
+      ,.mmio2icap_bready            (mmio2icap_bready            )
+      ,.mmio2icap_araddr            (mmio2icap_araddr            )
+      ,.mmio2icap_arprot            (mmio2icap_arprot            )
+      ,.mmio2icap_arvalid           (mmio2icap_arvalid           )
+      ,.mmio2icap_rready            (mmio2icap_rready            )
 
+
+      ,.icap2mmio_awready           (icap2mmio_awready           ) // input
+      ,.icap2mmio_wready            (icap2mmio_wready            )
+      ,.icap2mmio_bresp             (icap2mmio_bresp             )
+      ,.icap2mmio_bvalid            (icap2mmio_bvalid            )
+      ,.icap2mmio_arready           (icap2mmio_arready           )
+      ,.icap2mmio_rdata             (icap2mmio_rdata             )
+      ,.icap2mmio_rresp             (icap2mmio_rresp             )
+      ,.icap2mmio_rvalid            (icap2mmio_rvalid            )
+`endif
+`endif
 );
 
 `ifdef DUAL_AFU
