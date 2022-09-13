@@ -4,15 +4,15 @@
 
 ## Settings to generate MSC file
 # Configuration from SPI Flash as per XAPP1233
-set_property BITSTREAM.GENERAL.COMPRESS {TRUE} [ current_design ]
+set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
 #the 2 following lines may be useful in case of debug
 #set_property BITSTREAM.GENERAL.COMPRESS {FALSE} [ current_design ]
 #set_property BITSTREAM.GENERAL.perFrameCRC YES [ current_design ]
-set_property BITSTREAM.CONFIG.EXTMASTERCCLK_EN {DIV-1} [current_design]
+set_property BITSTREAM.CONFIG.EXTMASTERCCLK_EN DIV-1 [current_design]
 set_property BITSTREAM.CONFIG.SPI_32BIT_ADDR YES [current_design]
 set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 8 [current_design]
 set_property BITSTREAM.CONFIG.SPI_FALL_EDGE YES [current_design]
-set_property BITSTREAM.CONFIG.UNUSEDPIN {Pullnone} [current_design]
+set_property BITSTREAM.CONFIG.UNUSEDPIN Pullnone [current_design]
 
 # Set CFGBVS to GND to match schematics
 set_property CFGBVS GND [current_design]
@@ -55,5 +55,7 @@ set_property BITSTREAM.CONFIG.OVERTEMPSHUTDOWN Enable [current_design]
 #set_property EXTRACT_RESET NO [get_cells {bsp/dlx_phy/ocx_dlx_top_inst/tx/flt/pre_crc_data_q_reg[*]}]
 #set_property EXTRACT_RESET NO [get_cells {bsp/tlx/OCX_TLX_PARSER/TLX_RCV_FIFO/RESP_FIFO_MAC/RESP_INFO_CTL/data_wr_cnt_dout_reg[*]}]
 #set_property EXTRACT_RESET NO [get_cells {bsp/tlx/OCX_TLX_PARSER/TLX_RCV_FIFO/CMD_FIFO_MAC/CMD_INFO_CTL/data_wr_cnt_dout_reg[*]}]
+
+
 
 

@@ -21,3 +21,5 @@ set_property IOSTANDARD LVCMOS18 [get_ports FPGA_FLASH_DQ6]
 set_property IOSTANDARD LVCMOS18 [get_ports FPGA_FLASH_DQ7]
 set_property IOSTANDARD LVCMOS18 [get_ports FPGA_FLASH_CE2_L]
 
+
+
